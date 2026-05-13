@@ -10,11 +10,32 @@
  
 }
 
+.snackbars {
+  animation : notif 0.30s ease-out;
+
+}
+
 .animations-spins{
   animation-name: loaderbutton; 
   animation-duration: 4s; 
 }
 
+@keyframes notif {
+   0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    width: 80%;
+  }
+  50% {
+     opacity: 0.5; 
+     width: 40%;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    width: 10%;
+  }
+}
 @keyframes dropdown {
   0% {
     opacity: 0;

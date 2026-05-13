@@ -31,6 +31,7 @@ export default function Transactional() {
 
   // State loader 
   const [ loader, setloader ] = useState(false); 
+  const [ notifications, setnotifications ] = useState(false);
 
   const token = localStorage.getItem("Token"); 
 
@@ -129,8 +130,8 @@ export default function Transactional() {
 
   return (
     <>
-    <div className="flex justify-center">
-     <Toaster></Toaster>
+    <div className={`${notifications === true ? "active" : "hidden"} flex justify-center`}>
+     <Toaster className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}></Toaster>
     </div>
 
       <div className="mt-18">
@@ -237,6 +238,8 @@ export default function Transactional() {
                 <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
                 cursor-pointer text-white py-2 rounded-md`}
                 onClick={() => {
+                   setisOpen(false);
+                   setnotifications(true);
                    HandleAddTransaction();
                 }} 
                 disabled={!amount || !getCategory || !date || loader}>
