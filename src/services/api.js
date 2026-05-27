@@ -55,16 +55,15 @@ export const AddTransactions = async (token, category, amount, descriptions, dat
     }
 }
 
-export const GetAlltransactions = async ( token ) => {
+export const GetAlltransactions = async ( token, pages ) => {
    try {
-      const response = await EndpointApi.get(`/Transaksi/v1/getAllTransaksi`, {
+      const response = await EndpointApi.get(`/Transaksi/v1/getAllTransaksi?page=${pages}&limit=5`, {
         headers: {
             authorization: `Bearer ${token}`, 
             "Content-Type": "application/json"
         }
       })
-       console.log(response);
-      return { response: response.data }
+      return { response: response }
    } catch (error) { 
         console.log(error);
    }

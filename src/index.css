@@ -10,9 +10,22 @@
  
 }
 
-.snackbars {
-  animation : notif 0.30s ease-out;
+.snackbar {
+  width: 100%;
+  height: 4px;
+  background-color: #22c55e;
+  transform-origin: left;
+  animation: notif 3s linear forwards;
+}
 
+@keyframes notif {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
 }
 
 .animations-spins{
@@ -20,22 +33,38 @@
   animation-duration: 4s; 
 }
 
-@keyframes notif {
-   0% {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.98);
-    width: 80%;
+.bellanimation {
+  display: inline-block;
+  transform-origin: top center;
+  animation: bellRing 0.8s ease-in-out;
+}
+
+@keyframes bellRing {
+  0% {
+    transform: rotate(0deg);
   }
-  50% {
-     opacity: 0.5; 
-     width: 40%;
+
+  20% {
+    transform: rotate(15deg);
   }
+
+  40% {
+    transform: rotate(-15deg);
+  }
+
+  60% {
+    transform: rotate(10deg);
+  }
+
+  80% {
+    transform: rotate(-10deg);
+  }
+
   100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    width: 10%;
+    transform: rotate(0deg);
   }
 }
+
 @keyframes dropdown {
   0% {
     opacity: 0;

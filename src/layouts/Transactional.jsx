@@ -33,6 +33,9 @@ export default function Transactional() {
   const [ loader, setloader ] = useState(false); 
   const [ notifications, setnotifications ] = useState(false);
 
+  // state Paginations 
+  const [ Page, setPage ] = useState([]); 
+
   const token = localStorage.getItem("Token"); 
 
   const handleClick = () => {
@@ -49,13 +52,21 @@ export default function Transactional() {
   }
 
   const HandleAddTransaction = async () => {
+
    const delay = (ms) => new Promise(res => setTimeout(res, ms));
    setloader(true);
+
     try {
+
       await Promise.all([
         AddTransactions(token, idCategory, amount, descriptions, date),
         delay(700) 
       ]);
+
+      setTimeout(() => {
+        setnotifications(false);
+      }, 2500); 
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -63,14 +74,26 @@ export default function Transactional() {
   }
   }
  
-  const getAlltransactions = async () => {
+  const getAlltransactions = async (pages) => {
      try {
-      const { response } = await GetAlltransactions(token); 
+
+      const { response } = await GetAlltransactions(token, pages); 
       setAllTransactions(response.data);
+      setPage(response.data.paginations); 
+
      } catch (error) {
        console.log(error); 
      }
   }
+
+  const handlePagination = async (page) => {
+     try {
+       const pages = await getAlltransactions(page);
+     } catch (error) {
+       console.log(error)
+     }
+  }
+
 
   useEffect(() => {
 
@@ -79,50 +102,10 @@ export default function Transactional() {
 
    }, [type, AllTransactions]);
 
-
-  const transactions = [
-    {
-      type: "income",
-      amount: "$4,200",
-      category: "Salary",
-      description: "Monthly salary",
-      date: "1/1/2024",
-    },
-    {
-      type: "expense",
-      amount: "$850",
-      category: "Food & Dining",
-      description: "Groceries and restaurants",
-      date: "1/2/2024",
-    },
-    {
-      type: "expense",
-      amount: "$420",
-      category: "Transportation",
-      description: "Gas and car maintenance",
-      date: "1/3/2024",
-    },
-    {
-      type: "expense",
-      amount: "$920",
-      category: "Bills & Utilities",
-      description: "Electricity, water, internet",
-      date: "1/4/2024",
-    },
-    {
-      type: "income",
-      amount: "$500",
-      category: "Freelance",
-      description: "Web design project",
-      date: "1/5/2024",
-    },
-  ];
-
-
+  
   // paginations 
   let data = []
-  const pages = [1,2,3,4,5];
-  for(let i = 1; i <= pages.length; i++){
+  for(let i = 1; i <= Page?.endPage; i++){
      data.push(i);
   }
 
@@ -130,8 +113,9 @@ export default function Transactional() {
 
   return (
     <>
-    <div className={`${notifications === true ? "active" : "hidden"} flex justify-center`}>
-     <Toaster className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}></Toaster>
+    <div className={`${ notifications === true ? "active" : "hidden"} flex justify-center`}>
+     <Toaster className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
+      stateNotif={() => setnotifications(false)}></Toaster>
     </div>
 
       <div className="mt-18">
@@ -148,7 +132,7 @@ export default function Transactional() {
                 </div>
               </div>
 
-              <div className="flex gap-x-4 items-center justify-between">
+           <div className="flex gap-x-4 items-center justify-between">
                   {/* Form create add */}
               <div className="w-1/2 ml-4 mt-4">
                  <label className="text-sm text-gray-600">Type</label>
@@ -183,9 +167,9 @@ export default function Transactional() {
                     className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
                     onChange={(e) => setamount(e.target.value)}/>
                 </div>
-              </div>
+           </div>
 
-              <div className="flex-wrap mr-4">
+           <div className="flex-wrap mr-4">
                  <div className="full ml-4 mt-4">
                  <label className="text-sm text-gray-600">Category</label>
                  <div className="relative w-full mt-1">
@@ -248,7 +232,7 @@ export default function Transactional() {
                 </button>
                 </div>
 
-              </div>
+           </div>
 
              </div>
           
@@ -269,7 +253,9 @@ export default function Transactional() {
               </p>
             </div>
 
-            <button onClick={() => setisOpen(true)} className="flex items-center gap-2 bg-blue-700  text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 hover:cursor-pointer">
+            <button onClick={() =>  {
+               setisOpen(true)
+            }} className="flex items-center gap-2 bg-blue-700  text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 hover:cursor-pointer">
               <GoPlus size={16} />
               Add Transaction
             </button>
@@ -293,7 +279,7 @@ export default function Transactional() {
 
               {/* TABLE BODY */}
               <tbody>
-                {AllTransactions?.slice(0, 6).map((item, index) => (
+                {AllTransactions?.data?.map((item, index) => (
                   <tr
                     key={index}
                     className="border-b  border-slate-400 last:border-none hover:bg-gray-50"
@@ -357,11 +343,11 @@ export default function Transactional() {
                         data.map((item) => {
                               return (
                                       <Pages 
-                                        ClassName={`px-4 py-2 bg-transparent text-slate-700 cursor-poin *:text-[18px]`}
-                                        Components={item}/>
+                                        ClassName={`px-4 py-2 bg-transparent text-slate-700 cursor-pointer *:text-[18px]`}
+                                        Components={item} HandleClick={() => handlePagination(item)}/>
                                     )
                                 })
-                      }/>
+                        }/>
         </div>
         <div className="flex justify-center mt-6 mb-3">
               <span className='text-gray-500 text-[12px]'> © 2026 Dana-Cermat. All Rights Reserved. Designed & Developed by Raffy_samaa.</span>
