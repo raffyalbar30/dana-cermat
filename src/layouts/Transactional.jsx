@@ -35,6 +35,8 @@ export default function Transactional() {
 
   // state Paginations 
   const [ Page, setPage ] = useState([]); 
+  const [ active, setactive ] = useState();
+  const [ nextPage, setnextPage ] = useState(1);
 
   const token = localStorage.getItem("Token"); 
 
@@ -94,13 +96,34 @@ export default function Transactional() {
      }
   }
 
+   
+
+  const handleNextPages = async () => {
+     if(nextPage === Page?.endPage) {
+      return;
+     }
+     setnextPage(() => nextPage + 1);
+       try {
+         const pages = await getAlltransactions(nextPage);
+       } catch (error) {
+         console.log(error)
+       }
+  }
+
+  const handlePrevPages = async () => {
+       if(nect)
+      setnextPage(nextPage - 1);
+       try {
+         const pages = await getAlltransactions(nextPage);
+       } catch (error) {
+         console.log(error)
+       }
+  }
 
   useEffect(() => {
-
     Category();
     getAlltransactions();
-
-   }, [type, AllTransactions]);
+   }, [type]);
 
   
   // paginations 
@@ -337,7 +360,8 @@ export default function Transactional() {
         </div>
         <div>
               <Paginations   
-                  ClassNext={`px-3 py-3 text-[14px] cursor-pointer`}
+                  ClassNext={`px-3 py-3 text-[14px] cursor-pointer ${nextPage === Page.endPage ? "hidden" : "active"}`}
+                  NextPage={() => handleNextPages()}
                   ClassPrev={`px-3 py-3 text-[14px] cursor-pointer`}
                       Page={
                         data.map((item) => {
