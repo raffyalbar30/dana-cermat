@@ -234,7 +234,7 @@ const TablePengeluaran = () => {
                             ClassName={`px-4 py-2 ${item === current ? `rounded-lg text-slate-50 bg-[#3F47F4] cursor-pointer`
                                : `bg-transparent text-slate-700 cursor-pointer`} 
                              text-[18px]`} 
-                             disable={item === current}
+                            disable={item === current}
                             Components={item}/>
                         )
                     })

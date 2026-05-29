@@ -96,41 +96,52 @@ export default function Transactional() {
      }
   }
 
-   
-
-  const handleNextPages = async () => {
-     if(nextPage === Page?.endPage) {
+     
+ const handleNextPages = async () => {
+   if (Page.pages >= Page?.endPage) {
       return;
-     }
-     setnextPage(() => nextPage + 1);
-       try {
-         const pages = await getAlltransactions(nextPage);
-       } catch (error) {
-         console.log(error)
-       }
-  }
+   }
+
+   const newPage = Page.pages + 1;
+
+   setnextPage(newPage);
+
+   try {
+      await getAlltransactions(newPage);
+   } catch (error) {
+      console.log(error);
+   }
+ };
 
   const handlePrevPages = async () => {
-       if(nect)
-      setnextPage(nextPage - 1);
-       try {
-         const pages = await getAlltransactions(nextPage);
-       } catch (error) {
-         console.log(error)
-       }
+   if (Page.pages <= 1 ) {
+      return;
+   }
+
+   const newPage = Page.pages - 1;
+
+   setnextPage(newPage);
+
+   try {
+      await getAlltransactions(newPage);
+   } catch (error) {
+      console.log(error);
+   }
+
   }
 
-  useEffect(() => {
-    Category();
-    getAlltransactions();
-   }, [type]);
-
-  
   // paginations 
   let data = []
   for(let i = 1; i <= Page?.endPage; i++){
      data.push(i);
   }
+
+
+
+  useEffect(() => {
+    Category();
+    getAlltransactions();
+   }, [type]);
 
  
 
@@ -360,18 +371,19 @@ export default function Transactional() {
         </div>
         <div>
               <Paginations   
-                  ClassNext={`px-3 py-3 text-[14px] cursor-pointer ${nextPage === Page.endPage ? "hidden" : "active"}`}
+                  ClassNext={`px-3 py-3 text-[14px] cursor-pointer ${Page.pages === Page.endPage ? "hidden" : "active"}`}
+                  ClassPrev={`px-3 py-3 text-[14px] cursor-pointer ${Page.pages === 1 ? "hidden" : "active"}`}
                   NextPage={() => handleNextPages()}
-                  ClassPrev={`px-3 py-3 text-[14px] cursor-pointer`}
+                  PrevPage={() => handlePrevPages()}
                       Page={
                         data.map((item) => {
                               return (
                                       <Pages 
-                                        ClassName={`px-4 py-2 bg-transparent text-slate-700 cursor-pointer *:text-[18px]`}
+                                        ClassName={`${item === Page.pages ? "bg-blue-700 text-white" : "bg-transparent text-slate-700"} px-4 py-2  cursor-pointer text-[18px] rounded-md`}
                                         Components={item} HandleClick={() => handlePagination(item)}/>
                                     )
                                 })
-                        }/>
+                }/>
         </div>
         <div className="flex justify-center mt-6 mb-3">
               <span className='text-gray-500 text-[12px]'> © 2026 Dana-Cermat. All Rights Reserved. Designed & Developed by Raffy_samaa.</span>
