@@ -98,7 +98,7 @@ export default function Transactional() {
 
      
  const handleNextPages = async () => {
-   if (Page.pages >= Page?.endPage) {
+   if (Page.pages === Page?.endPage) {
       return;
    }
 
