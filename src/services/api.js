@@ -68,3 +68,27 @@ export const GetAlltransactions = async ( token, pages ) => {
         console.log(error);
    }
 }
+
+export const Renametransactions = async (item) => {
+   try {
+      const response = await EndpointApi.patch(`/Transaksi/v1/renameTransaksi`, 
+        item
+      )
+      return { response : response}
+   } catch (error) {
+      console.log(error);
+   }
+}
+
+
+export const Dellatetransactions = async ( id ) => {
+    try {
+        const response = await EndpointApi.post(`/Transaksi/v1/dellateTransaksi`, {
+            idtransactions: id,
+        })
+
+       return { response: response }
+    } catch (error) {
+        console.log(error);
+    }
+}

@@ -5,7 +5,7 @@ import Paginations from "./Paginations";
 import Pages from "../component/Pages";
 import { useEffect, useState } from "react";
 import Modal from "../component/Modal";
-import { AddTransactions, FormTransaksi, GetAlltransactions } from "../services/api";
+import { AddTransactions, Dellatetransactions, FormTransaksi, GetAlltransactions, Renametransactions } from "../services/api";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Toaster from "../component/Toaster";
 
@@ -38,20 +38,24 @@ export default function Transactional() {
   const [ active, setactive ] = useState();
   const [ nextPage, setnextPage ] = useState(1);
 
+  // state update transactions 
+  const [ update, setupdate ] = useState(false); 
+  const [ typeUpdate, settypeUpdate ] = useState([]);
+
   const token = localStorage.getItem("Token"); 
 
   const handleClick = () => {
     setisOpen(true);
-  }
+  };
 
-  const Category = async () => {
+  const Category = async (data) => {
   try {
-    const { response } = await FormTransaksi(type);
+    const { response } = await FormTransaksi(data);
     setGetCategory(response.data);
   } catch (error) {
     console.log(error);
   }
-  }
+  };
 
   const HandleAddTransaction = async () => {
 
@@ -74,7 +78,7 @@ export default function Transactional() {
     } finally {
       setloader(false);
   }
-  }
+  };
  
   const getAlltransactions = async (pages) => {
      try {
@@ -86,7 +90,7 @@ export default function Transactional() {
      } catch (error) {
        console.log(error); 
      }
-  }
+  };
 
   const handlePagination = async (page) => {
      try {
@@ -94,7 +98,7 @@ export default function Transactional() {
      } catch (error) {
        console.log(error)
      }
-  }
+  };
 
      
  const handleNextPages = async () => {
@@ -113,7 +117,7 @@ export default function Transactional() {
    }
  };
 
-  const handlePrevPages = async () => {
+ const handlePrevPages = async () => {
    if (Page.pages <= 1 ) {
       return;
    }
@@ -128,7 +132,37 @@ export default function Transactional() {
       console.log(error);
    }
 
+ };
+
+ const renametransactions = (amount, descriptions, namecategories, idtransaction) => {
+  const item = {
+        idtransaction: idtransaction,
+        namecategories: namecategories, 
+        amount : amount, 
+        descriptions: descriptions,
+     }
+  try {
+    const { response } = Renametransactions(item);
+    console.log(response); 
+  } catch (error) {
+    console.log(error);
   }
+   setupdate(true);
+   console.log(id_transaction); 
+   console.log(amount); 
+ }; 
+ 
+
+
+ const dellatetransactions = async (id) => {
+   try {
+     const { response } = await Dellatetransactions(id); 
+     console.log(response);
+   } catch (error) {
+     console.log(error);
+   }
+ }
+
 
   // paginations 
   let data = []
@@ -136,14 +170,12 @@ export default function Transactional() {
      data.push(i);
   }
 
-
-
   useEffect(() => {
-    Category();
+    Category(type);
     getAlltransactions();
+    renametransactions();
    }, [type]);
-
- 
+  
 
   return (
     <>
@@ -151,10 +183,119 @@ export default function Transactional() {
      <Toaster className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
       stateNotif={() => setnotifications(false)}></Toaster>
     </div>
-
+      
+      {/* Modal transactions */}
       <div className="mt-18">
-        <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
-         children={
+       {
+          update === true ? 
+          <Modal isOpen={update} handleClick={handleClick} setisOpen={setupdate}
+          children={
+             <div className={`transition-all ${update === true ? "dropdown" : "dropdownout"}`}>
+              <div className="flex justify-between"> 
+                <div className="ml-4 mt-4"> 
+                    <h2 className="text-lg font-semibold">Update Transaction</h2>
+                      <p className="text-sm text-gray-500"> Update new income or expanses ur transactions</p>
+                </div>
+                <div className="mr-4 mt-4">
+                    <button onClick={() => setupdate(false)}  className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
+                </div>
+              </div>
+
+           <div className="flex gap-x-4 items-center justify-between">
+            
+            {/* Form create add */}
+              <div className="w-1/2 ml-4 mt-4">
+                 <label className="text-sm text-gray-600">Type</label>
+                 <div className="relative w-full mt-1">
+                  <button onClick={() => setdropdowntype(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50"
+                    disabled={update === true}>
+                    <span className="text-slate-600">{type}</span>
+                  </button>
+                 </div>
+               </div>
+
+                <div className="w-1/2 mr-4 mt-4">
+                  <label className="text-sm text-gray-600">Amount</label>
+                  <input
+                    type="number"
+                    placeholder="Masukan jumlah nominal"
+                    className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                    onChange={(e) => setamount(e.target.value)}/>
+                </div>
+           </div>
+
+           <div className="flex-wrap mr-4">
+                 <div className="full ml-4 mt-4">
+                 <label className="text-sm text-gray-600">Category</label>
+                 <div className="relative w-full mt-1">
+                  <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                    {!nameCategoris ? "Pilih Category" : nameCategoris}
+                    <span> <IoMdArrowDropdown/> </span>
+                  </button>
+                      <ul  className={`${ dropdownCategory === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                           {
+                             getCategory?.map((items) => {
+                                 return (
+                                  <li data-value={items?.name_categories} onClick={(e) => {
+                                    setdropdownCategory(false)
+                                    setidCategory(items?.categories_id)
+                                    setnameCategories(e.target.dataset.value); 
+                                    }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        {items?.name_categories}
+                                  </li>
+                                 );
+                             })
+                           }
+                      </ul>
+                 </div>
+               </div>
+
+               {/* Date */}
+              <diV className="mr-4">
+                  <div className="w-full ml-4 mt-4">
+                    <label className="text-sm text-gray-600">Date</label>
+                    <input
+                      type="date"
+                      className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                      onChange={(e) => setdate(e.target.value)}/>
+                  </div>
+              </diV>
+
+              {/* Descriptions */}
+              <div className="mr-4">
+                  <div className="w-full ml-4 mt-4">
+                    <label className="text-sm text-gray-600">Description</label>
+                    <textarea
+                      type="text"
+                      className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                      placeholder="Masukan deskripsi disini"
+                      onChange={(e) =>  setdescriptions(e.target.value)}/>
+                  </div>
+              </div>
+              
+              <div className="mr-4">
+                <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
+                cursor-pointer text-white py-2 rounded-md`}
+                onClick={() => {
+                   setisOpen(false);
+                   setnotifications(true);
+                   HandleAddTransaction();
+                }} 
+                disabled={!amount || !getCategory || !date || loader}>
+                {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
+                     <span> update Transaction </span>
+                </button>
+                </div>
+
+           </div>
+
+           </div>
+          
+         }/>  : 
+
+        //  add transactions 
+         <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
+          children={
              <div className={`transition-all ${isOpen === true ? "dropdown" : "dropdownout"}`}>
               <div className="flex justify-between"> 
                 <div className="ml-4 mt-4"> 
@@ -268,11 +409,17 @@ export default function Transactional() {
 
            </div>
 
-             </div>
+           </div>
           
-         }/>
+         }/>  
+          
+
+
+       }
       </div>
 
+      {/* Modal rename transactions */}
+      
       {/* Table transcations */}
       <div className="relative z-0">
         <div className="bg-white rounded-xl shadow-sm p-6 w-full border-slate-200 border">
@@ -354,11 +501,13 @@ export default function Transactional() {
 
                     {/* ACTIONS */}
                     <td className="flex justify-end gap-2 py-3">
-                      <button className="p-2 border rounded-md hover:bg-gray-100">
+                      <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer" 
+                       onClick={() => renametransactions(item.id_transaction, item.amount, item.descriptions, item.id_categories)}>
                         <PiNotePencil size={14} />
                       </button>
 
-                      <button className="p-2 border rounded-md hover:bg-gray-100">
+                      <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
+                      onClick={() => dellatetransactions(item.id_transaction)}>
                         <IoTrashOutline size={14} />
                       </button>
                     </td>
@@ -375,8 +524,8 @@ export default function Transactional() {
                   ClassPrev={`px-3 py-3 text-[14px] cursor-pointer ${Page.pages === 1 ? "hidden" : "active"}`}
                   NextPage={() => handleNextPages()}
                   PrevPage={() => handlePrevPages()}
-                      Page={
-                        data.map((item) => {
+                  Page={
+                       data.map((item) => {
                               return (
                                       <Pages 
                                         ClassName={`${item === Page.pages ? "bg-blue-700 text-white" : "bg-transparent text-slate-700"} px-4 py-2  cursor-pointer text-[18px] rounded-md`}
