@@ -142,14 +142,12 @@ export default function Transactional() {
         descriptions: descriptions,
      }
   try {
-    const { response } = Renametransactions(item);
-    console.log(response); 
+    // const { response } = Renametransactions(item);
+    // console.log(response); 
   } catch (error) {
     console.log(error);
   }
-   setupdate(true);
-   console.log(id_transaction); 
-   console.log(amount); 
+   setupdate(true); 
  }; 
  
 
