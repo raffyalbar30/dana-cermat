@@ -40,7 +40,9 @@ export default function Transactional() {
 
   // state update transactions 
   const [ update, setupdate ] = useState(false); 
-  const [ typeUpdate, settypeUpdate ] = useState([]);
+  const [ typeUpdate, settypeUpdate ] = useState("");
+  const [ renameCategory, setrenameCategory ] = useState([]);
+  const [ itemsRename, setitemsRename ] = useState([]);
 
   const token = localStorage.getItem("Token"); 
 
@@ -134,23 +136,33 @@ export default function Transactional() {
 
  };
 
- const renametransactions = (amount, descriptions, namecategories, idtransaction) => {
+ const renametransactions = (
+  id_transaction, 
+  type_categories, 
+  name_categories, 
+  amount, 
+  descriptions) => {
+
   const item = {
-        idtransaction: idtransaction,
-        namecategories: namecategories, 
+        idtransaction: id_transaction,
+        namecategories: type_categories, 
+        namescategori : name_categories, 
         amount : amount, 
         descriptions: descriptions,
-     }
-  try {
-    // const { response } = Renametransactions(item);
-    // console.log(response); 
-  } catch (error) {
-    console.log(error);
-  }
-   setupdate(true); 
+   }
+   settypeUpdate(type_categories);
+   setitemsRename(item);
+  
  }; 
  
-
+ const getrenamecategory = async () => {
+    try {
+      const { response } = await FormTransaksi(typeUpdate);
+      setrenameCategory(response.data);
+    } catch (error) {
+       console.log(error);
+    }
+ }
 
  const dellatetransactions = async (id) => {
    try {
@@ -161,6 +173,7 @@ export default function Transactional() {
    }
  }
 
+ console.log(renameCategory); 
 
   // paginations 
   let data = []
@@ -169,11 +182,16 @@ export default function Transactional() {
   }
 
   useEffect(() => {
+
     Category(type);
     getAlltransactions();
     renametransactions();
+
    }, [type]);
   
+   useEffect(() => {
+     getrenamecategory();
+   }, [typeUpdate]);
 
   return (
     <>
@@ -185,7 +203,8 @@ export default function Transactional() {
       {/* Modal transactions */}
       <div className="mt-18">
        {
-          update === true ? 
+          update === true ? (
+          // Modal rename transactions 
           <Modal isOpen={update} handleClick={handleClick} setisOpen={setupdate}
           children={
              <div className={`transition-all ${update === true ? "dropdown" : "dropdownout"}`}>
@@ -207,7 +226,7 @@ export default function Transactional() {
                  <div className="relative w-full mt-1">
                   <button onClick={() => setdropdowntype(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50"
                     disabled={update === true}>
-                    <span className="text-slate-600">{type}</span>
+                    <span className="text-slate-600">{typeUpdate}</span>
                   </button>
                  </div>
                </div>
@@ -217,8 +236,13 @@ export default function Transactional() {
                   <input
                     type="number"
                     placeholder="Masukan jumlah nominal"
+                    value={50000}
                     className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                    onChange={(e) => setamount(e.target.value)}/>
+                    onChange={(e) => setamount({
+                      ...itemsRename,
+                      amount: e.target.value,
+                     })}
+                    />
                 </div>
            </div>
 
@@ -227,12 +251,12 @@ export default function Transactional() {
                  <label className="text-sm text-gray-600">Category</label>
                  <div className="relative w-full mt-1">
                   <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                    {!nameCategoris ? "Pilih Category" : nameCategoris}
+                    {!nameCategoris ? itemsRename.namescategori : nameCategoris}
                     <span> <IoMdArrowDropdown/> </span>
                   </button>
                       <ul  className={`${ dropdownCategory === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
                            {
-                             getCategory?.map((items) => {
+                             renameCategory?.map((items) => {
                                  return (
                                   <li data-value={items?.name_categories} onClick={(e) => {
                                     setdropdownCategory(false)
@@ -289,134 +313,131 @@ export default function Transactional() {
 
            </div>
           
-         }/>  : 
-
-        //  add transactions 
-         <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
-          children={
-             <div className={`transition-all ${isOpen === true ? "dropdown" : "dropdownout"}`}>
-              <div className="flex justify-between"> 
-                <div className="ml-4 mt-4"> 
-                    <h2 className="text-lg font-semibold">Add New Transaction</h2>
-                      <p className="text-sm text-gray-500"> Add a new income or expense transaction.</p>
+            }/> 
+           ) : ( isOpen === true ? ( 
+          // Modal add transactions 
+          <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
+            children={
+              <div className={`transition-all ${isOpen === true ? "dropdown" : "dropdownout"}`}>
+                <div className="flex justify-between"> 
+                  <div className="ml-4 mt-4"> 
+                      <h2 className="text-lg font-semibold">Add New Transaction</h2>
+                        <p className="text-sm text-gray-500"> Add a new income or expense transaction.</p>
+                  </div>
+                  <div className="mr-4 mt-4">
+                      <button onClick={() => setisOpen(false)}  className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
+                  </div>
                 </div>
-                <div className="mr-4 mt-4">
-                    <button onClick={() => setisOpen(false)}  className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
+
+            <div className="flex gap-x-4 items-center justify-between">
+                    {/* Form create add */}
+                <div className="w-1/2 ml-4 mt-4">
+                  <label className="text-sm text-gray-600">Type</label>
+                  <div className="relative w-full mt-1">
+                    <button onClick={() => setdropdowntype(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                      <span>{type}</span>
+                      <span> <IoMdArrowDropdown/> </span>
+                    </button>
+                    <ul className={`${dropdowntype === true ? "dropdown"  : "hidden"}  absolute 
+                      left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                      <li data-value="Income" onClick={(e) => {
+                          setdropdowntype(false), 
+                          settype(e.target.dataset.value);
+                      }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                        Income <span>💰</span>
+                      </li>
+                      <li data-value="Expanses" onClick={(e) => {
+                        setdropdowntype(false), 
+                        settype(e.target.dataset.value)
+                        }} className="px-4 py-2 hover:bg-gray-100 flex justify-between cursor-pointer">
+                        Expense <span>💸</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
 
-           <div className="flex gap-x-4 items-center justify-between">
-                  {/* Form create add */}
-              <div className="w-1/2 ml-4 mt-4">
-                 <label className="text-sm text-gray-600">Type</label>
-                 <div className="relative w-full mt-1">
-                  <button onClick={() => setdropdowntype(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                    <span>{type}</span>
-                    <span> <IoMdArrowDropdown/> </span>
-                  </button>
-                  <ul className={`${dropdowntype === true ? "dropdown"  : "hidden"}  absolute 
-                     left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
-                    <li data-value="Income" onClick={(e) => {
-                         setdropdowntype(false), 
-                         settype(e.target.dataset.value);
-                    }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
-                      Income <span>💰</span>
-                    </li>
-                    <li data-value="Expanses" onClick={(e) => {
-                      setdropdowntype(false), 
-                      settype(e.target.dataset.value)
-                      }} className="px-4 py-2 hover:bg-gray-100 flex justify-between cursor-pointer">
-                      Expense <span>💸</span>
-                    </li>
-                  </ul>
-                 </div>
-               </div>
-
-                <div className="w-1/2 mr-4 mt-4">
-                  <label className="text-sm text-gray-600">Amount</label>
-                  <input
-                    type="number"
-                    placeholder="Masukan jumlah nominal"
-                    className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                    onChange={(e) => setamount(e.target.value)}/>
-                </div>
-           </div>
-
-           <div className="flex-wrap mr-4">
-                 <div className="full ml-4 mt-4">
-                 <label className="text-sm text-gray-600">Category</label>
-                 <div className="relative w-full mt-1">
-                  <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                    {!nameCategoris ? "Pilih Category" : nameCategoris}
-                    <span> <IoMdArrowDropdown/> </span>
-                  </button>
-                      <ul  className={`${ dropdownCategory === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
-                           {
-                             getCategory?.map((items) => {
-                                 return (
-                                  <li data-value={items?.name_categories} onClick={(e) => {
-                                    setdropdownCategory(false)
-                                    setidCategory(items?.categories_id)
-                                    setnameCategories(e.target.dataset.value); 
-                                    }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
-                                        {items?.name_categories}
-                                  </li>
-                                 );
-                             })
-                           }
-                      </ul>
-                 </div>
-               </div>
-
-               {/* Date */}
-              <diV className="mr-4">
-                  <div className="w-full ml-4 mt-4">
-                    <label className="text-sm text-gray-600">Date</label>
+                  <div className="w-1/2 mr-4 mt-4">
+                    <label className="text-sm text-gray-600">Amount</label>
                     <input
-                      type="date"
+                      type="number"
+                      placeholder="Masukan jumlah nominal"
                       className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                      onChange={(e) => setdate(e.target.value)}/>
+                      onChange={(e) => setamount(e.target.value)}/>
                   </div>
-              </diV>
+            </div>
 
-              {/* Descriptions */}
-              <div className="mr-4">
-                  <div className="w-full ml-4 mt-4">
-                    <label className="text-sm text-gray-600">Description</label>
-                    <textarea
-                      type="text"
-                      className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                      placeholder="Masukan deskripsi disini"
-                      onChange={(e) =>  setdescriptions(e.target.value)}/>
+            <div className="flex-wrap mr-4">
+                  <div className="full ml-4 mt-4">
+                  <label className="text-sm text-gray-600">Category</label>
+                  <div className="relative w-full mt-1">
+                    <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                      {!nameCategoris ? "Pilih Category" : nameCategoris}
+                      <span> <IoMdArrowDropdown/> </span>
+                    </button>
+                        <ul  className={`${ dropdownCategory === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                            {
+                              getCategory?.map((items) => {
+                                  return (
+                                    <li data-value={items?.name_categories} onClick={(e) => {
+                                      setdropdownCategory(false)
+                                      setidCategory(items?.categories_id)
+                                      setnameCategories(e.target.dataset.value); 
+                                      }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                          {items?.name_categories}
+                                    </li>
+                                  );
+                              })
+                            }
+                        </ul>
                   </div>
-              </div>
-              
-              <div className="mr-4">
-                <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
-                cursor-pointer text-white py-2 rounded-md`}
-                onClick={() => {
-                   setisOpen(false);
-                   setnotifications(true);
-                   HandleAddTransaction();
-                }} 
-                disabled={!amount || !getCategory || !date || loader}>
-                {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
-                     <span> Add Transaction </span>
-                </button>
                 </div>
 
-           </div>
+                {/* Date */}
+                <diV className="mr-4">
+                    <div className="w-full ml-4 mt-4">
+                      <label className="text-sm text-gray-600">Date</label>
+                      <input
+                        type="date"
+                        className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                        onChange={(e) => setdate(e.target.value)}/>
+                    </div>
+                </diV>
 
-           </div>
-          
-         }/>  
-          
+                {/* Descriptions */}
+                <div className="mr-4">
+                    <div className="w-full ml-4 mt-4">
+                      <label className="text-sm text-gray-600">Description</label>
+                      <textarea
+                        type="text"
+                        className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                        placeholder="Masukan deskripsi disini"
+                        onChange={(e) =>  setdescriptions(e.target.value)}/>
+                    </div>
+                </div>
+                
+                <div className="mr-4">
+                  <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
+                  cursor-pointer text-white py-2 rounded-md`}
+                  onClick={() => {
+                    setisOpen(false);
+                    setnotifications(true);
+                    HandleAddTransaction();
+                  }} 
+                  disabled={!amount || !getCategory || !date || loader}>
+                  {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
+                      <span> Add Transaction </span>
+                  </button>
+                  </div>
 
+            </div>
 
+            </div>
+            
+          }/>  
+
+          ): null )
        }
       </div>
-
-      {/* Modal rename transactions */}
       
       {/* Table transcations */}
       <div className="relative z-0">
@@ -500,7 +521,16 @@ export default function Transactional() {
                     {/* ACTIONS */}
                     <td className="flex justify-end gap-2 py-3">
                       <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer" 
-                       onClick={() => renametransactions(item.id_transaction, item.amount, item.descriptions, item.id_categories)}>
+                       onClick={() => { 
+                           setupdate(true); 
+                           renametransactions(
+
+                            item.id_transaction, 
+                            item.type_categories, 
+                            item.name_categories, 
+                            item.amount, 
+                            item.descriptions);
+                        }}>
                         <PiNotePencil size={14} />
                       </button>
 
