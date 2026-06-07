@@ -103,57 +103,66 @@ export default function Transactional() {
   };
 
      
- const handleNextPages = async () => {
-   if (Page.pages === Page?.endPage) {
-      return;
-   }
+  const handleNextPages = async () => {
+      if (Page.pages === Page?.endPage) {
+          return;
+      }
 
-   const newPage = Page.pages + 1;
+      const newPage = Page.pages + 1;
 
-   setnextPage(newPage);
+      setnextPage(newPage);
 
-   try {
-      await getAlltransactions(newPage);
-   } catch (error) {
-      console.log(error);
-   }
- };
+      try {
+          await getAlltransactions(newPage);
+      } catch (error) {
+          console.log(error);
+      }
+  };
 
- const handlePrevPages = async () => {
-   if (Page.pages <= 1 ) {
-      return;
-   }
+  const handlePrevPages = async () => {
+      if (Page.pages <= 1 ) {
+          return;
+      }
 
-   const newPage = Page.pages - 1;
+      const newPage = Page.pages - 1;
 
-   setnextPage(newPage);
+      setnextPage(newPage);
 
-   try {
-      await getAlltransactions(newPage);
-   } catch (error) {
-      console.log(error);
-   }
+      try {
+          await getAlltransactions(newPage);
+      } catch (error) {
+          console.log(error);
+      }
 
- };
+  };
 
  const renametransactions = (
   id_transaction, 
   type_categories, 
   name_categories, 
   amount, 
-  descriptions) => {
+  descriptions,
+  created_at) => {
 
   const item = {
         idtransaction: id_transaction,
-        namecategories: type_categories, 
+        typecategories: type_categories, 
         namescategori : name_categories, 
         amount : amount, 
+        date : created_at, 
         descriptions: descriptions,
    }
    settypeUpdate(type_categories);
    setitemsRename(item);
+   setamount(amount);
+   setdescriptions(descriptions);
+   setdate(created_at);
+
   
+   
  }; 
+ 
+ 
  
  const getrenamecategory = async () => {
     try {
@@ -173,7 +182,6 @@ export default function Transactional() {
    }
  }
 
- console.log(renameCategory); 
 
   // paginations 
   let data = []
@@ -236,18 +244,15 @@ export default function Transactional() {
                   <input
                     type="number"
                     placeholder="Masukan jumlah nominal"
-                    value={50000}
+                    value={amount}
                     className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                    onChange={(e) => setamount({
-                      ...itemsRename,
-                      amount: e.target.value,
-                     })}
+                    onChange={(e) => setamount(e.target.value)}
                     />
                 </div>
            </div>
 
            <div className="flex-wrap mr-4">
-                 <div className="full ml-4 mt-4">
+             <div className="full ml-4 mt-4">
                  <label className="text-sm text-gray-600">Category</label>
                  <div className="relative w-full mt-1">
                   <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
@@ -278,6 +283,9 @@ export default function Transactional() {
                     <label className="text-sm text-gray-600">Date</label>
                     <input
                       type="date"
+                      value={ date ? 
+                        `${new Date(date).getFullYear()}-${String(new Date(date).getMonth() + 1)
+                        .padStart(2, "0")}-${String(new Date(date).getDate()).padStart(2, "0")}`: ""}
                       className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
                       onChange={(e) => setdate(e.target.value)}/>
                   </div>
@@ -289,6 +297,7 @@ export default function Transactional() {
                     <label className="text-sm text-gray-600">Description</label>
                     <textarea
                       type="text"
+                      value={descriptions}
                       className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
                       placeholder="Masukan deskripsi disini"
                       onChange={(e) =>  setdescriptions(e.target.value)}/>
@@ -529,7 +538,8 @@ export default function Transactional() {
                             item.type_categories, 
                             item.name_categories, 
                             item.amount, 
-                            item.descriptions);
+                            item.descriptions, 
+                            item.created_at);
                         }}>
                         <PiNotePencil size={14} />
                       </button>
