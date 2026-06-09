@@ -40,9 +40,10 @@ export default function Transactional() {
 
   // state update transactions 
   const [ update, setupdate ] = useState(false); 
-  const [ typeUpdate, settypeUpdate ] = useState("");
+  const [ Renametypecategories, setRenametypecategories ] = useState("");
   const [ renameCategory, setrenameCategory ] = useState([]);
-  const [ itemsRename, setitemsRename ] = useState([]);
+  const [ RenameNameCategoris, setRenameNameCategoris ] = useState();
+  const [ RenameIdTransactions, setRenameRenameIdTransactions ] = useState();
 
   const token = localStorage.getItem("Token"); 
 
@@ -136,40 +137,53 @@ export default function Transactional() {
 
   };
 
- const renametransactions = (
-  id_transaction, 
-  type_categories, 
-  name_categories, 
-  amount, 
-  descriptions,
-  created_at) => {
-
-  const item = {
-        idtransaction: id_transaction,
-        typecategories: type_categories, 
-        namescategori : name_categories, 
-        amount : amount, 
-        date : created_at, 
-        descriptions: descriptions,
-   }
-   settypeUpdate(type_categories);
-   setitemsRename(item);
-   setamount(amount);
-   setdescriptions(descriptions);
-   setdate(created_at);
-
-  
-   
- }; 
- 
- 
- 
  const getrenamecategory = async () => {
     try {
-      const { response } = await FormTransaksi(typeUpdate);
+      const { response } = await FormTransaksi(Renametypecategories);
       setrenameCategory(response.data);
     } catch (error) {
        console.log(error);
+    }
+ }
+
+ const renametransactions = async (
+  id_transaction, 
+  type_categories, 
+  name_categories,  
+  amount, 
+  descriptions,
+  created_at) => {
+  
+
+   console.log(id_transaction);
+
+   setRenameRenameIdTransactions(id_transaction);
+   setRenametypecategories(type_categories);
+   setRenameNameCategoris(name_categories);
+   setamount(amount);
+   setdescriptions(descriptions);
+   setdate(created_at);
+  
+ }; 
+ 
+ const updateRenametransactions = async () => {
+   
+    try {
+     if (!RenameIdTransactions) {
+      console.log("ID transaksi belum ada");
+      return;
+    }
+
+     const { response } = await Renametransactions(
+      RenameIdTransactions,
+      Renametypecategories || "",
+      RenameNameCategoris || "",
+      amount || 0,
+      date || null,
+      descriptions || ""); 
+
+    } catch (error) {
+      console.log(error);
     }
  }
 
@@ -182,6 +196,7 @@ export default function Transactional() {
    }
  }
 
+ console.log(AllTransactions);
 
   // paginations 
   let data = []
@@ -190,16 +205,19 @@ export default function Transactional() {
   }
 
   useEffect(() => {
-
     Category(type);
     getAlltransactions();
     renametransactions();
-
-   }, [type]);
+    
+  }, [type]);
   
-   useEffect(() => {
-     getrenamecategory();
-   }, [typeUpdate]);
+  useEffect(() => {
+    getrenamecategory();
+  }, [Renametypecategories]);
+
+  useEffect(() => {
+    updateRenametransactions();
+  }, [RenameIdTransactions])
 
   return (
     <>
@@ -234,7 +252,7 @@ export default function Transactional() {
                  <div className="relative w-full mt-1">
                   <button onClick={() => setdropdowntype(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50"
                     disabled={update === true}>
-                    <span className="text-slate-600">{typeUpdate}</span>
+                    <span className="text-slate-600">{Renametypecategories}</span>
                   </button>
                  </div>
                </div>
@@ -256,7 +274,7 @@ export default function Transactional() {
                  <label className="text-sm text-gray-600">Category</label>
                  <div className="relative w-full mt-1">
                   <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                    {!nameCategoris ? itemsRename.namescategori : nameCategoris}
+                    {!nameCategoris ? RenameNameCategoris : nameCategoris}
                     <span> <IoMdArrowDropdown/> </span>
                   </button>
                       <ul  className={`${ dropdownCategory === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
@@ -308,9 +326,7 @@ export default function Transactional() {
                 <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
                 cursor-pointer text-white py-2 rounded-md`}
                 onClick={() => {
-                   setisOpen(false);
-                   setnotifications(true);
-                   HandleAddTransaction();
+                  updateRenametransactions();
                 }} 
                 disabled={!amount || !getCategory || !date || loader}>
                 {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
@@ -533,7 +549,6 @@ export default function Transactional() {
                        onClick={() => { 
                            setupdate(true); 
                            renametransactions(
-
                             item.id_transaction, 
                             item.type_categories, 
                             item.name_categories, 

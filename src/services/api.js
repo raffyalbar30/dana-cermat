@@ -69,10 +69,25 @@ export const GetAlltransactions = async ( token, pages ) => {
    }
 }
 
-export const Renametransactions = async (item) => {
+export const Renametransactions = async (
+    RenameIdTransactions,
+    Renametypecategories, 
+    RenameNameCategoris, 
+    amount, 
+    date,
+    descriptions) => {
    try {
       const response = await EndpointApi.patch(`/Transaksi/v1/renameTransaksi`, 
-        item
+        {
+           
+        idtransaction: RenameIdTransactions,
+        typecategories: Renametypecategories, 
+        namescategori : RenameNameCategoris, 
+        amount : amount, 
+        date : date, 
+        descriptions: descriptions
+,
+        }
       )
       return { response : response}
    } catch (error) {
