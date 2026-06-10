@@ -1,11 +1,11 @@
 import React from 'react';
 
-const LoaderPage = () => {
+const LoaderPage = ({className}) => {
     return (
-        <div className="flex justify-between items-center">
+        <div className={`flex justify-between items-center`}>
         <div></div>
-        <div className='animate-pulse w-1/3 mr-8'>
-            <div class="size-4 rounded-sm bg-slate-200 w-full"></div>
+        <div className={` animate-pulse w-full`}>
+            <div className={`size-4 rounded-sm ${className} bg-slate-200 w-full`}></div>
         </div>
         </div>
     );

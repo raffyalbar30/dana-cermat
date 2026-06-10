@@ -8,6 +8,7 @@ import Modal from "../component/Modal";
 import { AddTransactions, Dellatetransactions, FormTransaksi, GetAlltransactions, Renametransactions } from "../services/api";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Toaster from "../component/Toaster";
+import LoaderPage from "../component/LoaderPage";
 
 
 
@@ -46,6 +47,7 @@ export default function Transactional() {
   const [ RenameIdTransactions, setRenameRenameIdTransactions ] = useState();
 
   const token = localStorage.getItem("Token"); 
+
 
   const handleClick = () => {
     setisOpen(true);
@@ -108,6 +110,12 @@ export default function Transactional() {
       if (Page.pages === Page?.endPage) {
           return;
       }
+      
+      setTimeout(() => {
+        setloader(true); 
+      }, 1500)
+
+      setloader(false);
 
       const newPage = Page.pages + 1;
 
@@ -155,8 +163,6 @@ export default function Transactional() {
   created_at) => {
   
 
-   console.log(id_transaction);
-
    setRenameRenameIdTransactions(id_transaction);
    setRenametypecategories(type_categories);
    setRenameNameCategoris(name_categories);
@@ -166,9 +172,11 @@ export default function Transactional() {
   
  }; 
  
+
  const updateRenametransactions = async () => {
    
     try {
+
      if (!RenameIdTransactions) {
       console.log("ID transaksi belum ada");
       return;
@@ -176,11 +184,11 @@ export default function Transactional() {
 
      const { response } = await Renametransactions(
       RenameIdTransactions,
-      Renametypecategories || "",
-      RenameNameCategoris || "",
-      amount || 0,
-      date || null,
-      descriptions || ""); 
+      idCategory ?? 1,
+      amount ?? 0,
+      date ?? null,
+      descriptions ?? ""
+     );
 
     } catch (error) {
       console.log(error);
@@ -195,8 +203,6 @@ export default function Transactional() {
      console.log(error);
    }
  }
-
- console.log(AllTransactions);
 
   // paginations 
   let data = []
@@ -216,8 +222,10 @@ export default function Transactional() {
   }, [Renametypecategories]);
 
   useEffect(() => {
-    updateRenametransactions();
-  }, [RenameIdTransactions])
+    setTimeout(() =>{
+      updateRenametransactions();
+    }, 1000)
+  }, [RenameIdTransactions, RenameNameCategoris])
 
   return (
     <>
@@ -469,7 +477,12 @@ export default function Transactional() {
         <div className="bg-white rounded-xl shadow-sm p-6 w-full border-slate-200 border">
           {/* HEADER */}
           <div className="flex items-center justify-between mb-6">
-            <div>
+            { loader === true ? (
+              <div className={`mt-8 h-4 w-xs`}>
+                <LoaderPage className={`h-8`}/> 
+              </div>
+            ) : (
+             <div>
               <h2 className="text-lg font-semibold text-gray-800">
                 Transactions
               </h2>
@@ -477,101 +490,120 @@ export default function Transactional() {
                 Manage your income and expenses
               </p>
             </div>
+            )}
 
-            <button onClick={() =>  {
+            <button 
+            disabled={loader === true}
+            onClick={() =>  {
                setisOpen(true)
-            }} className="flex items-center gap-2 bg-blue-700  text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 hover:cursor-pointer">
+            }} className="flex items-center gap-2 bg-blue-700 disabled:bg-blue-400 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-800 hover:cursor-pointer">
               <GoPlus size={16} />
               Add Transaction
             </button>
           </div>
 
           {/* TABLE */}
-          <div className="w-full z-0 overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              
-              {/* TABLE HEAD */}
-              <thead className="font-semibold border-b border-slate-400">
-                <tr>
-                  <th className="py-3 font-medium">Type</th>
-                  <th className="py-3 font-medium">Amount</th>
-                  <th className="py-3 font-medium">Category</th>
-                  <th className="py-3 font-medium">Description</th>
-                  <th className="py-3 font-medium">Date</th>
-                  <th className="py-3 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
+          {
+            loader === true ? (
+              <div className={`mt-8 h-[300px] w-full`}>
+              <LoaderPage className={`h-[300px]`}/> 
+              </div>
+            ) : (
+              <div className="w-full z-0 overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  
+                  {/* TABLE HEAD */}
+                  <thead className="font-semibold border-b border-slate-400">
+                    <tr>
+                      <th className="py-3 font-medium">Type</th>
+                      <th className="py-3 font-medium">Amount</th>
+                      <th className="py-3 font-medium">Category</th>
+                      <th className="py-3 font-medium">Description</th>
+                      <th className="py-3 font-medium">Date</th>
+                      <th className="py-3 font-medium text-right">Actions</th>
+                    </tr>
+                  </thead>
 
-              {/* TABLE BODY */}
-              <tbody>
-                {AllTransactions?.data?.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="border-b  border-slate-400 last:border-none hover:bg-gray-50"
-                  >
-                    {/* TYPE */}
-                    <td className="py-4">
-                      <span
-                        className={`px-3 py-1 text-xs rounded-full font-medium
-                        ${
-                          item.type_categories === "Income"
-                            ? "bg-green-600 text-white"
-                            : "bg-red-500 text-white"
-                        }`}
+                  {/* TABLE BODY */}
+                  <tbody>
+                    {AllTransactions?.data?.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="border-b  border-slate-400 last:border-none hover:bg-gray-50"
                       >
-                        {item.type_categories}
-                      </span>
-                    </td>
+                        {/* TYPE */}
+                        <td className="py-4">
+                          <span
+                            className={`px-3 py-1 text-xs rounded-full font-medium
+                            ${
+                              item.type_categories === "Income"
+                                ? "bg-green-600 text-white"
+                                : "bg-red-500 text-white"
+                            }`}
+                          >
+                            {item.type_categories}
+                          </span>
+                        </td>
 
-                    {/* AMOUNT */}
-                    <td
-                      className={`font-medium ${
-                        item.type_categories === "Income"
-                          ? "text-green-600"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {item.amount}
-                    </td>
+                        {/* AMOUNT */}
+                        <td
+                          className={`font-medium ${
+                            item.type_categories === "Income"
+                              ? "text-green-600"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {item.amount}
+                        </td>
 
-                    {/* CATEGORY */}
-                    <td className="text-gray-600">{item.name_categories}</td>
+                        {/* CATEGORY */}
+                        <td className="text-gray-600">{item.name_categories}</td>
 
-                    {/* DESCRIPTION */}
-                    <td className="text-gray-500">{item.descriptions}</td>
+                        {/* DESCRIPTION */}
+                        <td className="text-gray-500">{item.descriptions}</td>
 
-                    {/* DATE */}
-                    <td className="text-gray-500">{new Date(item.created_at).toLocaleDateString("id-ID")}</td>
+                        {/* DATE */}
+                        <td className="text-gray-500">{new Date(item.created_at).toLocaleDateString("id-ID")}</td>
 
-                    {/* ACTIONS */}
-                    <td className="flex justify-end gap-2 py-3">
-                      <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer" 
-                       onClick={() => { 
-                           setupdate(true); 
-                           renametransactions(
-                            item.id_transaction, 
-                            item.type_categories, 
-                            item.name_categories, 
-                            item.amount, 
-                            item.descriptions, 
-                            item.created_at);
-                        }}>
-                        <PiNotePencil size={14} />
-                      </button>
+                        {/* ACTIONS */}
+                        <td className="flex justify-end gap-2 py-3">
+                          <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer" 
+                          onClick={() => { 
+                              setupdate(true); 
+                              renametransactions(
+                                item.id_transaction, 
+                                item.type_categories, 
+                                item.name_categories, 
+                                item.amount, 
+                                item.descriptions, 
+                                item.created_at);
+                            }}>
+                            <PiNotePencil size={14} />
+                          </button>
 
-                      <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
-                      onClick={() => dellatetransactions(item.id_transaction)}>
-                        <IoTrashOutline size={14} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                          <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
+                          onClick={() => dellatetransactions(item.id_transaction)}>
+                            <IoTrashOutline size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
 
-            </table>
-          </div>
+                </table>
+              </div>
+            )
+          }
+
+
         </div>
         <div>
+          {
+            loader === true ? (
+              <div className={`mt-4 h-4 w-xs float-right`}>
+                <LoaderPage className={`h-8 `}/>
+              </div>
+            ) : (
               <Paginations   
                   ClassNext={`px-3 py-3 text-[14px] cursor-pointer ${Page.pages === Page.endPage ? "hidden" : "active"}`}
                   ClassPrev={`px-3 py-3 text-[14px] cursor-pointer ${Page.pages === 1 ? "hidden" : "active"}`}
@@ -586,9 +618,11 @@ export default function Transactional() {
                                     )
                                 })
                 }/>
+            )
+          }
         </div>
-        <div className="flex justify-center mt-6 mb-3">
-              <span className='text-gray-500 text-[12px]'> © 2026 Dana-Cermat. All Rights Reserved. Designed & Developed by Raffy_samaa.</span>
+        <div className="fixed bottom-2 mb-3">
+              <span className='text-gray-500 flex justify-center text-[12px]'> © 2026 Dana-Cermat. All Rights Reserved. Designed & Developed by Raffy_samaa.</span>
           </div> 
       </div>
     </>

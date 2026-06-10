@@ -71,22 +71,18 @@ export const GetAlltransactions = async ( token, pages ) => {
 
 export const Renametransactions = async (
     RenameIdTransactions,
-    Renametypecategories, 
-    RenameNameCategoris, 
+    id_categories, 
     amount, 
     date,
     descriptions) => {
-   try {
-      const response = await EndpointApi.patch(`/Transaksi/v1/renameTransaksi`, 
+   try { 
+      const response = await EndpointApi.post(`/Transaksi/v1/renameTransaksi`, 
         {
-           
-        idtransaction: RenameIdTransactions,
-        typecategories: Renametypecategories, 
-        namescategori : RenameNameCategoris, 
-        amount : amount, 
-        date : date, 
-        descriptions: descriptions
-,
+            idtransaction: RenameIdTransactions,
+            id_categories : id_categories, 
+            amount : amount, 
+            date : date, 
+            descriptions: descriptions,
         }
       )
       return { response : response}
