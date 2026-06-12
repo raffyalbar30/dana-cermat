@@ -63,34 +63,25 @@ export default function Transactional() {
   };
 
   const HandleAddTransaction = async () => {
+   try {
+    setnotifications(true);
 
-   const delay = (ms) => new Promise(res => setTimeout(res, ms));
-   setloader(true);
+    await AddTransactions(
+      token,
+      idCategory,
+      amount,
+      descriptions,
+      date
+    );
 
-    try {
-
-      await Promise.all([
-        AddTransactions(token, idCategory, amount, descriptions, date),
-        delay(700) 
-      ]);
-
-      setTimeout(() => {
-        setnotifications(false);
-      }, 2500); 
-
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setloader(false);
+  } catch (error) {
+    console.log(error);
   }
   };
  
   const getAlltransactions = async (pages) => {
+    setloader(true);
     try {
-      setloader(true);
-      setTimeout(() => {
-      setloader(false);
-      }, 1800)
       const { response } = await GetAlltransactions(token, pages); 
       setAllTransactions(response.data);
       setPage(response.data.paginations); 
@@ -101,6 +92,7 @@ export default function Transactional() {
   };
 
   const handlePagination = async (page) => {
+    setloader(true);
      try {
        const pages = await getAlltransactions(page);
      } catch (error) {
@@ -218,12 +210,19 @@ export default function Transactional() {
   for(let i = 1; i <= Page?.endPage; i++){
      data.push(i);
   }
+  
+  setTimeout(() => {
+    setloader(false);
+  }, 1800)
 
-  useEffect(() => {
-    Category(type);
+  useEffect(() => {;
     getAlltransactions();
     renametransactions();
     
+  }, []);
+
+  useEffect(() => {
+    Category(type);
   }, [type]);
   
   useEffect(() => {
@@ -238,7 +237,7 @@ export default function Transactional() {
 
   return (
     <>
-    <div className={`${ notifications === true ? "active" : "hidden"} flex justify-center`}>
+    <div className={`${ notifications === true  ? "active" : "hidden"} flex justify-center`}>
      <Toaster className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
       stateNotif={() => setnotifications(false)}></Toaster>
     </div>
@@ -462,7 +461,6 @@ export default function Transactional() {
                   cursor-pointer text-white py-2 rounded-md`}
                   onClick={() => {
                     setisOpen(false);
-                    setnotifications(true);
                     HandleAddTransaction();
                   }} 
                   disabled={!amount || !getCategory || !date || loader}>
