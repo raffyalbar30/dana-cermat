@@ -86,8 +86,11 @@ export default function Transactional() {
   };
  
   const getAlltransactions = async (pages) => {
-     try {
-
+    try {
+      setloader(true);
+      setTimeout(() => {
+      setloader(false);
+      }, 1800)
       const { response } = await GetAlltransactions(token, pages); 
       setAllTransactions(response.data);
       setPage(response.data.paginations); 
@@ -107,15 +110,15 @@ export default function Transactional() {
 
      
   const handleNextPages = async () => {
-      if (Page.pages === Page?.endPage) {
+    setloader(true); 
+
+    setTimeout(() => {
+        setloader(false);
+     }, 1800)
+
+     if (Page.pages === Page?.endPage) {
           return;
       }
-      
-      setTimeout(() => {
-        setloader(true); 
-      }, 1500)
-
-      setloader(false);
 
       const newPage = Page.pages + 1;
 
@@ -129,6 +132,12 @@ export default function Transactional() {
   };
 
   const handlePrevPages = async () => {
+    setloader(true); 
+
+    setTimeout(() => {
+        setloader(false);
+     }, 1800)
+
       if (Page.pages <= 1 ) {
           return;
       }
@@ -172,7 +181,7 @@ export default function Transactional() {
   
  }; 
  
-
+// belum bikin loading   
  const updateRenametransactions = async () => {
    
     try {
@@ -196,9 +205,9 @@ export default function Transactional() {
  }
 
  const dellatetransactions = async (id) => {
+   window.location.reload();
    try {
      const { response } = await Dellatetransactions(id); 
-     console.log(response);
    } catch (error) {
      console.log(error);
    }
@@ -576,7 +585,8 @@ export default function Transactional() {
                                 item.name_categories, 
                                 item.amount, 
                                 item.descriptions, 
-                                item.created_at);
+                                item.created_at
+                              );
                             }}>
                             <PiNotePencil size={14} />
                           </button>
@@ -621,9 +631,11 @@ export default function Transactional() {
             )
           }
         </div>
-        <div className="fixed bottom-2 mb-3">
-              <span className='text-gray-500 flex justify-center text-[12px]'> © 2026 Dana-Cermat. All Rights Reserved. Designed & Developed by Raffy_samaa.</span>
-          </div> 
+       <div className="fixed bottom-5 left-1/2 -translate-x-1/2">
+          <span className="text-gray-500 text-[12px] pl-52 whitespace-nowrap">
+            © 2026 Dana-Cermat. All Rights Reserved. Designed & Developed by Raffy_samaa.
+          </span>
+        </div>
       </div>
     </>
   );
