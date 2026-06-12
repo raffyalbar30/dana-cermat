@@ -63,9 +63,9 @@ export default function Transactional() {
   };
 
   const HandleAddTransaction = async () => {
-   try {
+    try {
     setnotifications(true);
-
+    setloader(true);
     await AddTransactions(
       token,
       idCategory,
@@ -73,14 +73,21 @@ export default function Transactional() {
       descriptions,
       date
     );
+    
+    await getAlltransactions(Page?.pages || 1);
+
+    setTimeout(() => {
+       setnotifications(false);
+    }, 2500)
 
   } catch (error) {
     console.log(error);
-  }
+  } 
   };
  
   const getAlltransactions = async (pages) => {
     setloader(true);
+
     try {
       const { response } = await GetAlltransactions(token, pages); 
       setAllTransactions(response.data);
@@ -88,13 +95,14 @@ export default function Transactional() {
 
      } catch (error) {
        console.log(error); 
-     }
+     } 
+
   };
 
   const handlePagination = async (page) => {
-    setloader(true);
      try {
        const pages = await getAlltransactions(page);
+       setloader(true);
      } catch (error) {
        console.log(error)
      }
@@ -146,16 +154,16 @@ export default function Transactional() {
 
   };
 
- const getrenamecategory = async () => {
+  const getrenamecategory = async () => {
     try {
       const { response } = await FormTransaksi(Renametypecategories);
       setrenameCategory(response.data);
     } catch (error) {
        console.log(error);
     }
- }
+  }
 
- const renametransactions = async (
+  const renametransactions = async (
   id_transaction, 
   type_categories, 
   name_categories,  
@@ -171,7 +179,7 @@ export default function Transactional() {
    setdescriptions(descriptions);
    setdate(created_at);
   
- }; 
+  }; 
  
 // belum bikin loading   
  const updateRenametransactions = async () => {
@@ -197,9 +205,9 @@ export default function Transactional() {
  }
 
  const dellatetransactions = async (id) => {
-   window.location.reload();
    try {
      const { response } = await Dellatetransactions(id); 
+     await getAlltransactions(Page?.pages || 1);
    } catch (error) {
      console.log(error);
    }
@@ -211,14 +219,10 @@ export default function Transactional() {
      data.push(i);
   }
   
-  setTimeout(() => {
-    setloader(false);
-  }, 1800)
 
   useEffect(() => {;
     getAlltransactions();
     renametransactions();
-    
   }, []);
 
   useEffect(() => {
@@ -234,6 +238,13 @@ export default function Transactional() {
       updateRenametransactions();
     }, 1000)
   }, [RenameIdTransactions, RenameNameCategoris])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setloader(false);
+    }, 2500)
+  }, [loader])
+    
 
   return (
     <>
