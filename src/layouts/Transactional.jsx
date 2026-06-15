@@ -201,7 +201,7 @@ export default function Transactional() {
       }
   }
 
-  // pop-up dellated 
+  // pop-up delleted
   const dellatedpopup = async () => {
       setdellate(true);
   }
