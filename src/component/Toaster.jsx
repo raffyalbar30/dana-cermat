@@ -14,7 +14,7 @@ const Toaster = ({className, stateNotif}) => {
                       <MdOutlineNotificationsActive/>
                  </span>
                 </div>
-                <div className='border mt-2 ml-2 border-green-600'> </div>
+                <div className='border mt-2 ml-2 border-blue-700'> </div>
                 <div className='flex-wrap w-full'>
                 <div className='ml-4 mt-2'> 
                     <span>data transaksi sudah ditambahkan !!</span>

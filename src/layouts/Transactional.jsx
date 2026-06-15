@@ -85,6 +85,7 @@ export default function Transactional() {
   } 
   };
  
+  // key loader
   const getAlltransactions = async (pages) => {
     setloader(true);
 
@@ -100,21 +101,15 @@ export default function Transactional() {
   };
 
   const handlePagination = async (page) => {
+    await getAlltransactions(page);
      try {
        const pages = await getAlltransactions(page);
-       setloader(true);
      } catch (error) {
        console.log(error)
      }
   };
-
-     
+ 
   const handleNextPages = async () => {
-    setloader(true); 
-
-    setTimeout(() => {
-        setloader(false);
-     }, 1800)
 
      if (Page.pages === Page?.endPage) {
           return;
@@ -132,11 +127,7 @@ export default function Transactional() {
   };
 
   const handlePrevPages = async () => {
-    setloader(true); 
 
-    setTimeout(() => {
-        setloader(false);
-     }, 1800)
 
       if (Page.pages <= 1 ) {
           return;
@@ -219,7 +210,6 @@ export default function Transactional() {
      data.push(i);
   }
   
-
   useEffect(() => {;
     getAlltransactions();
     renametransactions();
@@ -468,7 +458,7 @@ export default function Transactional() {
                 </div>
                 
                 <div className="mr-4">
-                  <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
+                  <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-600
                   cursor-pointer text-white py-2 rounded-md`}
                   onClick={() => {
                     setisOpen(false);
@@ -652,3 +642,4 @@ export default function Transactional() {
 
 
 
+ 
