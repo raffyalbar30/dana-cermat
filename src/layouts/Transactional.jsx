@@ -5,10 +5,12 @@ import Paginations from "./Paginations";
 import Pages from "../component/Pages";
 import { useEffect, useState } from "react";
 import Modal from "../component/Modal";
-import { AddTransactions, Dellatetransactions, FormTransaksi, GetAlltransactions, Renametransactions } from "../services/api";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Toaster from "../component/Toaster";
 import LoaderPage from "../component/LoaderPage";
+import { FiAlertTriangle } from "react-icons/fi";
+import { AddTransactions, Dellatetransactions, FormTransaksi, GetAlltransactions, Renametransactions } from "../services/api";
+import { MdWindow } from "react-icons/md";
 
 
 
@@ -45,6 +47,10 @@ export default function Transactional() {
   const [ renameCategory, setrenameCategory ] = useState([]);
   const [ RenameNameCategoris, setRenameNameCategoris ] = useState();
   const [ RenameIdTransactions, setRenameRenameIdTransactions ] = useState();
+
+  // state delate transactions 
+  const [ dellate, setdellate ] = useState(false); 
+  const [ getIdDellated, setgetIdDellated ] = useState(null);
 
   const token = localStorage.getItem("Token"); 
 
@@ -172,37 +178,42 @@ export default function Transactional() {
   
   }; 
  
-// belum bikin loading   
- const updateRenametransactions = async () => {
-   
+  // belum bikin loading   
+  const updateRenametransactions = async () => {
+    
+      try {
+
+      if (!RenameIdTransactions) {
+        console.log("ID transaksi belum ada");
+        return;
+      }
+
+      const { response } = await Renametransactions(
+        RenameIdTransactions,
+        idCategory ?? 1,
+        amount ?? 0,
+        date ?? null,
+        descriptions ?? ""
+      );
+
+      } catch (error) {
+        console.log(error);
+      }
+  }
+
+  // pop-up dellated 
+  const dellatedpopup = async () => {
+      setdellate(true);
+  }
+
+  const dellatetransactions = async (id) => {
     try {
-
-     if (!RenameIdTransactions) {
-      console.log("ID transaksi belum ada");
-      return;
-    }
-
-     const { response } = await Renametransactions(
-      RenameIdTransactions,
-      idCategory ?? 1,
-      amount ?? 0,
-      date ?? null,
-      descriptions ?? ""
-     );
-
+      const { response } = await Dellatetransactions(id); 
+      await getAlltransactions(Page?.pages || 1);
     } catch (error) {
       console.log(error);
     }
- }
-
- const dellatetransactions = async (id) => {
-   try {
-     const { response } = await Dellatetransactions(id); 
-     await getAlltransactions(Page?.pages || 1);
-   } catch (error) {
-     console.log(error);
-   }
- }
+  }
 
   // paginations 
   let data = []
@@ -228,6 +239,7 @@ export default function Transactional() {
       updateRenametransactions();
     }, 1000)
   }, [RenameIdTransactions, RenameNameCategoris])
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -355,8 +367,7 @@ export default function Transactional() {
 
            </div>
           
-            }/> 
-           ) : ( isOpen === true ? ( 
+            }/> ) : ( isOpen === true ? ( 
           // Modal add transactions 
           <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
             children={
@@ -474,9 +485,49 @@ export default function Transactional() {
 
             </div>
             
-          }/>  
+          }/> 
+           ) : dellate === true ?  (
+            <div className={`w-full bg-transparent flex justify-center items-center`}>
+              <div className={`fixed z-10 bg-white rounded-2xl mt-80 w-[600px] shadow-lg h-auto
+              transition-all duration-300 ease-out ${dellate === true ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+                <div className={`mt-8 pb-12 transition-all ${dellate === true ? "dropdown" : "dropdownout"}`}>
+                  <button onClick={() => setdellate(false)} className="absolute cursor-pointer top-6 right-6 w-12 h-12 rounded-xl border border-gray-200 p-2 text-gray-600 hover:bg-gray-100">
+                    <span>X</span>
+                  </button>
 
-          ): null )
+                  <div className="flex justify-center w-full">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
+                      <FiAlertTriangle className="text-red-500" size={28} />
+                    </div>
+                  </div>
+
+                  <h2 className="mt-6 text-center text-4xl font-bold text-gray-900">
+                    Are you sure?
+                  </h2>
+
+                  <p className="mt-8 text-center text-gray-500">
+                    Are you sure you want to delete this transactions ??
+                    <br />
+                    This action cannot be undone
+                  </p>
+                  <div className="flex justify-center cursor-pointer"> 
+                    <button onClick={() => {
+                      setdellate(false);
+                      dellatetransactions(getIdDellated);
+                     }}
+                    className="mt-8 w-[400px] rounded-xl bg-red-500 py-3 font-medium text-white transition hover:bg-red-600">
+                      Delete transactions
+                    </button>
+                  </div>
+                  <div className="flex justify-center cursor-pointer">
+                  <button className="mt-4 w-[400px] rounded-xl border border-gray-200 py-3 font-medium text-gray-900 transition hover:bg-gray-50">
+                    Cancel
+                  </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+           ) : null )
        }
       </div>
       
@@ -591,7 +642,10 @@ export default function Transactional() {
                           </button>
 
                           <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
-                          onClick={() => dellatetransactions(item.id_transaction)}>
+                          onClick={() => {
+                            dellatedpopup();
+                            setgetIdDellated(item.id_transaction);
+                           }}>
                             <IoTrashOutline size={14} />
                           </button>
                         </td>
@@ -640,6 +694,3 @@ export default function Transactional() {
   );
 }
 
-
-
- 

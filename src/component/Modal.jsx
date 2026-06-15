@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ isOpen, handleClick, setisOpen, children }) => {
+const Modal = ({ isOpen, handleClick, setisOpen, children, className}) => {
    return (
       <div className={`${isOpen === true ? "active" : "hidden"} 
          w-full bg-transparent flex justify-center items-center `}> 
