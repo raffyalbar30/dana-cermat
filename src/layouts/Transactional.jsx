@@ -11,6 +11,8 @@ import LoaderPage from "../component/LoaderPage";
 import { FiAlertTriangle } from "react-icons/fi";
 import { AddTransactions, Dellatetransactions, FormTransaksi, GetAlltransactions, Renametransactions } from "../services/api";
 import { MdWindow } from "react-icons/md";
+import { LuNotebookPen } from "react-icons/lu";
+
 
 
 
@@ -43,6 +45,7 @@ export default function Transactional() {
 
   // state update transactions 
   const [ update, setupdate ] = useState(false); 
+  const [ confirmupdate, setconfirmupdate ] = useState(true);
   const [ Renametypecategories, setRenametypecategories ] = useState("");
   const [ renameCategory, setrenameCategory ] = useState([]);
   const [ RenameNameCategoris, setRenameNameCategoris ] = useState();
@@ -201,6 +204,10 @@ export default function Transactional() {
       }
   }
 
+  const renamepopup = () => {
+    setconfirmupdate(true); 
+  }
+
   // pop-up delleted
   const dellatedpopup = async () => {
       setdellate(true);
@@ -208,6 +215,7 @@ export default function Transactional() {
 
   const dellatetransactions = async (id) => {
     try {
+      window.location.reload();
       const { response } = await Dellatetransactions(id); 
       await getAlltransactions(Page?.pages || 1);
     } catch (error) {
@@ -371,7 +379,7 @@ export default function Transactional() {
           // Modal add transactions 
           <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
             children={
-              <div className={`transition-all ${isOpen === true ? "dropdown" : "dropdownout"}`}>
+              <div className={`transition-all ${isOpen === true ? "dropdown" : "opacity-0 invisible"}`}>
                 <div className="flex justify-between"> 
                   <div className="ml-4 mt-4"> 
                       <h2 className="text-lg font-semibold">Add New Transaction</h2>
@@ -472,8 +480,7 @@ export default function Transactional() {
                   <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-600
                   cursor-pointer text-white py-2 rounded-md`}
                   onClick={() => {
-                    setisOpen(false);
-                    HandleAddTransaction();
+                    renamepopup();
                   }} 
                   disabled={!amount || !getCategory || !date || loader}>
                   {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
@@ -487,47 +494,201 @@ export default function Transactional() {
             
           }/> 
            ) : dellate === true ?  (
-            <div className={`w-full bg-transparent flex justify-center items-center`}>
-              <div className={`fixed z-10 bg-white rounded-2xl mt-80 w-[600px] shadow-lg h-auto
-              transition-all duration-300 ease-out ${dellate === true ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-                <div className={`mt-8 pb-12 transition-all ${dellate === true ? "dropdown" : "dropdownout"}`}>
-                  <button onClick={() => setdellate(false)} className="absolute cursor-pointer top-6 right-6 w-12 h-12 rounded-xl border border-gray-200 p-2 text-gray-600 hover:bg-gray-100">
-                    <span>X</span>
-                  </button>
+            <div className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
+                dellate
+                  ? "dropdown"
+                  : "opacity-0 invisible"
+              }`}
+            >
+              <div
+                className={`w-full max-w-md rounded-2xl bg-white shadow-xl transition-all duration-300 ${
+                  dellate
+                    ? "scale-100 opacity-100"
+                    : "scale-95 opacity-0"
+                }`}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setdellate(false)}
+                  className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
+                >
+                  ✕
+                </button>
 
-                  <div className="flex justify-center w-full">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100">
-                      <FiAlertTriangle className="text-red-500" size={28} />
-                    </div>
+                <div className="p-8">
+                  {/* Icon */}
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-red-100">
+                    <FiAlertTriangle
+                      size={40}
+                      className="text-red-600"
+                    />
                   </div>
 
-                  <h2 className="mt-6 text-center text-4xl font-bold text-gray-900">
-                    Are you sure?
+                  {/* Heading */}
+                  <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+                    Delete Transaction
                   </h2>
 
-                  <p className="mt-8 text-center text-gray-500">
-                    Are you sure you want to delete this transactions ??
-                    <br />
-                    This action cannot be undone
+                  <p className="mt-3 text-center text-gray-500">
+                    Are you sure you want to delete this transaction?
                   </p>
-                  <div className="flex justify-center cursor-pointer"> 
-                    <button onClick={() => {
-                      setdellate(false);
-                      dellatetransactions(getIdDellated);
-                     }}
-                    className="mt-8 w-[400px] rounded-xl bg-red-500 py-3 font-medium text-white transition hover:bg-red-600">
-                      Delete transactions
-                    </button>
+
+                  {/* Transaction Info */}
+                  <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4">
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Category</span>
+                      <span className="font-medium">Food</span>
+                    </div>
+
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Amount</span>
+                      <span className="font-semibold">
+                        Rp10.000
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Date</span>
+                      <span>18/06/2026</span>
+                    </div>
+
+                    <div className="border-t border-gray-300 pt-3 mt-3">
+                      <p className="text-gray-500 mb-1">
+                        Description
+                      </p>
+                      <p className="text-gray-800">
+                        Beli minum Mixue dan Ngoffe
+                      </p>
+                    </div>
+
                   </div>
-                  <div className="flex justify-center cursor-pointer">
-                  <button className="mt-4 w-[400px] rounded-xl border border-gray-200 py-3 font-medium text-gray-900 transition hover:bg-gray-50">
-                    Cancel
-                  </button>
+
+                  {/* Warning */}
+                  <p className="mt-4 text-center text-sm text-red-500">
+                    This action cannot be undone.
+                  </p>
+
+                  {/* Actions */}
+                  <div className="mt-8 flex flex-col gap-3">
+                    <button
+                      onClick={dellatetransactions}
+                      className="rounded-xl bg-red-600 py-3 font-medium text-white transition hover:bg-red-700"
+                    >
+                      Delete Transaction
+                    </button>
+
+                    <button
+                      onClick={() => setdellate(false)}
+                      className="rounded-xl border border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-           ) : null )
+           ) : confirmupdate === true ? (
+            <div className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
+                confirmupdate
+                  ? "dropdown"
+                  : "opacity-0 invisible"
+              }`}
+            >
+              <div
+                className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
+                  confirmupdate
+                    ? "scale-100 opacity-100"
+                    : "scale-95 opacity-0"
+                }`}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setconfirmupdate(false)}
+                  className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
+                >
+                  ✕
+                </button>
+
+                <div className="p-8">
+                  {/* Icon */}
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-100">
+                    <LuNotebookPen
+                      size={36}
+                      className="text-blue-700"
+                    />
+                  </div>
+
+                  {/* Heading */}
+                  <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+                    Confirm Transaction
+                  </h2>
+
+                  <p className="mt-2 text-center text-gray-500">
+                    Please review the transaction details before updating.
+                  </p>
+
+                  {/* Detail Card */}
+                  <div className="mt-8 rounded-xl border border-gray-200 p-5">
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Type</span>
+                      <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-600">
+                        Expense
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Category</span>
+                      <span className="font-medium text-gray-800">
+                        Food
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Amount</span>
+                      <span className="font-semibold text-gray-900">
+                        Rp10.000
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Date</span>
+                      <span className="font-medium text-gray-800">
+                        18/06/2026
+                      </span>
+                    </div>
+
+                    <div className="border-t border-gray-300 pt-3 mt-3">
+                      <p className="text-gray-500 mb-1">
+                        Description
+                      </p>
+                      <p className="text-gray-800">
+                        Beli minum Mixue dan Ngoffe
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action */}
+                  <div className="mt-8 flex flex-col gap-3">
+                    <button
+                      onClick={() => {
+                        setconfirmupdate(false);
+                      }}
+                      className="rounded-xl bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
+                    >
+                      Update Transaction
+                    </button>
+
+                    <button
+                      onClick={() => setconfirmupdate(false)}
+                      className="rounded-xl border border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null )
        }
       </div>
       
@@ -550,7 +711,12 @@ export default function Transactional() {
               </p>
             </div>
             )}
-
+            
+            {
+              loader === true ? (
+              <div className={`mt-8 h-4 w-[200px]`}>
+                <LoaderPage className={`h-8`}/> 
+              </div> ) : (
             <button 
             disabled={loader === true}
             onClick={() =>  {
@@ -559,13 +725,15 @@ export default function Transactional() {
               <GoPlus size={16} />
               Add Transaction
             </button>
+            )
+            }
           </div>
 
           {/* TABLE */}
           {
             loader === true ? (
               <div className={`mt-8 h-[300px] w-full`}>
-              <LoaderPage className={`h-[300px]`}/> 
+              <LoaderPage className={`h-[300px] rounded-lg`}/> 
               </div>
             ) : (
               <div className="w-full z-0 overflow-x-auto">
