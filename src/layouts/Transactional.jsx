@@ -45,7 +45,7 @@ export default function Transactional() {
 
   // state update transactions 
   const [ update, setupdate ] = useState(false); 
-  const [ confirmupdate, setconfirmupdate ] = useState(true);
+  const [ confirmupdate, setconfirmupdate ] = useState(false);
   const [ Renametypecategories, setRenametypecategories ] = useState("");
   const [ renameCategory, setrenameCategory ] = useState([]);
   const [ RenameNameCategoris, setRenameNameCategoris ] = useState();
@@ -54,6 +54,12 @@ export default function Transactional() {
   // state delate transactions 
   const [ dellate, setdellate ] = useState(false); 
   const [ getIdDellated, setgetIdDellated ] = useState(null);
+  const [ typecategoriesdellated, settypecategoriesdellated ] = useState("");
+  const [ namecategoriesdellated, setnamecategoriesdellated ] = useState("");
+  const [ amountdellated, setamountdellated ] = useState(null);
+  const [ descriptionsdellated, setdescriptionsdellated ] = useState("");
+  const [ datedellated, setdatedellated ] = useState("");
+
 
   const token = localStorage.getItem("Token"); 
 
@@ -82,9 +88,8 @@ export default function Transactional() {
       descriptions,
       date
     );
-    
     await getAlltransactions(Page?.pages || 1);
-
+    setisOpen(false);
     setTimeout(() => {
        setnotifications(false);
     }, 2500)
@@ -183,7 +188,7 @@ export default function Transactional() {
  
   // belum bikin loading   
   const updateRenametransactions = async () => {
-    
+     setconfirmupdate(false);
       try {
 
       if (!RenameIdTransactions) {
@@ -205,18 +210,35 @@ export default function Transactional() {
   }
 
   const renamepopup = () => {
+    setupdate(false);
     setconfirmupdate(true); 
   }
 
   // pop-up delleted
-  const dellatedpopup = async () => {
+  const dellatedpopup = async (
+    items_id, 
+    type_categories, 
+    name_categories, 
+    amount, 
+    descriptions, 
+    created_at) => {
+
       setdellate(true);
+      setgetIdDellated(items_id);
+      settypecategoriesdellated(type_categories);
+      setnamecategoriesdellated(name_categories);
+      setamountdellated(amount);
+      setdescriptionsdellated(descriptions);
+      setdatedellated(created_at);
   }
 
-  const dellatetransactions = async (id) => {
+  const dellatetransactions = async () => {
+    setTimeout(() => {
+      setdellate(false);
+    }, 1000)
     try {
       window.location.reload();
-      const { response } = await Dellatetransactions(id); 
+      const { response } = await Dellatetransactions(getIdDellated); 
       await getAlltransactions(Page?.pages || 1);
     } catch (error) {
       console.log(error);
@@ -255,7 +277,6 @@ export default function Transactional() {
     }, 2500)
   }, [loader])
     
-
   return (
     <>
     <div className={`${ notifications === true  ? "active" : "hidden"} flex justify-center`}>
@@ -363,11 +384,11 @@ export default function Transactional() {
                 <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
                 cursor-pointer text-white py-2 rounded-md`}
                 onClick={() => {
-                  updateRenametransactions();
+                  renamepopup();
                 }} 
                 disabled={!amount || !getCategory || !date || loader}>
                 {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
-                     <span> update Transaction </span>
+                     <span> update transactions </span>
                 </button>
                 </div>
 
@@ -377,122 +398,122 @@ export default function Transactional() {
           
             }/> ) : ( isOpen === true ? ( 
           // Modal add transactions 
-          <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
-            children={
-              <div className={`transition-all ${isOpen === true ? "dropdown" : "opacity-0 invisible"}`}>
-                <div className="flex justify-between"> 
-                  <div className="ml-4 mt-4"> 
-                      <h2 className="text-lg font-semibold">Add New Transaction</h2>
-                        <p className="text-sm text-gray-500"> Add a new income or expense transaction.</p>
+            <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
+              children={
+                <div className={`transition-all ${isOpen === true ? "dropdown" : "opacity-0 invisible"}`}>
+                  <div className="flex justify-between"> 
+                    <div className="ml-4 mt-4"> 
+                        <h2 className="text-lg font-semibold">Add New Transaction</h2>
+                          <p className="text-sm text-gray-500"> Add a new income or expense transaction.</p>
+                    </div>
+                    <div className="mr-4 mt-4">
+                        <button onClick={() => setisOpen(false)}  className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
+                    </div>
                   </div>
-                  <div className="mr-4 mt-4">
-                      <button onClick={() => setisOpen(false)}  className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
-                  </div>
-                </div>
 
-            <div className="flex gap-x-4 items-center justify-between">
-                    {/* Form create add */}
-                <div className="w-1/2 ml-4 mt-4">
-                  <label className="text-sm text-gray-600">Type</label>
-                  <div className="relative w-full mt-1">
-                    <button onClick={() => setdropdowntype(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                      <span>{type}</span>
-                      <span> <IoMdArrowDropdown/> </span>
-                    </button>
-                    <ul className={`${dropdowntype === true ? "dropdown"  : "hidden"}  absolute 
-                      left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
-                      <li data-value="Income" onClick={(e) => {
+              <div className="flex gap-x-4 items-center justify-between">
+                      {/* Form create add */}
+                  <div className="w-1/2 ml-4 mt-4">
+                    <label className="text-sm text-gray-600">Type</label>
+                    <div className="relative w-full mt-1">
+                      <button onClick={() => setdropdowntype(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                        <span>{type}</span>
+                        <span> <IoMdArrowDropdown/> </span>
+                      </button>
+                      <ul className={`${dropdowntype === true ? "dropdown"  : "hidden"}  absolute 
+                        left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                        <li data-value="Income" onClick={(e) => {
+                            setdropdowntype(false), 
+                            settype(e.target.dataset.value);
+                        }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                          Income <span>💰</span>
+                        </li>
+                        <li data-value="Expanses" onClick={(e) => {
                           setdropdowntype(false), 
-                          settype(e.target.dataset.value);
-                      }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
-                        Income <span>💰</span>
-                      </li>
-                      <li data-value="Expanses" onClick={(e) => {
-                        setdropdowntype(false), 
-                        settype(e.target.dataset.value)
-                        }} className="px-4 py-2 hover:bg-gray-100 flex justify-between cursor-pointer">
-                        Expense <span>💸</span>
-                      </li>
-                    </ul>
+                          settype(e.target.dataset.value)
+                          }} className="px-4 py-2 hover:bg-gray-100 flex justify-between cursor-pointer">
+                          Expense <span>💸</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
 
-                  <div className="w-1/2 mr-4 mt-4">
-                    <label className="text-sm text-gray-600">Amount</label>
-                    <input
-                      type="number"
-                      placeholder="Masukan jumlah nominal"
-                      className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                      onChange={(e) => setamount(e.target.value)}/>
-                  </div>
-            </div>
-
-            <div className="flex-wrap mr-4">
-                  <div className="full ml-4 mt-4">
-                  <label className="text-sm text-gray-600">Category</label>
-                  <div className="relative w-full mt-1">
-                    <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                      {!nameCategoris ? "Pilih Category" : nameCategoris}
-                      <span> <IoMdArrowDropdown/> </span>
-                    </button>
-                        <ul  className={`${ dropdownCategory === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
-                            {
-                              getCategory?.map((items) => {
-                                  return (
-                                    <li data-value={items?.name_categories} onClick={(e) => {
-                                      setdropdownCategory(false)
-                                      setidCategory(items?.categories_id)
-                                      setnameCategories(e.target.dataset.value); 
-                                      }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
-                                          {items?.name_categories}
-                                    </li>
-                                  );
-                              })
-                            }
-                        </ul>
-                  </div>
-                </div>
-
-                {/* Date */}
-                <diV className="mr-4">
-                    <div className="w-full ml-4 mt-4">
-                      <label className="text-sm text-gray-600">Date</label>
+                    <div className="w-1/2 mr-4 mt-4">
+                      <label className="text-sm text-gray-600">Amount</label>
                       <input
-                        type="date"
+                        type="number"
+                        placeholder="Masukan jumlah nominal"
                         className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                        onChange={(e) => setdate(e.target.value)}/>
+                        onChange={(e) => setamount(e.target.value)}/>
                     </div>
-                </diV>
+              </div>
 
-                {/* Descriptions */}
-                <div className="mr-4">
-                    <div className="w-full ml-4 mt-4">
-                      <label className="text-sm text-gray-600">Description</label>
-                      <textarea
-                        type="text"
-                        className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                        placeholder="Masukan deskripsi disini"
-                        onChange={(e) =>  setdescriptions(e.target.value)}/>
+              <div className="flex-wrap mr-4">
+                    <div className="full ml-4 mt-4">
+                    <label className="text-sm text-gray-600">Category</label>
+                    <div className="relative w-full mt-1">
+                      <button onClick={() => setdropdownCategory(true)} className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                        {!nameCategoris ? "Pilih Category" : nameCategoris}
+                        <span> <IoMdArrowDropdown/> </span>
+                      </button>
+                          <ul  className={`${ dropdownCategory === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                              {
+                                getCategory?.map((items) => {
+                                    return (
+                                      <li data-value={items?.name_categories} onClick={(e) => {
+                                        setdropdownCategory(false)
+                                        setidCategory(items?.categories_id)
+                                        setnameCategories(e.target.dataset.value); 
+                                        }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                            {items?.name_categories}
+                                      </li>
+                                    );
+                                })
+                              }
+                          </ul>
                     </div>
-                </div>
-                
-                <div className="mr-4">
-                  <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-600
-                  cursor-pointer text-white py-2 rounded-md`}
-                  onClick={() => {
-                    renamepopup();
-                  }} 
-                  disabled={!amount || !getCategory || !date || loader}>
-                  {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
-                      <span> Add Transaction </span>
-                  </button>
                   </div>
 
-            </div>
+                  {/* Date */}
+                  <diV className="mr-4">
+                      <div className="w-full ml-4 mt-4">
+                        <label className="text-sm text-gray-600">Date</label>
+                        <input
+                          type="date"
+                          className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                          onChange={(e) => setdate(e.target.value)}/>
+                      </div>
+                  </diV>
 
-            </div>
-            
-          }/> 
+                  {/* Descriptions */}
+                  <div className="mr-4">
+                      <div className="w-full ml-4 mt-4">
+                        <label className="text-sm text-gray-600">Description</label>
+                        <textarea
+                          type="text"
+                          className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                          placeholder="Masukan deskripsi disini"
+                          onChange={(e) =>  setdescriptions(e.target.value)}/>
+                      </div>
+                  </div>
+                  
+                  <div className="mr-4">
+                    <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-600
+                    cursor-pointer text-white py-2 rounded-md`}
+                    onClick={() => {
+                      HandleAddTransaction();
+                    }} 
+                    disabled={!amount || !getCategory || !date || loader}>
+                    {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
+                        <span> Add Transaction </span>
+                    </button>
+                    </div>
+
+              </div>
+
+              </div>
+              
+            }/> 
            ) : dellate === true ?  (
             <div className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
                 dellate
@@ -501,7 +522,7 @@ export default function Transactional() {
               }`}
             >
               <div
-                className={`w-full max-w-md rounded-2xl bg-white shadow-xl transition-all duration-300 ${
+                className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
                   dellate
                     ? "scale-100 opacity-100"
                     : "scale-95 opacity-0"
@@ -533,23 +554,34 @@ export default function Transactional() {
                     Are you sure you want to delete this transaction?
                   </p>
 
+                  
                   {/* Transaction Info */}
                   <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4">
+
+                     <div className="flex justify-between py-2">
+                      <span className="text-gray-500">Type</span>
+                      <span className={ `rounded-full px-3 py-1 text-sm font-medium ${ typecategoriesdellated === "Income" ? "text-green-600 bg-green-100" : "text-red-600 bg-red-100"}`}>
+                        {typecategoriesdellated}
+                      </span>
+                    </div>
+
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Category</span>
-                      <span className="font-medium">Food</span>
+                      <span className="font-medium">{namecategoriesdellated}</span>
                     </div>
 
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Amount</span>
                       <span className="font-semibold">
-                        Rp10.000
+                        {amountdellated}
                       </span>
                     </div>
 
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Date</span>
-                      <span>18/06/2026</span>
+                      <span>{datedellated  ? 
+                        `${new Date(datedellated).getFullYear()}-${String(new Date(datedellated).getMonth() + 1)
+                        .padStart(2, "0")}-${String(new Date(datedellated).getDate()).padStart(2, "0")}`: ""}</span>
                     </div>
 
                     <div className="border-t border-gray-300 pt-3 mt-3">
@@ -557,7 +589,7 @@ export default function Transactional() {
                         Description
                       </p>
                       <p className="text-gray-800">
-                        Beli minum Mixue dan Ngoffe
+                         {descriptionsdellated}
                       </p>
                     </div>
 
@@ -571,15 +603,15 @@ export default function Transactional() {
                   {/* Actions */}
                   <div className="mt-8 flex flex-col gap-3">
                     <button
-                      onClick={dellatetransactions}
-                      className="rounded-xl bg-red-600 py-3 font-medium text-white transition hover:bg-red-700"
+                      onClick={() => dellatetransactions()}
+                      className="rounded-xl bg-red-600 py-3 cursor-pointer  font-medium text-white transition hover:bg-red-700"
                     >
                       Delete Transaction
                     </button>
 
                     <button
                       onClick={() => setdellate(false)}
-                      className="rounded-xl border border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
+                      className="rounded-xl border cursor-pointer  border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
                     >
                       Cancel
                     </button>
@@ -671,7 +703,7 @@ export default function Transactional() {
                   <div className="mt-8 flex flex-col gap-3">
                     <button
                       onClick={() => {
-                        setconfirmupdate(false);
+                        updateRenametransactions()
                       }}
                       className="rounded-xl bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
                     >
@@ -811,8 +843,13 @@ export default function Transactional() {
 
                           <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
                           onClick={() => {
-                            dellatedpopup();
-                            setgetIdDellated(item.id_transaction);
+                            dellatedpopup(
+                              item.id_transaction, 
+                              item.type_categories, 
+                              item.name_categories, 
+                              item.amount, 
+                              item.descriptions, 
+                              item.created_at);
                            }}>
                             <IoTrashOutline size={14} />
                           </button>
