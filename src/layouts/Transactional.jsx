@@ -159,6 +159,11 @@ export default function Transactional() {
 
   };
 
+  const renamepopup = () => {
+    setupdate(false);
+    setconfirmupdate(true); 
+  }
+
   const getrenamecategory = async () => {
     try {
       const { response } = await FormTransaksi(Renametypecategories);
@@ -175,7 +180,6 @@ export default function Transactional() {
   amount, 
   descriptions,
   created_at) => {
-  
 
    setRenameRenameIdTransactions(id_transaction);
    setRenametypecategories(type_categories);
@@ -188,14 +192,7 @@ export default function Transactional() {
  
   // belum bikin loading   
   const updateRenametransactions = async () => {
-     setconfirmupdate(false);
       try {
-
-      if (!RenameIdTransactions) {
-        console.log("ID transaksi belum ada");
-        return;
-      }
-
       const { response } = await Renametransactions(
         RenameIdTransactions,
         idCategory ?? 1,
@@ -204,14 +201,14 @@ export default function Transactional() {
         descriptions ?? ""
       );
 
+      setconfirmupdate(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
       } catch (error) {
         console.log(error);
       }
-  }
-
-  const renamepopup = () => {
-    setupdate(false);
-    setconfirmupdate(true); 
   }
 
   // pop-up delleted
@@ -233,13 +230,13 @@ export default function Transactional() {
   }
 
   const dellatetransactions = async () => {
-    setTimeout(() => {
-      setdellate(false);
-    }, 1000)
     try {
-      window.location.reload();
       const { response } = await Dellatetransactions(getIdDellated); 
-      await getAlltransactions(Page?.pages || 1);
+      // await getAlltransactions(Page?.pages || 1);
+      setconfirmupdate(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000)
     } catch (error) {
       console.log(error);
     }
@@ -664,28 +661,30 @@ export default function Transactional() {
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Type</span>
                       <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-600">
-                        Expense
+                         {Renametypecategories}
                       </span>
                     </div>
 
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Category</span>
                       <span className="font-medium text-gray-800">
-                        Food
+                         {RenameNameCategoris}
                       </span>
                     </div>
 
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Amount</span>
                       <span className="font-semibold text-gray-900">
-                        Rp10.000
+                         {amount}
                       </span>
                     </div>
 
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Date</span>
                       <span className="font-medium text-gray-800">
-                        18/06/2026
+                          {date  ? 
+                        `${new Date(date).getFullYear()}-${String(new Date(date).getMonth() + 1)
+                        .padStart(2, "0")}-${String(new Date(date).getDate()).padStart(2, "0")}`: ""}
                       </span>
                     </div>
 
@@ -694,7 +693,7 @@ export default function Transactional() {
                         Description
                       </p>
                       <p className="text-gray-800">
-                        Beli minum Mixue dan Ngoffe
+                          {descriptions}
                       </p>
                     </div>
                   </div>
