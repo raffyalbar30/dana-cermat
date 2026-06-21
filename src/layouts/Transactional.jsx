@@ -99,10 +99,10 @@ export default function Transactional() {
   } 
   };
  
+  //  bug const 
   // key loader
   const getAlltransactions = async (pages) => {
     setloader(true);
-
     try {
       const { response } = await GetAlltransactions(token, pages); 
       setAllTransactions(response.data);
@@ -193,6 +193,8 @@ export default function Transactional() {
   // belum bikin loading   
   const updateRenametransactions = async () => {
       try {
+
+      setconfirmupdate(false);
       const { response } = await Renametransactions(
         RenameIdTransactions,
         idCategory ?? 1,
@@ -200,11 +202,7 @@ export default function Transactional() {
         date ?? null,
         descriptions ?? ""
       );
-
-      setconfirmupdate(false);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      await getAlltransactions(Page?.pages || 1);
 
       } catch (error) {
         console.log(error);
