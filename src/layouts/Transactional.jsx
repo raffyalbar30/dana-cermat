@@ -50,6 +50,7 @@ export default function Transactional() {
   const [ renameCategory, setrenameCategory ] = useState([]);
   const [ RenameNameCategoris, setRenameNameCategoris ] = useState();
   const [ RenameIdTransactions, setRenameRenameIdTransactions ] = useState();
+  const [ categoriespopup, setcategoriespopup ] = useState("");
 
   // state delate transactions 
   const [ dellate, setdellate ] = useState(false); 
@@ -76,11 +77,13 @@ export default function Transactional() {
     console.log(error);
   }
   };
-
+  
+  // done berhasil 
   const HandleAddTransaction = async () => {
-    try {
     setnotifications(true);
-    setloader(true);
+
+    try {
+
     await AddTransactions(
       token,
       idCategory,
@@ -88,18 +91,22 @@ export default function Transactional() {
       descriptions,
       date
     );
-    await getAlltransactions(Page?.pages || 1);
+
     setisOpen(false);
+    setloader(true); 
     setTimeout(() => {
        setnotifications(false);
-    }, 2500)
+    }, 2800)
 
   } catch (error) {
     console.log(error);
   } 
+
+   setTimeout(() => {
+      window.location.reload(); 
+    }, 2900); 
   };
- 
-  //  bug const 
+
   // key loader
   const getAlltransactions = async (pages) => {
     setloader(true);
@@ -193,8 +200,6 @@ export default function Transactional() {
   // belum bikin loading   
   const updateRenametransactions = async () => {
       try {
-
-      setconfirmupdate(false);
       const { response } = await Renametransactions(
         RenameIdTransactions,
         idCategory ?? 1,
@@ -202,8 +207,8 @@ export default function Transactional() {
         date ?? null,
         descriptions ?? ""
       );
-      await getAlltransactions(Page?.pages || 1);
-
+      
+      window.location.reload();
       } catch (error) {
         console.log(error);
       }
@@ -248,7 +253,6 @@ export default function Transactional() {
   
   useEffect(() => {;
     getAlltransactions();
-    renametransactions();
   }, []);
 
   useEffect(() => {
@@ -259,19 +263,14 @@ export default function Transactional() {
     getrenamecategory();
   }, [Renametypecategories]);
 
-  useEffect(() => {
-    setTimeout(() =>{
-      updateRenametransactions();
-    }, 1000)
-  }, [RenameIdTransactions, RenameNameCategoris])
-
 
   useEffect(() => {
     setTimeout(() => {
       setloader(false);
-    }, 2500)
+    }, 2000)
   }, [loader])
-    
+ 
+
   return (
     <>
     <div className={`${ notifications === true  ? "active" : "hidden"} flex justify-center`}>
@@ -284,7 +283,7 @@ export default function Transactional() {
        {
           update === true ? (
           // Modal rename transactions 
-          <Modal isOpen={update} handleClick={handleClick} setisOpen={setupdate}
+           <Modal isOpen={update} handleClick={handleClick} setisOpen={setupdate}
           children={
              <div className={`transition-all ${update === true ? "dropdown" : "dropdownout"}`}>
               <div className="flex justify-between"> 
@@ -666,7 +665,7 @@ export default function Transactional() {
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Category</span>
                       <span className="font-medium text-gray-800">
-                         {RenameNameCategoris}
+                         {nameCategoris}
                       </span>
                     </div>
 
@@ -699,9 +698,7 @@ export default function Transactional() {
                   {/* Action */}
                   <div className="mt-8 flex flex-col gap-3">
                     <button
-                      onClick={() => {
-                        updateRenametransactions()
-                      }}
+                    onClick={() => updateRenametransactions()}
                       className="rounded-xl bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
                     >
                       Update Transaction
