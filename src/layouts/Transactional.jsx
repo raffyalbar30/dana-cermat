@@ -314,7 +314,7 @@ export default function Transactional() {
                   <input
                     type="number"
                     placeholder="Masukan jumlah nominal"
-                    value={amount}
+                    value={amount.toLocaleString("id-ID")}
                     className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
                     onChange={(e) => setamount(e.target.value)}
                     />
@@ -567,7 +567,7 @@ export default function Transactional() {
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Amount</span>
                       <span className="font-semibold">
-                        {amountdellated}
+                        {amountdellated.toLocaleString("id-ID")}
                       </span>
                     </div>
 
@@ -672,7 +672,7 @@ export default function Transactional() {
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Amount</span>
                       <span className="font-semibold text-gray-900">
-                         {amount}
+                         {Number(amount).toLocaleString("id-ID")}
                       </span>
                     </div>
 
@@ -806,7 +806,7 @@ export default function Transactional() {
                               : "text-red-500"
                           }`}
                         >
-                          {item.amount}
+                          {item.amount.toLocaleString("id-ID")}
                         </td>
 
                         {/* CATEGORY */}
