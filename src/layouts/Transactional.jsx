@@ -269,7 +269,8 @@ export default function Transactional() {
       setloader(false);
     }, 2000)
   }, [loader])
- 
+  
+  console.log(RenameNameCategoris)
 
   return (
     <>
@@ -524,7 +525,9 @@ export default function Transactional() {
               >
                 {/* Close Button */}
                 <button
-                  onClick={() => setdellate(false)}
+                  onClick={() => {
+                    window.location.reload;
+                    setdellate(false)}}
                   className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
                 >
                   ✕
@@ -629,7 +632,9 @@ export default function Transactional() {
               >
                 {/* Close Button */}
                 <button
-                  onClick={() => setconfirmupdate(false)}
+                  onClick={() =>  {
+                    window.location.reload;
+                    setconfirmupdate(false) }}
                   className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
                 >
                   ✕
@@ -665,7 +670,7 @@ export default function Transactional() {
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Category</span>
                       <span className="font-medium text-gray-800">
-                         {nameCategoris}
+                         {!nameCategoris ? RenameNameCategoris : nameCategoris}
                       </span>
                     </div>
 
