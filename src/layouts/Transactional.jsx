@@ -12,6 +12,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { AddTransactions, Dellatetransactions, FormTransaksi, GetAlltransactions, Renametransactions } from "../services/api";
 import { MdWindow } from "react-icons/md";
 import { LuNotebookPen } from "react-icons/lu";
+import Notfound from "../component/Notfound";
 
 
 
@@ -770,96 +771,102 @@ export default function Transactional() {
               </div>
             ) : (
               <div className="w-full z-0 overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  
-                  {/* TABLE HEAD */}
-                  <thead className="font-semibold border-b border-slate-400">
-                    <tr>
-                      <th className="py-3 font-medium">Type</th>
-                      <th className="py-3 font-medium">Amount</th>
-                      <th className="py-3 font-medium">Category</th>
-                      <th className="py-3 font-medium">Description</th>
-                      <th className="py-3 font-medium">Date</th>
-                      <th className="py-3 font-medium text-right">Actions</th>
-                    </tr>
-                  </thead>
-
-                  {/* TABLE BODY */}
-                  <tbody>
-                    {AllTransactions?.data?.map((item, index) => (
-                      <tr
-                        key={index}
-                        className="border-b  border-slate-400 last:border-none hover:bg-gray-50"
-                      >
-                        {/* TYPE */}
-                        <td className="py-4">
-                          <span
-                            className={`px-3 py-1 text-xs rounded-full font-medium
-                            ${
-                              item.type_categories === "Income"
-                                ? "bg-green-600 text-white"
-                                : "bg-red-500 text-white"
-                            }`}
+                 {
+                   AllTransactions.length === 0 ? (
+                      <div className="w-full">
+                        <Notfound />
+                       </div>
+                   ) : (
+                    <table className="w-full text-sm text-left">
+                      
+                      {/* TABLE HEAD */}
+                      <thead className="font-semibold border-b border-slate-400">
+                        <tr>
+                          <th className="py-3 font-medium">Type</th>
+                          <th className="py-3 font-medium">Amount</th>
+                          <th className="py-3 font-medium">Category</th>
+                          <th className="py-3 font-medium">Description</th>
+                          <th className="py-3 font-medium">Date</th>
+                          <th className="py-3 font-medium text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      {/* TABLE BODY */}
+                      <tbody>
+                        {AllTransactions?.data?.map((item, index) => (
+                          <tr
+                            key={index}
+                            className="border-b  border-slate-400 last:border-none hover:bg-gray-50"
                           >
-                            {item.type_categories}
-                          </span>
-                        </td>
+                            {/* TYPE */}
+                            <td className="py-4">
+                              <span
+                                className={`px-3 py-1 text-xs rounded-full font-medium
+                                ${
+                                  item.type_categories === "Income"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-red-500 text-white"
+                                }`}
+                              >
+                                {item.type_categories}
+                              </span>
+                            </td>
 
-                        {/* AMOUNT */}
-                        <td
-                          className={`font-medium ${
-                            item.type_categories === "Income"
-                              ? "text-green-600"
-                              : "text-red-500"
-                          }`}
-                        >
-                          {item.amount.toLocaleString("id-ID")}
-                        </td>
+                            {/* AMOUNT */}
+                            <td
+                              className={`font-medium ${
+                                item.type_categories === "Income"
+                                  ? "text-green-600"
+                                  : "text-red-500"
+                              }`}
+                            >
+                              {item.amount.toLocaleString("id-ID")}
+                            </td>
 
-                        {/* CATEGORY */}
-                        <td className="text-gray-600">{item.name_categories}</td>
+                            {/* CATEGORY */}
+                            <td className="text-gray-600">{item.name_categories}</td>
 
-                        {/* DESCRIPTION */}
-                        <td className="text-gray-500">{item.descriptions}</td>
+                            {/* DESCRIPTION */}
+                            <td className="text-gray-500">{item.descriptions}</td>
 
-                        {/* DATE */}
-                        <td className="text-gray-500">{new Date(item.created_at).toLocaleDateString("id-ID")}</td>
+                            {/* DATE */}
+                            <td className="text-gray-500">{new Date(item.created_at).toLocaleDateString("id-ID")}</td>
 
-                        {/* ACTIONS */}
-                        <td className="flex justify-end gap-2 py-3">
-                          <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer" 
-                          onClick={() => { 
-                              setupdate(true); 
-                              renametransactions(
-                                item.id_transaction, 
-                                item.type_categories, 
-                                item.name_categories, 
-                                item.amount, 
-                                item.descriptions, 
-                                item.created_at
-                              );
-                            }}>
-                            <PiNotePencil size={14} />
-                          </button>
+                            {/* ACTIONS */}
+                            <td className="flex justify-end gap-2 py-3">
+                              <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer" 
+                              onClick={() => { 
+                                  setupdate(true); 
+                                  renametransactions(
+                                    item.id_transaction, 
+                                    item.type_categories, 
+                                    item.name_categories, 
+                                    item.amount, 
+                                    item.descriptions, 
+                                    item.created_at
+                                  );
+                                }}>
+                                <PiNotePencil size={14} />
+                              </button>
 
-                          <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
-                          onClick={() => {
-                            dellatedpopup(
-                              item.id_transaction, 
-                              item.type_categories, 
-                              item.name_categories, 
-                              item.amount, 
-                              item.descriptions, 
-                              item.created_at);
-                           }}>
-                            <IoTrashOutline size={14} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-
-                </table>
+                              <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
+                              onClick={() => {
+                                dellatedpopup(
+                                  item.id_transaction, 
+                                  item.type_categories, 
+                                  item.name_categories, 
+                                  item.amount, 
+                                  item.descriptions, 
+                                  item.created_at);
+                              }}>
+                                <IoTrashOutline size={14} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                   )
+                 }
               </div>
             )
           }
