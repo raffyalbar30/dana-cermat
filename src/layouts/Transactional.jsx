@@ -662,7 +662,7 @@ export default function Transactional() {
                   <div className="mt-8 rounded-xl border border-gray-200 p-5">
                     <div className="flex justify-between py-2">
                       <span className="text-gray-500">Type</span>
-                      <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-600">
+                      <span className={`rounded-full px-3 py-1 text-sm font-medium  ${Renametypecategories === "Income" ? "text-green-600 bg-green-300" : "text-red-600 bg-red-300"}`}>
                          {Renametypecategories}
                       </span>
                     </div>
@@ -728,7 +728,9 @@ export default function Transactional() {
         <div className="bg-white rounded-xl shadow-sm p-6 w-full border-slate-200 border">
           {/* HEADER */}
           <div className="flex items-center justify-between mb-6">
-            { loader === true ? (
+            { 
+              
+            loader === true ? (
               <div className={`mt-8 h-4 w-xs`}>
                 <LoaderPage className={`h-8`}/> 
               </div>
@@ -862,9 +864,8 @@ export default function Transactional() {
             )
           }
 
-
-        </div>
-        <div>
+          </div>
+          <div>
           {
             loader === true ? (
               <div className={`mt-4 h-4 w-xs float-right`}>
@@ -888,6 +889,8 @@ export default function Transactional() {
             )
           }
         </div>
+
+        {/* footer */}
        <div className="fixed bottom-5 left-1/2 -translate-x-1/2">
           <span className="text-gray-500 text-[12px] pl-52 whitespace-nowrap">
             © 2026 Dana-Cermat. All Rights Reserved. Designed & Developed by Raffy_samaa.
