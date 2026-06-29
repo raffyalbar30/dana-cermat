@@ -16,7 +16,6 @@ export const LoginAuth = async (email, password) => {
             email_user: email, 
             password_user: password
         });
-        console.log(response)
         return { data: response}
     } catch (error) {
         console.log(error);
@@ -99,6 +98,15 @@ export const Dellatetransactions = async ( id ) => {
         })
 
        return { response: response }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const Allcategorybudgets = async () => {
+    try {
+       const response = await  EndpointApi.get(`/Budgets/v1/getAllcategories`); 
+       return { response: response.data}
     } catch (error) {
         console.log(error);
     }

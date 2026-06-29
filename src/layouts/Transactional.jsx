@@ -271,7 +271,6 @@ export default function Transactional() {
     }, 2000)
   }, [loader])
   
-  console.log(RenameNameCategoris)
 
   return (
     <>

@@ -1,20 +1,47 @@
 import { IoTrashOutline } from "react-icons/io5";
 import { PiNotePencil } from "react-icons/pi";
 import { IoWarningOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../component/Modal";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { Allcategorybudgets } from "../services/api";
 
 
 export default function BudgetCategory() {
   
   const [ isOpenBudget, setisOpenBudget ] = useState(false);
-  
+  const [ isRenameBudget, setisRenameBudget ] = useState(false);
+  const [ dropdown, setdropdown ] = useState(false); 
+  const [ dropdownperiod, setdropdownperiod ] = useState(false);
+  const [ categories, setcategories ] = useState([]); 
+  const [ namecategories, setnamecategories ] = useState("");
+  const [ nameperiode, setnameperiode ] = useState("");
+
+
   const HandleOpenBudget = () => {
     return setisOpenBudget(true); 
   }
 
-  console.log(isOpenBudget); 
+   const HandleRenameBudget = () => {
+    return setisRenameBudget(true); 
+  }
+
+  const HandleCategories = async () => {
+     try {
+       const { response } = await Allcategorybudgets();
+       setcategories(response); 
+     } catch (error) {
+       console.log(error); 
+     }
+  }
+
+  useEffect(() => {
+    HandleCategories(); 
+  }, [])
+
+  console.log(categories)
+
+
 
   const budgets = [
     {
@@ -41,8 +68,11 @@ export default function BudgetCategory() {
 
   return (
     <> 
-
-    <Modal isOpen={isOpenBudget}
+    {
+      isRenameBudget === true ? (
+        <p>heloo world</p>
+      ) : isOpenBudget === true ? (
+          <Modal isOpen={isOpenBudget}
         children={
            <div className={`transition-all ${isOpenBudget === true ? "dropdown" : "opacity-0 invisible"}`}>
                 <div className="flex justify-between"> 
@@ -51,7 +81,8 @@ export default function BudgetCategory() {
                               <p className="text-sm text-gray-500"> Add a new budgeting for your financial stable </p>
                         </div>
                         <div className="mr-4 mt-4">
-                            <button  className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
+                            <button onClick={() => setisOpenBudget(false)}
+                             className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
                         </div>
                 </div>
     
@@ -60,10 +91,25 @@ export default function BudgetCategory() {
                       <div className="w-1/2 ml-4 mt-4">
                         <label className="text-sm text-gray-600">Categories</label>
                         <div className="relative w-full mt-1">
-                          <button  className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                            <span>Transport</span>
+                          <button onClick={()=> setdropdown(true)} 
+                          className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                            <span>{!namecategories ? "Food" : namecategories}</span>
                             <span> <IoMdArrowDropdown/> </span>
                           </button>
+                            <ul  className={`${ dropdown === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                           {
+                             categories?.data?.map((items) => {
+                                 return (
+                                  <li data-value={items?.name_categories} onClick={(e) => {
+                                    setdropdown(false)
+                                    setnamecategories(e.target.dataset.value);
+                                    }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        {items?.name_categories}
+                                  </li>
+                                 );
+                             })
+                           }
+                            </ul>
                         </div>
                       </div>
     
@@ -81,24 +127,37 @@ export default function BudgetCategory() {
                         <div className="full ml-4 mt-4">
                         <label className="text-sm text-gray-600">Periode Budgeting</label>
                         <div className="relative w-full mt-1">
-                          <button className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                          <button onClick={()=> setdropdownperiod(true)} 
+                          className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                            <span>{!nameperiode ? "three day" : nameperiode}</span>
                             <span> <IoMdArrowDropdown/> </span>
                           </button>
-                              <ul  className={` absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
-                                  {/* {
-                                    getCategory?.map((items) => {
-                                        return (
-                                          <li data-value={items?.name_categories} onClick={(e) => {
-                                            setdropdownCategory(false)
-                                            setidCategory(items?.categories_id)
-                                            setnameCategories(e.target.dataset.value); 
-                                            }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
-                                                {items?.name_categories}
-                                          </li>
-                                        );
-                                    })
-                                  } */}
-                              </ul>
+                        <ul  className={`${ dropdownperiod === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                                  <li data-value="three day" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                    setnameperiode(e.target.dataset.value)}} 
+                                   className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        three day
+                                  </li>
+                                  <li data-value="weekly" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                    setnameperiode(e.target.dataset.value)}} 
+                                  className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        weekly
+                                  </li>
+                                  <li data-value="monthly" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                    setnameperiode(e.target.dataset.value)}} 
+                                  className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        monthly
+                                  </li>
+                                  <li data-value="yearly" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                    setnameperiode(e.target.dataset.value)}} 
+                                  className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        yearly
+                                  </li>
+                      </ul>
                         </div>
                       </div>
     
@@ -122,9 +181,10 @@ export default function BudgetCategory() {
                         </div>
 
                       <div className="mr-4">
-                        <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-2 mb-6 bg-transparent border border-solid disabled:bg-blue-600
+                        <button onClick={() => setisOpenBudget(false)}
+                        type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-2 mb-6 bg-transparent border border-solid border-slate-300 disabled:bg-blue-600
                         cursor-pointer text-slate-700 py-2 rounded-md`}>
-                            <span> Cancle Budgeting </span>
+                            <span> Cancel budgeting </span>
                         </button>
                       </div>
     
@@ -132,7 +192,9 @@ export default function BudgetCategory() {
     
           </div>
                   
-     }/> 
+         }/> 
+      ) : null
+    }
     
     <div className="w-full rounded-lg border border-slate-200 bg-slate-50 mt-8 mx-auto p-6">
 
