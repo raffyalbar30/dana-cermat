@@ -376,7 +376,7 @@ export default function Transactional() {
               </div>
               
               <div className="mr-4">
-                <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-500
+                <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-2 bg-blue-700 disabled:bg-blue-500
                 cursor-pointer text-white py-2 rounded-md`}
                 onClick={() => {
                   renamepopup();
@@ -384,6 +384,11 @@ export default function Transactional() {
                 disabled={!amount || !getCategory || !date || loader}>
                 {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
                      <span> update transactions </span>
+                </button>
+                <button onClick={() => setupdate(false)}
+                        type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-2 mb-6 bg-transparent border border-solid border-slate-300 disabled:bg-blue-600
+                        cursor-pointer text-slate-700 py-2 rounded-md`}>
+                            <span> Cancel budgeting </span>
                 </button>
                 </div>
 
@@ -493,7 +498,7 @@ export default function Transactional() {
                   </div>
                   
                   <div className="mr-4">
-                    <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-6 bg-blue-700 disabled:bg-blue-600
+                    <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-2 bg-blue-700 disabled:bg-blue-600
                     cursor-pointer text-white py-2 rounded-md`}
                     onClick={() => {
                       HandleAddTransaction();
@@ -502,6 +507,11 @@ export default function Transactional() {
                     {loader && ( <div className="w-4 h-4 border-4 border-t-white border-blue-300 rounded-full animate-spin"></div>)}
                         <span> Add Transaction </span>
                     </button>
+                    <button onClick={() => setisOpen(false)}
+                        type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-2 mb-6 bg-transparent border border-solid border-slate-300 disabled:bg-blue-600
+                        cursor-pointer text-slate-700 py-2 rounded-md`}>
+                            <span> Cancel Add Transaction </span>
+                     </button>
                     </div>
 
               </div>

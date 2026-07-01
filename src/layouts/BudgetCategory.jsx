@@ -15,8 +15,13 @@ export default function BudgetCategory() {
   const [ dropdownperiod, setdropdownperiod ] = useState(false);
   const [ categories, setcategories ] = useState([]); 
   const [ namecategories, setnamecategories ] = useState("");
-  const [ nameperiode, setnameperiode ] = useState("");
+  
 
+  // form data category
+  const [ idcategory, setidcategory ] = useState(); 
+  const [ amount, setamount ] = useState(); 
+  const [ periode, setperiode ] = useState("");
+  const [ date, setdate ] = useState();
 
   const HandleOpenBudget = () => {
     return setisOpenBudget(true); 
@@ -39,7 +44,10 @@ export default function BudgetCategory() {
     HandleCategories(); 
   }, [])
 
-  console.log(categories)
+  console.log(idcategory);
+  console.log(amount);
+  console.log(periode);
+  console.log(date); 
 
 
 
@@ -101,6 +109,7 @@ export default function BudgetCategory() {
                              categories?.data?.map((items) => {
                                  return (
                                   <li data-value={items?.name_categories} onClick={(e) => {
+                                    setidcategory(items?.categories_id);
                                     setdropdown(false)
                                     setnamecategories(e.target.dataset.value);
                                     }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
@@ -119,6 +128,7 @@ export default function BudgetCategory() {
                             type="number"
                             placeholder="Masukan jumlah nominal"
                             className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                            onChange={(e)=> setamount(e.target.value)}
                           />
                         </div>
                   </div>
@@ -129,31 +139,31 @@ export default function BudgetCategory() {
                         <div className="relative w-full mt-1">
                           <button onClick={()=> setdropdownperiod(true)} 
                           className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                            <span>{!nameperiode ? "three day" : nameperiode}</span>
+                            <span>{!periode ? "three day" : periode}</span>
                             <span> <IoMdArrowDropdown/> </span>
                           </button>
-                        <ul  className={`${ dropdownperiod === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
-                                  <li data-value="three day" onClick={(e) => {
+                          <ul  className={`${ dropdownperiod === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                                  <li data-value="threeday" onClick={(e) => {
                                      setdropdownperiod(false)
-                                    setnameperiode(e.target.dataset.value)}} 
+                                     setperiode(e.target.dataset.value)}} 
                                    className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
                                         three day
                                   </li>
                                   <li data-value="weekly" onClick={(e) => {
                                      setdropdownperiod(false)
-                                    setnameperiode(e.target.dataset.value)}} 
+                                    setperiode(e.target.dataset.value)}} 
                                   className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
                                         weekly
                                   </li>
                                   <li data-value="monthly" onClick={(e) => {
                                      setdropdownperiod(false)
-                                    setnameperiode(e.target.dataset.value)}} 
+                                    setperiode(e.target.dataset.value)}} 
                                   className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
                                         monthly
                                   </li>
                                   <li data-value="yearly" onClick={(e) => {
                                      setdropdownperiod(false)
-                                    setnameperiode(e.target.dataset.value)}} 
+                                    setperiode(e.target.dataset.value)}} 
                                   className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
                                         yearly
                                   </li>
@@ -168,6 +178,7 @@ export default function BudgetCategory() {
                             <input
                               type="date"
                               className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                              onChange={(e) => setdate(e.target.value)}
                               />
                           </div>
                       </diV>

@@ -105,9 +105,39 @@ export const Dellatetransactions = async ( id ) => {
 
 export const Allcategorybudgets = async () => {
     try {
-       const response = await  EndpointApi.get(`/Budgets/v1/getAllcategories`); 
+       const response = await EndpointApi.get(`/Budgets/v1/getAllcategories`); 
        return { response: response.data}
     } catch (error) {
         console.log(error);
+    }
+}
+
+
+export const Addbudgets = async (
+    token, 
+    category,
+    amount, 
+    periode, 
+    StartDate, 
+    EndDate) => {
+
+    try {
+        const response = await EndpointApi.post(`/Budgets/v1/addbudgets`, {
+         headers: {
+            authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json"
+          }
+        }, 
+        {
+            category: category, 
+            amount: amount, 
+            periode: periode, 
+            StartDate: StartDate, 
+            EndDate: EndDate
+        }); 
+
+        return { response:response.data }
+    } catch (error) {
+       console.log(error); 
     }
 }
