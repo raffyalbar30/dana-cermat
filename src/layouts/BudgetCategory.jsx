@@ -4,7 +4,8 @@ import { IoWarningOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import Modal from "../component/Modal";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { Addbudgets, Allcategorybudgets, GetAllbudgets } from "../services/api";
+import { Addbudgets, Allcategorybudgets, Dellatebudgets, GetAllbudgets } from "../services/api";
+import { FiAlertTriangle } from "react-icons/fi";
 
 
 export default function BudgetCategory() {
@@ -25,6 +26,18 @@ export default function BudgetCategory() {
 
   // allBudgets data 
   const [ dataAllbudgets, setdataAllbudgets ] = useState([]);
+
+  // dellated popup
+  const [ dellateBudgets, setdellateBudgets ] = useState(false);
+  
+  // getIdBudgets categories
+  const [ getIdBudgets, setgetIdBudgets ] = useState();
+  const [ getnamecategories, setgetnamecategories ] = useState();
+  const [ getperiod, setgetperiod ] = useState();
+  const [ getamount, setgetamount ] = useState();
+  const [ getstartdate, setgetstartdate ] = useState();
+  const [ getEnddate, setgetEnddate ] = useState();
+
 
  const token = localStorage.getItem("Token"); 
 
@@ -64,41 +77,119 @@ export default function BudgetCategory() {
     }
   }
 
+  const HandleDellatebudgets = async (id) => {
+    try {
+      const { response } = await Dellatebudgets(id); 
+      window.location.reload();
+    } catch (error) {
+      console.log(error); 
+    }
+  }
+
   useEffect(() => {
     GetAllBudgets();
     HandleCategories(); 
   }, [])
 
-  console.log(dataAllbudgets.data); 
-
-  const budgets = [
-    {
-      title: "Food & Dining",
-      used: 850,
-      total: 1000
-    },
-    {
-      title: "Transportation",
-      used: 420,
-      total: 500
-    },
-    {
-      title: "Shopping",
-      used: 680,
-      total: 800
-    }, 
-    {
-      title: "Bills & Utilitis",
-      used: 920,
-      total: "1.200"
-    }
-  ];
 
   return (
     <> 
     {
       isRenameBudget === true ? (
         <p>heloo world</p>
+      ) : dellateBudgets === true ?  (
+           <div className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
+                      dellateBudgets
+                        ? "dropdown"
+                        : "opacity-0 invisible"
+                    }`}
+                  >
+                    <div
+                      className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
+                        dellateBudgets
+                          ? "scale-100 opacity-100"
+                          : "scale-95 opacity-0"
+                      }`}
+                    >
+                      {/* Close Button */}
+                      <button
+                        onClick={() => {
+                          setdellateBudgets(false)}}
+                        className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
+                      >
+                        ✕
+                      </button>
+      
+                      <div className="p-8">
+                        {/* Icon */}
+                        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-red-100">
+                          <FiAlertTriangle
+                            size={40}
+                            className="text-red-600"
+                          />
+                        </div>
+      
+                        {/* Heading */}
+                        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+                          Delete Budgets
+                        </h2>
+      
+                        <p className="mt-3 text-center text-gray-500">
+                          Are you sure you want to delete this budgets?
+                        </p>
+      
+                        
+                        {/* Transaction Info */}
+                        <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4">
+      
+                          <div className="flex justify-between py-2">
+                            <span className="text-gray-500">Category</span>
+                            <span className="font-medium">{getnamecategories}</span>
+                          </div>
+      
+                          <div className="flex justify-between py-2">
+                            <span className="text-gray-500">Amount</span>
+                            <span className="font-semibold">
+                              {getamount}
+                            </span>
+                          </div>
+      
+                          <div className="flex justify-between py-2">
+                            <span className="text-gray-500">Start Date</span>
+                            <span>{new Date(getstartdate).toLocaleDateString("id-ID")}</span>
+                          </div>
+
+                           <div className="flex justify-between py-2">
+                            <span className="text-gray-500">End Date</span>
+                            <span>{new Date(getEnddate).toLocaleDateString("id-ID")}</span>
+                          </div>
+      
+      
+      
+                        </div>
+      
+                        {/* Warning */}
+                        <p className="mt-4 text-center text-sm text-red-500">
+                          This action cannot be undone.
+                        </p>
+      
+                        {/* Actions */}
+                        <div className="mt-8 flex flex-col gap-3">
+                          <button onClick={()=> HandleDellatebudgets(getIdBudgets)}
+                            className="rounded-xl bg-red-600 py-3 cursor-pointer  font-medium text-white transition hover:bg-red-700"
+                          >
+                            Delete Transaction
+                          </button>
+      
+                          <button
+                            className="rounded-xl border cursor-pointer  border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+           </div>
       ) : isOpenBudget === true ? (
           <Modal isOpen={isOpenBudget}
         children={
@@ -225,7 +316,7 @@ export default function BudgetCategory() {
           </div>
                   
          }/> 
-      ) : null
+        ) : null
     }
     
     <div className="w-full rounded-lg border border-slate-200 bg-slate-50 mt-8 mx-auto p-6">
@@ -250,9 +341,19 @@ export default function BudgetCategory() {
       <div className="space-y-4">
         {dataAllbudgets?.data?.map((items, i) => (
           <BudgetCard key={i} 
+          categories_id={items?.categories_id}
           name_categories={items?.name_categories} 
           period={items?.period} 
           budget_amount={items?.budget_amount}
+          start_date={items?.start_date}
+          end_date={items?.end_date}
+          setgetIdBudgets={setgetIdBudgets}
+          setgetnamecategories={ setgetnamecategories}
+          setgetperiod={setgetperiod} 
+          setgetamount={setgetamount} 
+          setgetstartdate={setgetstartdate} 
+          setgetEnddate={setgetEnddate}
+          setdellateBudgets={setdellateBudgets}
           />
         ))}
       </div>
@@ -263,8 +364,25 @@ export default function BudgetCategory() {
 }
 
 
-function BudgetCard({ name_categories, period, budget_amount, start_date, end_date }) {
-
+function BudgetCard({ 
+  categories_id, 
+  name_categories, 
+  period, 
+  budget_amount, 
+  start_date, 
+  end_date, 
+  setgetIdBudgets, 
+  setgetnamecategories,
+  setgetperiod, 
+  setgetamount, 
+  setgetstartdate,
+  setgetEnddate, 
+  setdellateBudgets }) {
+ 
+    
+  const DellatedPopup = () => { 
+   setdellateBudgets(true);
+  }
 
   const percent = Math.round((4000 / budget_amount) * 100);
   const remaining = 4000 - budget_amount;
@@ -290,11 +408,23 @@ function BudgetCard({ name_categories, period, budget_amount, start_date, end_da
             Warning
           </span>
 
-          <button className="p-2 border rounded-md hover:bg-gray-50">
-            <PiNotePencil size={14}/>
-          </button>
+           <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
+              {new Date(start_date).toLocaleDateString("id-ID")} - {new Date(end_date).toLocaleDateString("id-ID")}
+          </span>
 
           <button className="p-2 border rounded-md hover:bg-gray-50">
+            <PiNotePencil size={14} />
+          </button>
+
+          <button onClick={()=> {
+            setgetIdBudgets(categories_id), 
+            setgetnamecategories(name_categories),
+            setgetperiod(period), 
+            setgetamount(budget_amount), 
+            setgetstartdate(start_date),
+            setgetEnddate(end_date)
+            DellatedPopup()
+          }} className="p-2 border rounded-md hover:bg-gray-50">
             <IoTrashOutline size={14}/>
           </button>
 
