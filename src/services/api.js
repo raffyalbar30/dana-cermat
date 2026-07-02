@@ -9,7 +9,6 @@ export const EndpointApi = axios.create({
     }
 })
 
-
 export const LoginAuth = async (email, password) => {
     try {
         const response = await EndpointApi.post("/Login", {
@@ -112,32 +111,42 @@ export const Allcategorybudgets = async () => {
     }
 }
 
-
 export const Addbudgets = async (
     token, 
     category,
     amount, 
     periode, 
-    StartDate, 
-    EndDate) => {
+    StartDate) => {
 
     try {
         const response = await EndpointApi.post(`/Budgets/v1/addbudgets`, {
+            category: category, 
+            amount: amount, 
+            periode: periode, 
+            startdate: StartDate, 
+        }, {
          headers: {
             authorization: `Bearer ${token}`, 
             "Content-Type": "application/json"
           }
-        }, 
-        {
-            category: category, 
-            amount: amount, 
-            periode: periode, 
-            StartDate: StartDate, 
-            EndDate: EndDate
         }); 
 
-        return { response:response.data }
+        return { response: response.data }
     } catch (error) {
        console.log(error); 
+    }
+}
+
+export const GetAllbudgets = async (token) => {
+    try {
+       const response = await EndpointApi.get(`/Budgets/v1/getAllBudgets`, {
+           headers: {
+            authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json"
+          }
+       }); 
+       return { response: response.data}
+    } catch (error) {
+        
     }
 }

@@ -4,7 +4,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import Modal from "../component/Modal";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { Allcategorybudgets } from "../services/api";
+import { Addbudgets, Allcategorybudgets, GetAllbudgets } from "../services/api";
 
 
 export default function BudgetCategory() {
@@ -23,11 +23,16 @@ export default function BudgetCategory() {
   const [ periode, setperiode ] = useState("");
   const [ date, setdate ] = useState();
 
+  // allBudgets data 
+  const [ dataAllbudgets, setdataAllbudgets ] = useState([]);
+
+ const token = localStorage.getItem("Token"); 
+
   const HandleOpenBudget = () => {
     return setisOpenBudget(true); 
   }
 
-   const HandleRenameBudget = () => {
+  const HandleRenameBudget = () => {
     return setisRenameBudget(true); 
   }
 
@@ -39,17 +44,32 @@ export default function BudgetCategory() {
        console.log(error); 
      }
   }
+  
+  const HandleAddBudget = async () => {
+    try {
+      const { response } = await Addbudgets(token, idcategory, amount, periode, date);
+      setisOpenBudget(false);
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  const GetAllBudgets = async () => {
+    try {
+      const { response } = await GetAllbudgets(token);
+      setdataAllbudgets(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
+    GetAllBudgets();
     HandleCategories(); 
   }, [])
 
-  console.log(idcategory);
-  console.log(amount);
-  console.log(periode);
-  console.log(date); 
-
-
+  console.log(dataAllbudgets.data); 
 
   const budgets = [
     {
@@ -185,7 +205,8 @@ export default function BudgetCategory() {
     
                       
                       <div className="mr-4">
-                        <button type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-2 bg-blue-700 disabled:bg-blue-600
+                        <button onClick={() => HandleAddBudget()}
+                        type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-2 bg-blue-700 disabled:bg-blue-600
                         cursor-pointer text-white py-2 rounded-md`}>
                             <span> Add budgeting </span>
                         </button>
@@ -227,8 +248,12 @@ export default function BudgetCategory() {
 
       {/* Cards */}
       <div className="space-y-4">
-        {budgets.map((budget, i) => (
-          <BudgetCard key={i} {...budget} />
+        {dataAllbudgets?.data?.map((items, i) => (
+          <BudgetCard key={i} 
+          name_categories={items?.name_categories} 
+          period={items?.period} 
+          budget_amount={items?.budget_amount}
+          />
         ))}
       </div>
 
@@ -238,10 +263,11 @@ export default function BudgetCategory() {
 }
 
 
-function BudgetCard({ title, used, total }) {
+function BudgetCard({ name_categories, period, budget_amount, start_date, end_date }) {
 
-  const percent = Math.round((used / total) * 100);
-  const remaining = total - used;
+
+  const percent = Math.round((4000 / budget_amount) * 100);
+  const remaining = 4000 - budget_amount;
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-5">
@@ -250,10 +276,10 @@ function BudgetCard({ title, used, total }) {
       <div className="flex justify-between items-start mb-4">
 
         <div>
-          <h3 className="font-medium">{title}</h3>
-          <p className="text-xs text-gray-500">Monthly Budget</p>
+          <h3 className="font-medium">{name_categories}</h3>
+          <p className="text-xs text-gray-500">{period} Budget</p>
           <p className="text-sm mt-1">
-            ${used} / ${total}
+            ${4000} / <span>{budget_amount.toLocaleString("id-ID")}</span>
           </p>
         </div>
 
@@ -292,7 +318,7 @@ function BudgetCard({ title, used, total }) {
         </span>
 
         <span>
-          ${remaining} remaining
+          ${remaining.toLocaleString("id-ID")} remaining
         </span>
       </div>
 
