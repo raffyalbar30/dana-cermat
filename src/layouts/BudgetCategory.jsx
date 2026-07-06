@@ -6,6 +6,7 @@ import Modal from "../component/Modal";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { Addbudgets, Allcategorybudgets, Dellatebudgets, GetAllbudgets } from "../services/api";
 import { FiAlertTriangle } from "react-icons/fi";
+import LoaderPage from "../component/LoaderPage";
 
 
 export default function BudgetCategory() {
@@ -37,6 +38,9 @@ export default function BudgetCategory() {
   const [ getamount, setgetamount ] = useState();
   const [ getstartdate, setgetstartdate ] = useState();
   const [ getEnddate, setgetEnddate ] = useState();
+
+  // loader budgets 
+  const [ loader, setloader ] = useState(false);
 
 
  const token = localStorage.getItem("Token"); 
@@ -80,17 +84,16 @@ export default function BudgetCategory() {
   const HandleDellatebudgets = async (id) => {
     try {
       const { response } = await Dellatebudgets(id); 
-      window.location.reload();
     } catch (error) {
       console.log(error); 
     }
+
   }
 
   useEffect(() => {
     GetAllBudgets();
     HandleCategories(); 
   }, [])
-
 
   return (
     <> 
@@ -150,7 +153,7 @@ export default function BudgetCategory() {
                           <div className="flex justify-between py-2">
                             <span className="text-gray-500">Amount</span>
                             <span className="font-semibold">
-                              {getamount}
+                              {getamount.toLocaleString("id-ID")}
                             </span>
                           </div>
       
@@ -170,7 +173,7 @@ export default function BudgetCategory() {
       
                         {/* Warning */}
                         <p className="mt-4 text-center text-sm text-red-500">
-                          This action cannot be undone.
+                          This action dellated budget cannot be undone.
                         </p>
       
                         {/* Actions */}
@@ -181,7 +184,7 @@ export default function BudgetCategory() {
                             Delete Transaction
                           </button>
       
-                          <button
+                          <button onClick={()=> setdellateBudgets(false) }
                             className="rounded-xl border cursor-pointer  border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
                           >
                             Cancel
@@ -323,38 +326,67 @@ export default function BudgetCategory() {
 
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-lg font-semibold">Budget Categories</h2>
-          <p className="text-sm text-gray-500">
-            Manage your spending limits by category
-          </p>
-        </div>
+        { 
+          loader === true ? (
+              <div className={`h-4 w-xs`}>
+                 <LoaderPage className={`h-8`}/> 
+              </div>
+          ) : (
+            <div>
+              <h2 className="text-lg font-semibold">Budget Categories</h2>
+              <p className="text-sm text-gray-500">
+                Manage your spending limits by category
+              </p>
+            </div>
+          )
+        }
 
-        <button 
-        onClick={() => HandleOpenBudget()}
-        className="bg-blue-700 cursor-pointer text-white text-sm px-4 py-2 rounded-lg hover:opacity-90">
-          + Add Budget
-        </button>
+        {
+          loader === true ? ( 
+             <div className={`h-4 w-[200px]`}>
+                 <LoaderPage className={`h-8`}/> 
+              </div>
+          ) : (
+            <button 
+              onClick={() => HandleOpenBudget()}
+              className="bg-blue-700 cursor-pointer text-white text-sm px-4 py-2 rounded-lg hover:opacity-90">
+                + Add Budget
+            </button>
+          )
+        }
       </div>
 
       {/* Cards */}
       <div className="space-y-4">
-        {dataAllbudgets?.data?.map((items, i) => (
-          <BudgetCard key={i} 
-          categories_id={items?.categories_id}
-          name_categories={items?.name_categories} 
-          period={items?.period} 
-          budget_amount={items?.budget_amount}
-          start_date={items?.start_date}
-          end_date={items?.end_date}
-          setgetIdBudgets={setgetIdBudgets}
-          setgetnamecategories={ setgetnamecategories}
-          setgetperiod={setgetperiod} 
-          setgetamount={setgetamount} 
-          setgetstartdate={setgetstartdate} 
-          setgetEnddate={setgetEnddate}
-          setdellateBudgets={setdellateBudgets}
-          />
+        {
+          loader === true ? ( 
+            Array.from({
+              length: dataAllbudgets?.data?.length || 6,
+            }).map((_, i) => (
+              <div key={i} className={`w-full`}>
+                <LoaderPage className="h-32"/>
+              </div>
+            ))
+          ) : (
+            dataAllbudgets?.data?.map((items, i) => (
+               <BudgetCard key={i} 
+               id_budgets={items?.id_budgets}
+               name_categories={items?.name_categories} 
+               period={items?.period} 
+               budget_amount={items?.budget_amount}
+               start_date={items?.start_date}
+               end_date={items?.end_date}
+               setgetIdBudgets={setgetIdBudgets}
+               setgetnamecategories={ setgetnamecategories}
+               setgetperiod={setgetperiod} 
+               setgetamount={setgetamount} 
+               setgetstartdate={setgetstartdate} 
+               setgetEnddate={setgetEnddate}
+               setdellateBudgets={setdellateBudgets}
+               loader={loader}
+               />
+          )
+          
         ))}
       </div>
 
@@ -365,7 +397,7 @@ export default function BudgetCategory() {
 
 
 function BudgetCard({ 
-  categories_id, 
+  id_budgets, 
   name_categories, 
   period, 
   budget_amount, 
@@ -377,7 +409,8 @@ function BudgetCard({
   setgetamount, 
   setgetstartdate,
   setgetEnddate, 
-  setdellateBudgets }) {
+  setdellateBudgets, 
+  loader }) {
  
     
   const DellatedPopup = () => { 
@@ -388,70 +421,70 @@ function BudgetCard({
   const remaining = 4000 - budget_amount;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
+       <div className="bg-white border border-gray-200 rounded-xl p-5">
 
-      {/* Top */}
-      <div className="flex justify-between items-start mb-4">
+              {/* Top */}
+              <div className="flex justify-between items-start mb-4">
 
-        <div>
-          <h3 className="font-medium">{name_categories}</h3>
-          <p className="text-xs text-gray-500">{period} Budget</p>
-          <p className="text-sm mt-1">
-            ${4000} / <span>{budget_amount.toLocaleString("id-ID")}</span>
-          </p>
-        </div>
+                <div>
+                  <h3 className="font-medium">{name_categories}</h3>
+                  <p className="text-xs text-gray-500">{period} Budget</p>
+                  <p className="text-sm mt-1">
+                    {4000} / <span>{budget_amount.toLocaleString("id-ID")}</span>
+                  </p>
+                </div>
 
-        <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
 
-          <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-            <IoWarningOutline size={12}/>
-            Warning
-          </span>
+                  <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
+                    <IoWarningOutline size={12}/>
+                    Warning
+                  </span>
 
-           <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-              {new Date(start_date).toLocaleDateString("id-ID")} - {new Date(end_date).toLocaleDateString("id-ID")}
-          </span>
+                  <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
+                      {new Date(start_date).toLocaleDateString("id-ID")} - {new Date(end_date).toLocaleDateString("id-ID")}
+                  </span>
 
-          <button className="p-2 border rounded-md hover:bg-gray-50">
-            <PiNotePencil size={14} />
-          </button>
+                  <button className="p-2 border rounded-md hover:bg-gray-50">
+                    <PiNotePencil size={14} />
+                  </button>
 
-          <button onClick={()=> {
-            setgetIdBudgets(categories_id), 
-            setgetnamecategories(name_categories),
-            setgetperiod(period), 
-            setgetamount(budget_amount), 
-            setgetstartdate(start_date),
-            setgetEnddate(end_date)
-            DellatedPopup()
-          }} className="p-2 border rounded-md hover:bg-gray-50">
-            <IoTrashOutline size={14}/>
-          </button>
+                  <button onClick={()=> {
+                    setgetIdBudgets(id_budgets), 
+                    setgetnamecategories(name_categories),
+                    setgetperiod(period), 
+                    setgetamount(budget_amount), 
+                    setgetstartdate(start_date),
+                    setgetEnddate(end_date)
+                    DellatedPopup()
+                  }} className="p-2 border rounded-md hover:bg-gray-50">
+                    <IoTrashOutline size={14}/>
+                  </button>
 
-        </div>
-      </div>
-
-
-      {/* Progress */}
-      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
-        <div
-          className="h-full bg-blue-700 "
-          style={{ width: `${percent}%` }}
-        />
-      </div>
+                </div>
+              </div>
 
 
-      {/* Bottom */}
-      <div className="flex justify-between text-xs text-gray-500">
-        <span className="text-amber-500 font-medium">
-          {percent}.0%
-        </span>
+              {/* Progress */}
+              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
+                <div
+                  className="h-full bg-blue-700 "
+                  style={{ width: `${percent}%` }}
+                />
+              </div>
 
-        <span>
-          ${remaining.toLocaleString("id-ID")} remaining
-        </span>
-      </div>
 
-    </div>
+              {/* Bottom */}
+              <div className="flex justify-between text-xs text-gray-500">
+                <span className="text-amber-500 font-medium">
+                  {percent}.0%
+                </span>
+
+                <span>
+                  ${remaining.toLocaleString("id-ID")} remaining
+                </span>
+              </div>
+
+            </div>
   );
 }

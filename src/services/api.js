@@ -147,7 +147,7 @@ export const GetAllbudgets = async (token) => {
        }); 
        return { response: response.data}
     } catch (error) {
-        
+        console.log(error);
     }
 }
 
