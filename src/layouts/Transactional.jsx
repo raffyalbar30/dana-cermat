@@ -276,7 +276,7 @@ export default function Transactional() {
     <>
     <div className={`${ notifications === true  ? "active" : "hidden"} flex justify-center`}>
      <Toaster className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
-      stateNotif={() => setnotifications(false)}></Toaster>
+      stateNotif={() => setnotifications(false)} Title={"Data transactions telah ditambahkan!!"}></Toaster>
     </div>
       
       {/* Modal transactions */}

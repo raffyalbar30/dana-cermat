@@ -7,6 +7,8 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { Addbudgets, Allcategorybudgets, Dellatebudgets, GetAllbudgets } from "../services/api";
 import { FiAlertTriangle } from "react-icons/fi";
 import LoaderPage from "../component/LoaderPage";
+import Toaster from "../component/Toaster";
+import { LuNotebookPen } from "react-icons/lu";
 
 
 export default function BudgetCategory() {
@@ -16,7 +18,7 @@ export default function BudgetCategory() {
   const [ dropdown, setdropdown ] = useState(false); 
   const [ dropdownperiod, setdropdownperiod ] = useState(false);
   const [ categories, setcategories ] = useState([]); 
-  const [ namecategories, setnamecategories ] = useState("");
+  const [ namecategories, setnamecategories ] = useState("Food");
   
 
   // form data category
@@ -30,8 +32,11 @@ export default function BudgetCategory() {
 
   // dellated popup
   const [ dellateBudgets, setdellateBudgets ] = useState(false);
+
+  // confirm update budget
+  const [ confirmupdate, setconfirmupdate ] = useState(false); 
   
-  // getIdBudgets categories
+  // get value Budgets 
   const [ getIdBudgets, setgetIdBudgets ] = useState();
   const [ getnamecategories, setgetnamecategories ] = useState();
   const [ getperiod, setgetperiod ] = useState();
@@ -42,6 +47,8 @@ export default function BudgetCategory() {
   // loader budgets 
   const [ loader, setloader ] = useState(false);
 
+  // notifications 
+  const [ notifications, setnotifications ] = useState(false);
 
  const token = localStorage.getItem("Token"); 
 
@@ -51,6 +58,11 @@ export default function BudgetCategory() {
 
   const HandleRenameBudget = () => {
     return setisRenameBudget(true); 
+  }
+
+  const HandleRenamePopup = () => {
+    setisRenameBudget(false);
+     return setconfirmupdate(true); 
   }
 
   const HandleCategories = async () => {
@@ -63,16 +75,29 @@ export default function BudgetCategory() {
   }
   
   const HandleAddBudget = async () => {
+     setnotifications(true);
+
     try {
+
       const { response } = await Addbudgets(token, idcategory, amount, periode, date);
       setisOpenBudget(false);
+      setloader(true);
+      setTimeout(() => {
+       setnotifications(false);
+      }, 2800)
+
     } catch (error) {
       console.log(error);
     }
 
+     setTimeout(() => {
+      window.location.reload(); 
+    }, 2900); 
+
   }
 
   const GetAllBudgets = async () => {
+    setloader(true);
     try {
       const { response } = await GetAllbudgets(token);
       setdataAllbudgets(response);
@@ -84,6 +109,10 @@ export default function BudgetCategory() {
   const HandleDellatebudgets = async (id) => {
     try {
       const { response } = await Dellatebudgets(id); 
+      setdellateBudgets(false)
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000)
     } catch (error) {
       console.log(error); 
     }
@@ -95,12 +124,152 @@ export default function BudgetCategory() {
     HandleCategories(); 
   }, [])
 
+  // loader 
+   useEffect(() => {
+      setTimeout(() => {
+        setloader(false);
+      }, 2000)
+    }, [loader])
+ 
+ console.log(getEnddate);
+
   return (
     <> 
+        <div className={`${ notifications === true  ? "active" : "hidden"} flex justify-center`}>
+         <Toaster className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
+          stateNotif={() => setnotifications(false)} Title={"Data Budget telah ditambahkan!!"}></Toaster>
+        </div>
     {
       isRenameBudget === true ? (
-        <p>heloo world</p>
-      ) : dellateBudgets === true ?  (
+          <Modal isOpen={isRenameBudget}
+          children={
+           <div className={`transition-all ${isRenameBudget === true ? "dropdown" : "opacity-0 invisible"}`}>
+                <div className="flex justify-between"> 
+                        <div className="ml-4 mt-4"> 
+                            <h2 className="text-lg font-semibold">Update Budgets</h2>
+                              <p className="text-sm text-gray-500"> Update Your Budgets For Financial Stable</p>
+                        </div>
+                        <div className="mr-4 mt-4">
+                            <button onClick={() => setisRenameBudget(false)}
+                             className="text-gray-400  text-[18px] cursor-pointer hover:text-black"> ✕ </button>
+                        </div>
+                </div>
+    
+                  <div className="flex gap-x-4 items-center justify-between">
+                          {/* Form create add */}
+                      <div className="w-1/2 ml-4 mt-4">
+                        <label className="text-sm text-gray-600">Categories</label>
+                        <div className="relative w-full mt-1">
+                          <button onClick={()=> setdropdown(true)} 
+                          className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                            <span>{getnamecategories}</span>
+                            <span> <IoMdArrowDropdown/> </span>
+                          </button>
+                            <ul  className={`${ dropdown === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                           {
+                             categories?.data?.map((items) => {
+                                 return (
+                                  <li data-value={items?.name_categories} onClick={(e) => {
+                                    setidcategory(items?.categories_id); 
+                                    setdropdown(false)
+                                    setgetnamecategories(e.target.dataset.value);
+                                    }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        {items?.name_categories}
+                                  </li>
+                                 );
+                             })
+                           }
+                            </ul>
+                        </div>
+                      </div>
+    
+                        <div className="w-1/2 mr-4 mt-4">
+                          <label className="text-sm text-gray-600">Budget Amount</label>
+                          <input
+                            type="number"
+                            value={getamount.toLocaleString("id-ID")}
+                            placeholder="Masukan jumlah nominal"
+                            className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                            onChange={(e)=> setgetamount(e.target.value)}
+                          />
+                        </div>
+                  </div>
+    
+                  <div className="flex-wrap mr-4">
+                        <div className="full ml-4 mt-4">
+                        <label className="text-sm text-gray-600">Periode Budgeting</label>
+                        <div className="relative w-full mt-1">
+                          <button onClick={()=> setdropdownperiod(true)} 
+                          className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                            <span>{!periode ? getperiod : "three day"}</span>
+                            <span> <IoMdArrowDropdown/> </span>
+                          </button>
+                          <ul  className={`${ dropdownperiod === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
+                                  <li data-value="threeday" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                     setgetperiod(e.target.dataset.value)}} 
+                                   className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        three day
+                                  </li>
+                                  <li data-value="weekly" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                     setgetperiod(e.target.dataset.value)}} 
+                                  className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        weekly
+                                  </li>
+                                  <li data-value="monthly" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                    setgetperiod(e.target.dataset.value)}} 
+                                  className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        monthly
+                                  </li>
+                                  <li data-value="yearly" onClick={(e) => {
+                                     setdropdownperiod(false)
+                                     setgetperiod(e.target.dataset.value)}} 
+                                  className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
+                                        yearly
+                                  </li>
+                      </ul>
+                        </div>
+                      </div>
+    
+                      {/* Date */}
+                      <diV className="mr-4">
+                          <div className="w-full ml-4 mt-4">
+                            <label className="text-sm text-gray-600">Start Date</label>
+                            <input
+                              type="date"
+                               value={getstartdate ? `${new Date(getstartdate).getFullYear()}-${String(new Date(getstartdate).getMonth() + 1)
+                              .padStart(2, "0")}-${String(new Date(getstartdate).getDate()).padStart(2, "0")}`: ""}
+                              className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
+                              onChange={(e) => setgetstartdate(e.target.value)}
+                              />
+                          </div>
+                      </diV>
+    
+                      
+                      <div className="mr-4">
+                        <button onClick={() => HandleRenamePopup()}
+                        type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-2 bg-blue-700 disabled:bg-blue-600
+                        cursor-pointer text-white py-2 rounded-md`}>
+                            <span> Add Rename budgeting </span>
+                        </button>
+                        </div>
+
+                      <div className="mr-4">
+                        <button onClick={() => setisRenameBudget(false)}
+                        type="submit" className={ ` flex gap-x-2 justify-center items-center w-full ml-4 mt-2 mb-6 bg-transparent border border-solid border-slate-300 disabled:bg-blue-600
+                        cursor-pointer text-slate-700 py-2 rounded-md`}>
+                            <span> Cancel Rename budgeting </span>
+                        </button>
+                      </div>
+    
+                  </div>
+    
+          </div>
+                  
+         }/> 
+       ) : dellateBudgets === true ?  (
            <div className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
                       dellateBudgets
                         ? "dropdown"
@@ -193,9 +362,9 @@ export default function BudgetCategory() {
                       </div>
                     </div>
            </div>
-      ) : isOpenBudget === true ? (
+       ) : isOpenBudget === true ? (
           <Modal isOpen={isOpenBudget}
-        children={
+          children={
            <div className={`transition-all ${isOpenBudget === true ? "dropdown" : "opacity-0 invisible"}`}>
                 <div className="flex justify-between"> 
                         <div className="ml-4 mt-4"> 
@@ -215,7 +384,7 @@ export default function BudgetCategory() {
                         <div className="relative w-full mt-1">
                           <button onClick={()=> setdropdown(true)} 
                           className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
-                            <span>{!namecategories ? "Food" : namecategories}</span>
+                            <span>{namecategories}</span>
                             <span> <IoMdArrowDropdown/> </span>
                           </button>
                             <ul  className={`${ dropdown === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}>
@@ -277,7 +446,7 @@ export default function BudgetCategory() {
                                   </li>
                                   <li data-value="yearly" onClick={(e) => {
                                      setdropdownperiod(false)
-                                    setperiode(e.target.dataset.value)}} 
+                                     setperiode(e.target.dataset.value)}} 
                                   className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
                                         yearly
                                   </li>
@@ -319,6 +488,104 @@ export default function BudgetCategory() {
           </div>
                   
          }/> 
+       ) : confirmupdate === true ? (
+            <div className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
+                    confirmupdate
+                              ? "dropdown"
+                              : "opacity-0 invisible"
+                          }`}
+                        >
+                          <div
+                            className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
+                              confirmupdate
+                                ? "scale-100 opacity-100"
+                                : "scale-95 opacity-0"
+                            }`}
+                          >
+                            {/* Close Button */}
+                            <button
+                              onClick={() =>  {
+                                window.location.reload;
+                                setconfirmupdate(false)}}
+                              className="absolute  cursor-pointer right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
+                            >
+                              ✕
+                            </button>
+            
+                            <div className="p-8">
+                              {/* Icon */}
+                              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-100">
+                                <LuNotebookPen
+                                  size={36}
+                                  className="text-blue-700"
+                                />
+                              </div>
+            
+                              {/* Heading */}
+                              <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+                                Confirm Transaction
+                              </h2>
+            
+                              <p className="mt-2 text-center text-gray-500">
+                                Please review the transaction details before updating.
+                              </p>
+            
+                              {/* Detail Card */}
+                              <div className="mt-8 rounded-xl border border-gray-200 p-5">
+            
+                                <div className="flex justify-between py-2">
+                                  <span className="text-gray-500">Category</span>
+                                  <span className="font-medium text-gray-800">
+                                     {!getnamecategories ? getnamecategories : getnamecategories}
+                                  </span>
+                                </div>
+            
+                                <div className="flex justify-between py-2">
+                                  <span className="text-gray-500">Amount</span>
+                                  <span className="font-semibold text-gray-900">
+                                     {Number(getamount).toLocaleString("id-ID")}
+                                  </span>
+                                </div>
+            
+                                <div className="flex justify-between py-2">
+                                  <span className="text-gray-500">Start Date</span>
+                                  <span className="font-medium text-gray-800">
+                                      {getstartdate ? 
+                                    `${new Date(getstartdate).getFullYear()}-${String(new Date(getstartdate).getMonth() + 1)
+                                    .padStart(2, "0")}-${String(new Date(getstartdate).getDate()).padStart(2, "0")}`: ""}
+                                  </span>
+                                </div>
+
+                                 <div className="flex justify-between py-2">
+                                  <span className="text-gray-500">End Date</span>
+                                  <span className="font-medium text-gray-800">
+                                      {getEnddate ? 
+                                    `${new Date(getEnddate).getFullYear()}-${String(new Date(getEnddate).getMonth() + 1)
+                                    .padStart(2, "0")}-${String(new Date(getEnddate).getDate()).padStart(2, "0")}`: ""}
+                                  </span>
+                                </div>
+            
+                               
+                              </div>
+            
+                              {/* Action */}
+                              <div className="mt-8 flex flex-col gap-3">
+                                <button
+                                  className="rounded-xl cursor-pointer bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
+                                >
+                                  Confirms Budgets
+                                </button>
+            
+                                <button
+                                  onClick={() => setconfirmupdate(false)}
+                                  className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
+                                >
+                                  Cancel Budgets
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+             </div>
         ) : null
     }
     
@@ -361,7 +628,7 @@ export default function BudgetCategory() {
         {
           loader === true ? ( 
             Array.from({
-              length: dataAllbudgets?.data?.length || 6,
+              length: dataAllbudgets?.data?.length || 1,
             }).map((_, i) => (
               <div key={i} className={`w-full`}>
                 <LoaderPage className="h-32"/>
@@ -383,7 +650,8 @@ export default function BudgetCategory() {
                setgetstartdate={setgetstartdate} 
                setgetEnddate={setgetEnddate}
                setdellateBudgets={setdellateBudgets}
-               loader={loader}
+               setisRenameBudget={setisRenameBudget}
+       
                />
           )
           
@@ -410,15 +678,18 @@ function BudgetCard({
   setgetstartdate,
   setgetEnddate, 
   setdellateBudgets, 
-  loader }) {
+  setisRenameBudget, 
+  setgetRenamecategories, 
+  setgetRenameAmount, 
+  }) {
  
     
   const DellatedPopup = () => { 
    setdellateBudgets(true);
   }
 
-  const percent = Math.round((4000 / budget_amount) * 100);
-  const remaining = 4000 - budget_amount;
+  const percent = Math.round(( 40000 / budget_amount) * 100);
+  const remaining = budget_amount - 40000;
 
   return (
        <div className="bg-white border border-gray-200 rounded-xl p-5">
@@ -430,7 +701,7 @@ function BudgetCard({
                   <h3 className="font-medium">{name_categories}</h3>
                   <p className="text-xs text-gray-500">{period} Budget</p>
                   <p className="text-sm mt-1">
-                    {4000} / <span>{budget_amount.toLocaleString("id-ID")}</span>
+                    {40000} / <span>{budget_amount.toLocaleString("id-ID")}</span>
                   </p>
                 </div>
 
@@ -445,7 +716,14 @@ function BudgetCard({
                       {new Date(start_date).toLocaleDateString("id-ID")} - {new Date(end_date).toLocaleDateString("id-ID")}
                   </span>
 
-                  <button className="p-2 border rounded-md hover:bg-gray-50">
+                  <button onClick={()=> {
+                    setisRenameBudget(true),
+                    setgetnamecategories(name_categories),
+                    setgetperiod(period), 
+                    setgetamount(budget_amount), 
+                    setgetstartdate(start_date),
+                    setgetEnddate(end_date)
+                  }} className="p-2 border cursor-pointer rounded-md hover:bg-gray-50">
                     <PiNotePencil size={14} />
                   </button>
 
@@ -457,7 +735,7 @@ function BudgetCard({
                     setgetstartdate(start_date),
                     setgetEnddate(end_date)
                     DellatedPopup()
-                  }} className="p-2 border rounded-md hover:bg-gray-50">
+                  }} className="p-2 border cursor-pointer rounded-md hover:bg-gray-50">
                     <IoTrashOutline size={14}/>
                   </button>
 
@@ -481,10 +759,10 @@ function BudgetCard({
                 </span>
 
                 <span>
-                  ${remaining.toLocaleString("id-ID")} remaining
+                  <span className="text-red-600">Rp. {remaining.toLocaleString("id-ID")} </span> remaining
                 </span>
               </div>
 
-            </div>
+      </div>
   );
 }
