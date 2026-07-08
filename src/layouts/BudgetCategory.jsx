@@ -9,6 +9,8 @@ import { FiAlertTriangle } from "react-icons/fi";
 import LoaderPage from "../component/LoaderPage";
 import Toaster from "../component/Toaster";
 import { LuNotebookPen } from "react-icons/lu";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+
 
 
 export default function BudgetCategory() {
@@ -190,7 +192,8 @@ export default function BudgetCategory() {
         setloader(false);
       }, 2000)
     }, [loader])
- 
+   
+  console.log(dataAllbudgets)
 
   return (
     <> 
@@ -703,6 +706,9 @@ export default function BudgetCategory() {
                budget_amount={items?.budget_amount}
                start_date={items?.start_date}
                end_date={items?.end_date}
+               used_amount={items?.used_amount}
+               progressbar={items?.progress} 
+               reminder={items?.remaining}
                setgetIdBudgets={setgetIdBudgets}
                setgetnamecategories={ setgetnamecategories}
                setgetperiod={setgetperiod} 
@@ -731,6 +737,9 @@ function BudgetCard({
   budget_amount, 
   start_date, 
   end_date, 
+  used_amount, 
+  progressbar, 
+  reminder,
   setgetIdBudgets, 
   setgetnamecategories,
   setgetperiod, 
@@ -748,8 +757,8 @@ function BudgetCard({
    setdellateBudgets(true);
   }
 
-  const percent = Math.round(( 40000 / budget_amount) * 100);
-  const remaining = budget_amount - 40000;
+  const percent = Math.round(( used_amount / budget_amount) * 100);
+  const remaining = budget_amount - used_amount;
 
   return (
        <div className="bg-white border border-gray-200 rounded-xl p-5">
@@ -761,15 +770,45 @@ function BudgetCard({
                   <h3 className="font-medium">{name_categories}</h3>
                   <p className="text-xs text-gray-500">{period} Budget</p>
                   <p className="text-sm mt-1">
-                    {40000} / <span>{budget_amount.toLocaleString("id-ID")}</span>
+                    {` Total spend Rp. ${used_amount.toLocaleString("id-ID")}`} / <span>{`Budget Rp. ${budget_amount.toLocaleString("id-ID")}`}</span>
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2">
-
-                  <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-                    <IoWarningOutline size={12}/>
-                    Warning
+                  <span
+                    className={`flex items-center gap-1 text-sm px-2 py-1 rounded-md ${
+                      percent > 100
+                        ? "bg-red-600 text-white"
+                        : percent === 100
+                        ? "bg-green-500 text-white"
+                        : percent >= 80
+                        ? "bg-yellow-400 text-gray-600"
+                        : percent > 0
+                        ? "bg-blue-500 text-white"
+                        : "hidden"
+                    }`}
+                  >
+                    {percent > 100 ? (
+                      <>
+                        <IoWarningOutline size={18} />
+                        <span>Danger</span>
+                      </>
+                    ) : percent === 100 ? (
+                      <>
+                        <IoIosCheckmarkCircleOutline size={18} />
+                        <span>Success</span>
+                      </>
+                    ) : percent >= 80 ? (
+                      <>
+                        <IoWarningOutline size={18} />
+                        <span>Warning</span>
+                      </>
+                    ) : percent > 0 ? (
+                      <>
+                        <IoIosCheckmarkCircleOutline size={18} />
+                        <span>On Progress</span>
+                      </>
+                    ) : null}
                   </span>
 
                   <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
@@ -808,7 +847,7 @@ function BudgetCard({
               <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
                 <div
                   className="h-full bg-blue-700 "
-                  style={{ width: `${percent}%` }}
+                  style={{ width: `${progressbar}%` }}
                 />
               </div>
 
@@ -816,12 +855,30 @@ function BudgetCard({
               {/* Bottom */}
               <div className="flex justify-between text-xs text-gray-500">
                 <span className="text-amber-500 font-medium">
-                  {percent}.0%
+                  {percent === 100 || percent > 100 ? 100 : percent }%
                 </span>
 
                 <span>
-                  <span className="text-red-600">Rp. {remaining.toLocaleString("id-ID")} </span> remaining
-                </span>
+              
+                    {percent > 100 ? (
+                      <span className="text-red-600">
+                        Kamu sudah melewati Budget Rp. {reminder.toLocaleString("id-ID")}
+                      </span>
+                    ) : percent === 100 ? (
+                      <span className="text-green-500">
+                        Budget kamu sudah terpenuhi
+                      </span>
+                    ) : percent > 0 ? (
+                      <span className="text-blue-700">
+                        Sisa Budget Kamu Rp. {reminder.toLocaleString("id-ID")}
+                      </span>
+                    ) : (
+                      <span>
+                        On Progress Budget Kamu Rp. {reminder.toLocaleString("id-ID")}
+                      </span>
+                    )}
+                 </span>
+              
               </div>
 
       </div>

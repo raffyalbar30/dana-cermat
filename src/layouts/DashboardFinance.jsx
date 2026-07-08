@@ -1,14 +1,32 @@
-import React from 'react';
-import Cards from '../component/Cards';
+import React, { useEffect, useState } from 'react';
 import { IoIosTrendingUp, IoIosTrendingDown } from "react-icons/io";
 import { GiReceiveMoney } from "react-icons/gi";
 import { RxTarget } from "react-icons/rx";
 import BudgetProgress from '../component/Budget';
+import { TotalTransaction } from '../services/api';
 
 
 
 
 export default function DashboardFinance() {
+
+  const [ total, settotal ] = useState([]); 
+    
+      const token = localStorage.getItem("Token");
+    
+      async function getTotal(token) {
+        try {
+          const {response} = await TotalTransaction(token);
+          settotal(response.data)
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    
+      useEffect(() => {
+         getTotal(token);
+      }, [])
+    
     const barData = [
     { month: "Jan", income: 4000, expense: 2400 },
     { month: "Feb", income: 3000, expense: 1400 },
@@ -31,32 +49,32 @@ export default function DashboardFinance() {
     // Card dashboard
     <div className="min-h-screen bg-slate-50 p-6">
 
-      {/* SUMMARY */}
+   
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Cards
           title="Total Income"
-          value="$4,200"
+          value={`Rp. ${parseInt(total[0]?.total_income).toLocaleString("id-ID")}`}
           desc="+12% from last month"
           color="text-green-600"
           icons={<IoIosTrendingUp/>}
         />
         <Cards
           title="Total Expenses"
-          value="$3,190"
+          value={`Rp. ${parseInt(total[0]?.total_expense).toLocaleString("id-ID")}`}
           desc="-8% from last month"
           color="text-red-500"
           icons={<IoIosTrendingDown/>}
         />
         <Cards
           title="Net Savings"
-          value="$1,010"
-          desc="24.0% savings rate"
+          value="Rp. 0"
+          desc="0% savings rate"
           color="text-blue-600"
           icons={<GiReceiveMoney/>}
         />
         <Cards
           title="Budget Status"
-          value="76%"
+          value="0%"
           desc="of monthly budget used"
           color="text-orange-500"
           icons={<RxTarget/>}
@@ -204,4 +222,19 @@ function Legend({ color, label, value }) {
       <span className="text-gray-500">{value}</span>
     </div>
   );
+}
+
+
+function Cards({ title, value, desc, color, icons }) {
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm p-5">
+      <div className='flex items-center justify-between'>
+      <p className="text-sm text-gray-400">{title}</p>
+      <span className='text-[23px] text-slate-400'>{icons}</span>
+      </div>
+      <h2 className={`text-2xl font-bold ${color}`}>{value}</h2>
+      <p className="text-xs text-gray-400 mt-1">{desc}</p>
+    </div>
+  )
 }
