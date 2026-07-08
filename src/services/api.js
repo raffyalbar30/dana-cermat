@@ -162,3 +162,28 @@ export const Dellatebudgets = async ( id ) => {
         console.log(error);
     }
 }
+
+export const UpdateBudgets = async (
+    idcategory,
+    amount, 
+    period, 
+    startdate,
+    endDate, 
+    idbudgets
+) => {
+   try { 
+      const response = await EndpointApi.post(`/Budgets/v1/updateBudgets`, 
+        {
+            idcategory: idcategory,
+            amount : amount, 
+            period : period, 
+            startdate : startdate, 
+            endDate: endDate,
+            idbudgets: idbudgets
+        }
+      )
+      return { response : response}
+   } catch (error) {
+      console.log(error);
+   }
+}

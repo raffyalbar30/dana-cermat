@@ -4,7 +4,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import Modal from "../component/Modal";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { Addbudgets, Allcategorybudgets, Dellatebudgets, GetAllbudgets } from "../services/api";
+import { Addbudgets, Allcategorybudgets, Dellatebudgets, GetAllbudgets, UpdateBudgets } from "../services/api";
 import { FiAlertTriangle } from "react-icons/fi";
 import LoaderPage from "../component/LoaderPage";
 import Toaster from "../component/Toaster";
@@ -38,11 +38,13 @@ export default function BudgetCategory() {
   
   // get value Budgets 
   const [ getIdBudgets, setgetIdBudgets ] = useState();
+  const [ getIdCategory, setgetIdCategory ] = useState();
   const [ getnamecategories, setgetnamecategories ] = useState();
   const [ getperiod, setgetperiod ] = useState();
   const [ getamount, setgetamount ] = useState();
   const [ getstartdate, setgetstartdate ] = useState();
   const [ getEnddate, setgetEnddate ] = useState();
+
 
   // loader budgets 
   const [ loader, setloader ] = useState(false);
@@ -60,10 +62,50 @@ export default function BudgetCategory() {
     return setisRenameBudget(true); 
   }
 
-  const HandleRenamePopup = () => {
+ const HandleRenamePopup = () => {
     setisRenameBudget(false);
-     return setconfirmupdate(true); 
-  }
+
+    if (!getstartdate) {
+        console.error("Start date kosong");
+        return;
+    }
+
+    const startDate = new Date(getstartdate);
+    let endDate = new Date(startDate);
+
+    switch (getperiod) {
+        case "threeday":
+            endDate.setDate(endDate.getDate() + 3);
+            break;
+
+        case "weekly":
+            endDate.setDate(endDate.getDate() + 7);
+            break;
+
+        case "monthly":
+            endDate = new Date(
+                startDate.getFullYear(),
+                startDate.getMonth() + 1,
+                0
+            );
+            break;
+
+        case "yearly":
+            endDate = new Date(
+                startDate.getFullYear(),
+                11,
+                31
+            );
+            break;
+
+        default:
+            console.error("Periode tidak valid");
+            return;
+    }
+
+    setgetEnddate(endDate);
+    setconfirmupdate(true);
+};
 
   const HandleCategories = async () => {
      try {
@@ -119,6 +161,24 @@ export default function BudgetCategory() {
 
   }
 
+  // belum bikin loading   
+    const updateRenameBudgets = async () => {
+        try {
+        const { response } = await UpdateBudgets(
+          getIdCategory,
+          getamount ?? 0, 
+          getperiod ?? "",
+          getstartdate ?? null,
+          getEnddate ?? null, 
+          getIdBudgets
+        );
+        
+        window.location.reload();
+        } catch (error) {
+          console.log(error);
+        }
+    }
+
   useEffect(() => {
     GetAllBudgets();
     HandleCategories(); 
@@ -131,7 +191,6 @@ export default function BudgetCategory() {
       }, 2000)
     }, [loader])
  
- console.log(getEnddate);
 
   return (
     <> 
@@ -140,7 +199,7 @@ export default function BudgetCategory() {
           stateNotif={() => setnotifications(false)} Title={"Data Budget telah ditambahkan!!"}></Toaster>
         </div>
     {
-      isRenameBudget === true ? (
+        isRenameBudget === true ? (
           <Modal isOpen={isRenameBudget}
           children={
            <div className={`transition-all ${isRenameBudget === true ? "dropdown" : "opacity-0 invisible"}`}>
@@ -170,7 +229,7 @@ export default function BudgetCategory() {
                              categories?.data?.map((items) => {
                                  return (
                                   <li data-value={items?.name_categories} onClick={(e) => {
-                                    setidcategory(items?.categories_id); 
+                                    setgetIdCategory(items?.categories_id); 
                                     setdropdown(false)
                                     setgetnamecategories(e.target.dataset.value);
                                     }} className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer">
@@ -571,9 +630,10 @@ export default function BudgetCategory() {
                               {/* Action */}
                               <div className="mt-8 flex flex-col gap-3">
                                 <button
+                                  onClick={()=> updateRenameBudgets()}
                                   className="rounded-xl cursor-pointer bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
                                 >
-                                  Confirms Budgets
+                                  Confirms Update Budgets
                                 </button>
             
                                 <button
@@ -718,6 +778,7 @@ function BudgetCard({
 
                   <button onClick={()=> {
                     setisRenameBudget(true),
+                    setgetIdBudgets(id_budgets), 
                     setgetnamecategories(name_categories),
                     setgetperiod(period), 
                     setgetamount(budget_amount), 
