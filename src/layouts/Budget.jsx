@@ -19,13 +19,7 @@ export default function Budget() {
          getTotal(token);
       }, []); 
 
-      console.log(total)
-
-  const totalBudget = 3900;
-  const totalSpent = 3190;
-  const remaining = totalBudget - totalSpent;
-
-  const progress = Math.round((totalSpent / totalBudget) * 100);
+  
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6">
