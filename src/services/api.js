@@ -202,3 +202,19 @@ export const TotalTransaction = async (token) => {
         console.log(error);
     }
 }
+
+export const TotalBudget = async (token) => {
+    try {
+        const response = await EndpointApi.get(`/TotalBudgets`, 
+             {
+              headers: {
+              authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+         })
+
+         return { response : response.data}
+    } catch (error) {
+        console.log(error);
+    }
+}

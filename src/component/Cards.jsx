@@ -22,7 +22,6 @@ export default function AllCards() {
        getTotal(token);
     }, [])
   
-    console.log(total); 
 
   return (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

@@ -879,7 +879,7 @@ function BudgetCard({
                       </span>
                     ) : (
                       <span>
-                        On Progress Budget Kamu Rp. {reminder.toLocaleString("id-ID")}
+                        Budget yang kamu siapkan Rp. {reminder.toLocaleString("id-ID")}
                       </span>
                     )}
                  </span>
