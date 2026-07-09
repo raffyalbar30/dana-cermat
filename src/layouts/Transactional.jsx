@@ -50,7 +50,7 @@ export default function Transactional() {
   const [ Renametypecategories, setRenametypecategories ] = useState("");
   const [ renameCategory, setrenameCategory ] = useState([]);
   const [ RenameNameCategoris, setRenameNameCategoris ] = useState();
-  const [ RenameIdTransactions, setRenameRenameIdTransactions ] = useState();
+  const [ RenameIdTransactions, setRenameIdTransactions ] = useState();
   const [ categoriespopup, setcategoriespopup ] = useState("");
 
   // state delate transactions 
@@ -189,7 +189,7 @@ export default function Transactional() {
   descriptions,
   created_at) => {
 
-   setRenameRenameIdTransactions(id_transaction);
+   setRenameIdTransactions(id_transaction);
    setRenametypecategories(type_categories);
    setRenameNameCategoris(name_categories);
    setamount(amount);
@@ -308,6 +308,7 @@ export default function Transactional() {
                     <span className="text-slate-600">{Renametypecategories}</span>
                   </button>
                  </div>
+                 
                </div>
 
                 <div className="w-1/2 mr-4 mt-4">

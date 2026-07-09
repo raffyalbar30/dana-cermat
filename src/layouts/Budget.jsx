@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { TotalBudget } from '../services/api';
+import LoaderPage from '../component/LoaderPage';
+
 
 export default function Budget() {
    const [ total, settotal ] = useState([]); 
+   const [ loader, setloader ] = useState(true); 
+   const token = localStorage.getItem("Token");
     
-      const token = localStorage.getItem("Token");
-    
-      async function getTotal(token) {
+    async function getTotal(token) {
         try {
           const {response} = await TotalBudget(token);
           settotal(response.data)
@@ -19,12 +21,25 @@ export default function Budget() {
          getTotal(token);
       }, []); 
 
-  
+     
+       useEffect(() => {
+         setTimeout(() => {
+           setloader(false);
+         }, 2000)
+       }, [loader])
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6">
-      
-      {/* HEADER */}
+
+      {
+         loader === true ? ( 
+            <div className={`h-44 w-full`}>
+               <LoaderPage className={`h-44`}/> 
+         </div>
+         ) : (
+
+          <>
+             {/* HEADER */}
       <div className="mb-6">
         <h2 className="text-gray-800 font-semibold flex items-center gap-2">
           <span className="text-lg">◎</span>
@@ -74,6 +89,10 @@ export default function Budget() {
           style={{ width: `${total[0]?.progress}%` }}
         />
       </div>
+      </>
+         )
+      }
+      
 
     </div>
   );

@@ -5,7 +5,7 @@ import { GrMoney } from "react-icons/gr";
 import { GrAnalytics } from "react-icons/gr";
 import { BsRobot } from "react-icons/bs";
 import Label from '../component/label';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 
@@ -42,6 +42,10 @@ const navbar = [
 const Navbar = () => {
 
 const [ active, setactive ] = useState("Dashboard"); 
+const location = useLocation();
+
+
+
 
     return (
         <div className='h-full w-[300px] fixed border border-l-0 border-t-0 border-b-0 bg-white border-slate-200 flex-wrap ml-4 mr-4'>
@@ -52,8 +56,10 @@ const [ active, setactive ] = useState("Dashboard");
             <div className="mt-6 w-full cursor-pointer">
                   {
                     navbar.map((items) => {
+                     const active = location.pathname === items.Links;
+
                        return (
-                              <Link to={items.Links} onClick={() => setactive(items.Menu)} className={`${items.Menu === active ? `bg-blue-700 rounded-lg text-white ` : `bg-white rounded-lg transition-all duration-300 ease-in-out hover:bg-slate-200
+                              <Link to={items.Links} className={`${active ? `bg-blue-700 rounded-lg text-white ` : `bg-white rounded-lg transition-all duration-300 ease-in-out hover:bg-slate-200
                                    hover:shadow-md hover:shadow-blue-200/50`} text-slate-500 mt-1 mb-1 py-4 flex items-center gap-x-2 mr-2 ml-2`}>
                                   <Label Children={items.Icons}  ClassText={`text-[24px] ml-2`}/>
                                   <Label Children={items.Menu} ClassText={`text-[20px]`} />
