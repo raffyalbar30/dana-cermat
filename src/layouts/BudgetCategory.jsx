@@ -181,6 +181,7 @@ export default function BudgetCategory() {
         }
     }
 
+
   useEffect(() => {
     GetAllBudgets();
     HandleCategories(); 
@@ -193,7 +194,6 @@ export default function BudgetCategory() {
       }, 2000)
     }, [loader])
    
-  console.log(dataAllbudgets)
 
   return (
     <> 
@@ -701,6 +701,7 @@ export default function BudgetCategory() {
             dataAllbudgets?.data?.map((items, i) => (
                <BudgetCard key={i} 
                id_budgets={items?.id_budgets}
+               categories_id={items?.categories_id}
                name_categories={items?.name_categories} 
                period={items?.period} 
                budget_amount={items?.budget_amount}
@@ -710,6 +711,7 @@ export default function BudgetCategory() {
                progressbar={items?.progress} 
                reminder={items?.remaining}
                setgetIdBudgets={setgetIdBudgets}
+               setgetIdCategory={setgetIdCategory}
                setgetnamecategories={ setgetnamecategories}
                setgetperiod={setgetperiod} 
                setgetamount={setgetamount} 
@@ -732,6 +734,7 @@ export default function BudgetCategory() {
 
 function BudgetCard({ 
   id_budgets, 
+  categories_id,
   name_categories, 
   period, 
   budget_amount, 
@@ -741,6 +744,7 @@ function BudgetCard({
   progressbar, 
   reminder,
   setgetIdBudgets, 
+  setgetIdCategory,
   setgetnamecategories,
   setgetperiod, 
   setgetamount, 
@@ -818,6 +822,7 @@ function BudgetCard({
                   <button onClick={()=> {
                     setisRenameBudget(true),
                     setgetIdBudgets(id_budgets), 
+                    setgetIdCategory(categories_id),
                     setgetnamecategories(name_categories),
                     setgetperiod(period), 
                     setgetamount(budget_amount), 
