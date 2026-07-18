@@ -21,6 +21,18 @@ export const LoginAuth = async (email, password) => {
     }
 }
 
+export const RegisterAuth = async (email, password) => {
+        try {
+        const response = await EndpointApi.post("/Register", {
+            email_user: email, 
+            password_user: password
+        });
+        return { response : response.data}
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const FormTransaksi = async(params) => { 
     try {
         const response = await EndpointApi.get(`/Transaksi/v1/getCategories?type_categories=${params}`)

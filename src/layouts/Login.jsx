@@ -4,7 +4,7 @@ import Inputs from '../component/Inputs'
 import Buttons from '../component/Buttons'
 import { LoginAuth } from '../services/api'
 import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 
@@ -91,7 +91,9 @@ export default function Login() {
 
                   {response && ( <span className="text-sm text-red-500">{response}</span>)}
                 <div className="flex justify-between text-sm text-blue-600 mt-2">
-                <span className="cursor-pointer">Belum punya akun?</span>
+                <Link to={"/Register"}>
+                   <span className="cursor-pointer">Belum punya akun?</span>
+                </Link>
                 <span className="cursor-pointer">Lupa password?</span>
                 </div>
 
@@ -99,7 +101,7 @@ export default function Login() {
                 Classparrent={"mt-6"}
                 Classchild={"w-full"}
                 Classbutton={
-                    "w-full bg-[#3F47F4] hover:bg-blue-600 transition text-white py-3 rounded-xl text-lg font-semibold"
+                    "w-full bg-[#3F47F4] cursor-pointer hover:bg-blue-600 transition text-white py-3 rounded-xl text-lg font-semibold"
                 }
                 disabled={!email || !password}
                 Title={"Login"}
