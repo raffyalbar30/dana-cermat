@@ -8,6 +8,7 @@ import Transactions from './pages/Transactions';
 import BudgetExpanses from './pages/BudgetExpanses';
 import Analytics from './pages/Analytics';
 import Register from './layouts/Register';
+import DanaCermatLanding from './pages/Homepages';
 
 
 
@@ -16,7 +17,7 @@ function App() {
 
   return (
      <Routes>
-         <Route path="/" element={<p className='text-center mt-10'>disini root</p>}/>
+         <Route path="/" element={<DanaCermatLanding/>}/>
          <Route path="/Login" element={<Loginpages/>}/>
          <Route path="/Register" element={<Register/>}/>
          <Route path="/Dashboard" element={<Routers Children={<Dashboard/>}/>}/>
