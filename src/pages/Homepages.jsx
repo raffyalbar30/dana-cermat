@@ -7,6 +7,7 @@ import { GrTarget } from "react-icons/gr";
 import { GrMoney } from "react-icons/gr";
 import { GrAnalytics } from "react-icons/gr";
 import { BsRobot } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 
 const FONT_IMPORT = `
@@ -149,6 +150,7 @@ export default function DanaCermatLanding() {
 
           {/* Auth buttons desktop */}
           <div className="hidden md:flex items-center gap-3">
+            <Link to={"/Login"}>
             <button
               style={{
                 fontSize: 14,
@@ -156,10 +158,12 @@ export default function DanaCermatLanding() {
                 color: "#10352B",
                 padding: "9px 18px",
               }}
-              className="hover:opacity-70 transition-opacity"
+              className="hover:opacity-70 transition-opacity cursor-pointer"
             >
               Login
             </button>
+            </Link>
+            <Link to={"/Register"}>
             <button
               style={{
                 fontSize: 14,
@@ -169,10 +173,12 @@ export default function DanaCermatLanding() {
                 padding: "10px 20px",
                 borderRadius: 7,
               }}
-              className="hover:brightness-110 transition-all"
+              className="hover:brightness-110 transition-all cursor-pointer"
             >
               Register
             </button>
+            
+            </Link>
           </div>
 
           {/* Mobile toggle */}
@@ -201,33 +207,38 @@ export default function DanaCermatLanding() {
                 {link}
               </a>
             ))}
-            <div className="flex gap-3 pt-2">
-              <button
-                style={{
-                  flex: 1,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#10352B",
-                  border: "1.5px solid #10352B",
-                  padding: "10px 0",
-                  borderRadius: 7,
-                }}
-              >
-                Login
-              </button>
-              <button
-                style={{
-                  flex: 1,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#FBF7EE",
-                  background: "#10352B",
-                  padding: "10px 0",
-                  borderRadius: 7,
-                }}
-              >
-                Register
-              </button>
+            <div className="flex gap-3 pt-2 cursor-pointer">
+                   <Link
+                    to="/Login"
+                    style={{
+                        flex: 1,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#10352B",
+                        border: "1.5px solid #10352B",
+                        padding: "10px 0",
+                        borderRadius: 7,
+                        textAlign: "center",
+                        textDecoration: "none",
+                        display: "block",
+                    }}
+                    >
+                    Login
+                    </Link>
+                    <button
+                        href="/Register"
+                        style={{
+                        flex: 1,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#FBF7EE",
+                        background: "#10352B",
+                        padding: "10px 0",
+                        borderRadius: 7,
+                        }}
+                    >
+                             Register
+                    </button>
             </div>
           </div>
         )}

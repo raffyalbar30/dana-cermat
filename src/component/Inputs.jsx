@@ -9,14 +9,15 @@ export default function Inputs({
     hiddenPassword, 
     type, 
     required, 
-    pattern
+    pattern, 
+    value
 }) {
 
   return (
  
         <div className={Class}>
             <div className={ClassParrent}>
-              <input type={type}  placeholder={ Children } onChange={onChange} className={ClassInput} required={required} pattern={pattern}/>
+              <input type={type} placeholder={ Children } onChange={onChange} className={ClassInput} required={required} pattern={pattern}/>
                {hiddenPassword}
             </div>
         </div>
