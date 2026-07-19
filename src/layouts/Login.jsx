@@ -20,28 +20,21 @@ export default function Login() {
   const { control, handleSubmit, formState:{ errors } } = useForm();
 
 
-  const formLogin = (data) => {
-     console.log(data.email)
-     console.log(data.password)
-     setloader(true)
-  }
-  const HandleSumbit = async (e) => {
-     try {
-     const {data} = await LoginAuth(email, password);
-     localStorage.setItem("Token", data.data.AuthToken);
-     
-     if (data) {
-        navigate("/Dashboard");
-     }
-    setresponse("")
-    setemail("")
-    setpassword("")
-     } catch (error) {
-       setresponse("Maaf email atau password salah!!")  
+  const formLogin = async (data) => {
+     if(data != null) {
+        try {
+           const { response } = await LoginAuth( data.email, data.password );
+           const token =  setresponse.setItem("Token", response.data.AuthToken);
+           setloader(true)
+           if(token) {
+              navigate("/Dashboard")
+           }
+        } catch (error) {
+            console.log("Maaf password salah")
+        }
      }
   }
  
-
   setTimeout(() => {
     setloader(false)
   }, 1000)

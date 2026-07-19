@@ -15,7 +15,7 @@ export const LoginAuth = async (email, password) => {
             email_user: email, 
             password_user: password
         });
-        return { data: response}
+        return { response : response}
     } catch (error) {
         console.log(error);
     }
