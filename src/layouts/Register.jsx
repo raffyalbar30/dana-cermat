@@ -6,6 +6,7 @@ import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi';
 import { RegisterAuth } from '../services/api';
 import Toaster from '../component/Toaster';
 import { Link } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
 
 export default function Register() {
 
@@ -17,14 +18,10 @@ export default function Register() {
   const [ viewPassword, setviewPassword ] = useState(false);
   const [ viewconfirmPassword, setviewconfirmPassword ] = useState(false);
 
-  const HandleViewPassword = () => {
-    setviewPassword(prev => !prev);
-
-  }
+  const { control, handleSubmit, formState:{errors} } = useForm();
   
-  const HandleViewConfirmPassword = () => {
-    setviewconfirmPassword(prev => !prev);
-
+  const formRegister = (data) => { 
+    console.log(data);
   }
 
   const userRegist = async () => {
@@ -60,75 +57,145 @@ export default function Register() {
                   
                   {/* LEFT - FORM */}
                   <div className="p-10 mt-12">
-                  <h1 className="text-3xl font-semibold">Selamat Datang</h1>
-                  <p className="mt-2 text-gray-600">
+                  <h1 className="text-3xl font-semibold">Selamat Datang 👋</h1>
+                  <p className="mt-2 text-gray-400">
                       Silahkan daftar akun terlebih dahulu
                   </p>
-      
-                  <div className="mt-8 space-y-4">
-                      <div>
-                      <Label Children={"Email Address"} Class={"text-left"} />
-                      <Inputs
-                          onChange={(e) => setemail(e.target.value)}
-                          Children={"Masukan email@gmail.com"}
-                          Class={"mt-2"}
-                          ClassParrent={"w-full"}
-                          ClassInput={
-                          "w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          }
-                      />
-                      </div>
-      
-                      <div>
-                      <Label Children={"Password"} Class={"text-left"} />
-                           <Inputs
-                              Children={"Masukan password"}
-                              Class={"mt-2"}
-                              ClassParrent={"w-full flex items-center relative"}
-                              ClassInput={"w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"}
-                              type={viewPassword === true ? "text" : "password"}
-                                 onChange={(e) => { setpassword(e.target.value)}}
-                                 hiddenPassword={ 
-                                          <button className='absolute cursor-pointer right-1 mr-2' onClick={() => HandleViewPassword()}>
-                                                  {viewPassword === true ? ( <PiEyeThin className='text-2xl' /> ) 
-                                                     :( <PiEyeSlashThin className='text-2xl' />)}
-                               </button>}
-                         />
-                      </div>
+                  <form onSubmit={handleSubmit(formRegister)}>
+                    <div className="mt-8 space-y-4">
+                        <div>
+                        <Label Children={"Email Address"} ClassText={"text-left text-gray-600"} />
+                        <Controller
+                           name="email" 
+                           control={control}
+                           defaultValue=""
+                           rules={{
+                                required: "Email tidak boleh kosong!",
+                                pattern: {
+                                        value: /^[^\s@]+@gmail\.com$/,
+                                        message: "Email harus pakai @gmail.com",
+                                  },
+                                }}
+                            render={({field}) => (
+                                <Inputs
+                                   Children={"Masukan email@gmail.com"}
+                                   Class={"mt-2"}
+                                   type={"email"}
+                                   ClassParrent={"flex items-center relative"}
+                                   ClassInput={`p-3 rounded-xl bg-slate-100 focus:outline-none w-full focus:ring-2 ${errors.email ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
+                                   value={field.value}
+                                   onChange={field.onChange}
+                                 />
+                            )}
+                        />
+                           { errors.email && ( 
+                                  <span className='text-sm text-red-500'>{errors.email.message}</span>
+                            )}
+                        </div>
+        
+                        <div>
+                        <Label Children={"Password"} ClassText={"text-left text-gray-600"} />
+                          <Controller
+                            name="password"
+                            control={control}
+                            defaultValue=""
+                             rules={{
+                                    required: "Password tidak boleh kosong!",
+                                        minLength: {
+                                            value: 4,
+                                            message: "Password minimal 4 character",
+                                        },
+                                        maxLength: {
+                                            value: 18,
+                                            message: "Password maksimal 18 character",
+                                        },
+                                        pattern: {
+                                             value: /^(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=]).+$/,
+                                             message: "Password harus mengandung angka dan simbol",
+                                        }
+                                    }}
+                                  render={({field}) => (
+                                         <Inputs
+                                            Children={"Masukan password"}
+                                            Class={"mt-2"}
+                                            ClassParrent={"w-full flex items-center relative"}
+                                            ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 ${errors.password ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
+                                            type={viewPassword === true ? "text" : "password"}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            hiddenPassword={ 
+                                            <div className='absolute cursor-pointer right-1 mr-2' onClick={() => setviewPassword(prev => !prev)}>
+                                                {viewPassword === true ? ( <PiEyeThin className='text-2xl' /> ) 
+                                                      :( <PiEyeSlashThin className='text-2xl' />)}
+                                             </div>}
+                                          />
+                                  )}
+                          />
+                           { errors.password && ( 
+                                  <span className='text-sm text-red-500'>{errors.password.message}</span>
+                            )}
+                        </div>
 
-                       <div>
-                      <Label Children={"Confirm Password"} Class={"text-left"} />
-                         <Inputs
-                              Children={"Konfirmasi password"}
-                              Class={"mt-2"}
-                              ClassParrent={"w-full flex items-center relative"}
-                              ClassInput={"w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"}
-                              type={viewconfirmPassword === true ? "text" : "password"}
-                                 onChange={(e) => { setconfirmpassword(e.target.value)}}
-                                 hiddenPassword={ 
-                                          <button className='absolute cursor-pointer right-1 mr-2' onClick={() => HandleViewConfirmPassword()}>
-                                                  {viewconfirmPassword === true ? ( <PiEyeThin className='text-2xl' /> ) 
-                                                     :( <PiEyeSlashThin className='text-2xl' />)}
-                                              </button>}
-                                />
-                      </div>
-      
-                      <div className="flex justify-between text-sm text-blue-600 mt-2">
-                      <Link to={"/Login"}>
-                        <span className="cursor-pointer">Sudah memiliki account?</span>
-                      </Link> 
-                      </div>
-      
-                      <Buttons
-                      onClick={() => userRegist()}
-                      Classparrent={"mt-6"}
-                      Classchild={"w-full"}
-                      Classbutton={
-                          "w-full bg-[#3F47F4] cursor-pointer hover:bg-blue-600 transition text-white py-3 rounded-xl text-lg font-semibold"
-                      }
-                      Title={"Register"}
-                      />
-                  </div>
+                        <div>
+                        <Label Children={"Confirm Password"} ClassText={"text-left text-gray-600"} />
+                          <Controller
+                            name="confirmpassword"
+                            control={control}
+                            defaultValue=""
+                             rules={{
+                                    required: "Confirm Password tidak boleh kosong!",
+                                        minLength: {
+                                            value: 4,
+                                            message: "Password minimal 4 character",
+                                        },
+                                        maxLength: {
+                                            value: 18,
+                                            message: "Password maksimal 18 character",
+                                        },
+                                        pattern: {
+                                             value: /^(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>_\-+=]).+$/,
+                                             message: "Password harus mengandung angka dan simbol",
+                                        }
+                                    }}
+                                  render={({field}) => (
+                                         <Inputs
+                                            Children={"Masukan confirm password"}
+                                            Class={"mt-2"}
+                                            ClassParrent={"w-full flex items-center relative"}
+                                            ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 ${errors.password ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
+                                            type={viewPassword === true ? "text" : "password"}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            hiddenPassword={ 
+                                            <div className='absolute cursor-pointer right-1 mr-2' onClick={() => setviewPassword(prev => !prev)}>
+                                                {viewPassword === true ? ( <PiEyeThin className='text-2xl' /> ) 
+                                                      :( <PiEyeSlashThin className='text-2xl' />)}
+                                             </div>}
+                                          />
+                                  )}
+                          />
+                           { errors.confirmpassword && ( 
+                                  <span className='text-sm text-red-500'>{errors.confirmpassword.message}</span>
+                            )}
+                        </div>
+        
+                        <div className="flex justify-between text-sm text-blue-600 mt-2 float-right">
+                        <Link to={"/Login"}>
+                          <span className="cursor-pointer">Sudah memiliki account?</span>
+                        </Link> 
+                        </div>
+        
+                        <Buttons
+                        Classparrent={"mt-6"}
+                        Classchild={"w-full"}
+                        Classbutton={
+                            "w-full bg-[#3F47F4] cursor-pointer hover:bg-blue-600 transition text-white py-3 rounded-xl text-lg font-semibold"
+                        }
+                        type={"sumbit"}
+                        Title={"Register"}
+                        />
+                    </div>
+                  </form>
                   </div>
       
                   {/* RIGHT - IMAGE */}

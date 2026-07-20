@@ -21,9 +21,14 @@ export default function Login() {
 
 
   const formLogin = async (data) => {
+    const email = data.email 
+    const password = data.password
+
+    console.log(password);
+
      if(data != null) {
         try {
-           const { response } = await LoginAuth( data.email, data.password );
+           const { response } = await LoginAuth( email, password );
            const token =  setresponse.setItem("Token", response.data.AuthToken);
            setloader(true)
            if(token) {
@@ -107,7 +112,7 @@ export default function Login() {
                                         Children={"Masukan password"}
                                         Class={"mt-2"}
                                         ClassParrent={"w-full flex items-center relative"}
-                                        ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none ${errors.password ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
+                                        ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 ${errors.password ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
                                         type={viewPassword === true ? "text" : "password"}
                                         value={field.value}
                                         onChange={field.onChange}
