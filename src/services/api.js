@@ -11,10 +11,12 @@ export const EndpointApi = axios.create({
 
 export const LoginAuth = async (email, password) => {
     try {
-        const response = await EndpointApi.post("/Login", {
-            email_user: JSON.stringify(email), 
-            password_user: JSON.stringify(password)
-        });
+        const response = await EndpointApi.post("/Login",
+             {
+                    email_user: `${email}`, 
+                    password_user: `${password}`
+             }
+            );
         return { response : response}
     } catch (error) {
         console.log(error);

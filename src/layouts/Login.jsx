@@ -24,20 +24,17 @@ export default function Login() {
     const email = data.email 
     const password = data.password
 
-    console.log(password);
-
-     if(data != null) {
         try {
            const { response } = await LoginAuth( email, password );
-           const token =  setresponse.setItem("Token", response.data.AuthToken);
-           setloader(true)
-           if(token) {
+           const token = sessionStorage.setItem("Token", response.accesToken); 
+
+           console.log(token);
+           if(response) {
               navigate("/Dashboard")
            }
         } catch (error) {
             console.log("Maaf password salah")
         }
-     }
   }
  
   setTimeout(() => {
