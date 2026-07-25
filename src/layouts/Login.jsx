@@ -27,8 +27,7 @@ export default function Login() {
         try {
            const { response } = await LoginAuth( email, password );
            const token = sessionStorage.setItem("Token", response.accesToken); 
-
-           console.log(token);
+       
            if(response) {
               navigate("/Dashboard")
            }
