@@ -12,6 +12,8 @@ export default function Login() {
   const [ response, setresponse ] = useState(""); 
   const [ viewPassword, setviewPassword] = useState(false); 
   const [ loader, setloader ] = useState(false);
+  const [ alert, setalert ] = useState(false); 
+  const [ titleAlert, settitleAlert ] = useState("");
 
 //  React navigations 
   const navigate = useNavigate();
@@ -19,26 +21,25 @@ export default function Login() {
 // use - hook - form 
   const { control, handleSubmit, formState:{ errors } } = useForm();
 
-
   const formLogin = async (data) => {
     const email = data.email 
     const password = data.password
-
+    setloader(true)
+    
         try {
            const { response } = await LoginAuth( email, password );
-           const token = sessionStorage.setItem("Token", response.accesToken); 
-       
-           if(response) {
+           const token = sessionStorage.setItem("Token", response?.data?.accesToken);
+           if(token !== null) {
               navigate("/Dashboard")
            }
         } catch (error) {
-            console.log("Maaf password salah")
+             settitleAlert(error.response?.data?.message); 
         }
   }
  
   setTimeout(() => {
     setloader(false)
-  }, 1000)
+  }, 1500)
 
 
   return (

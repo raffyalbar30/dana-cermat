@@ -1,9 +1,10 @@
 import axios from "axios";
 export const API_URL = import.meta.env.VITE_API_URL;
 
-// function to get eater 
+// approve credentials for approve cookie
 export const EndpointApi = axios.create({
     baseURL : `${API_URL}/API`, 
+    withCredentials: true,
     headers: {
         "Content-Type" : "application/json"
     }
@@ -19,7 +20,7 @@ export const LoginAuth = async (email, password) => {
             );
         return { response : response}
     } catch (error) {
-        console.log(error);
+        throw error
     }
 }
 
