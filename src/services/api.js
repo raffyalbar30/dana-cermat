@@ -10,31 +10,6 @@ export const EndpointApi = axios.create({
     }
 })
 
-export const LoginAuth = async (email, password) => {
-    try {
-        const response = await EndpointApi.post("/Login",
-             {
-                    email_user: `${email}`, 
-                    password_user: `${password}`
-             }
-            );
-        return { response : response}
-    } catch (error) {
-        throw error
-    }
-}
-
-export const RegisterAuth = async (email, password) => {
-        try {
-        const response = await EndpointApi.post("/Register", {
-            email_user: email, 
-            password_user: password
-        });
-        return { response : response.data}
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 export const FormTransaksi = async(params) => { 
     try {

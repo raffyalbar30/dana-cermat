@@ -16,10 +16,9 @@ const Toaster = ({className, stateNotif, Title}) => {
                 </div>
                 <div className='border mt-2 ml-2 border-blue-700'> </div>
                 <div className='flex-wrap w-full'>
-                <div className='ml-4 mt-2'> 
-                    <span>{Title}</span>
+                <div className='ml-4 mt-3'> 
+                    <span className='text-[18px]'>{Title}</span>
                  </div>
-                 <div className='snackbar ml-4'></div>
                 </div>
 
                 <div className='mr-2 mt-2 cursor-pointer'>

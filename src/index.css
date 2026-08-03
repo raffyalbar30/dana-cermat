@@ -10,13 +10,6 @@
  
 }
 
-.snackbar {
-  width: 100%;
-  height: 4px;
-  background-color: #1d4ed8;
-  transform-origin: left;
-  animation: notif 3s linear forwards;
-}
 
 @keyframes notif {
   from {

@@ -3,48 +3,49 @@ import Label from '../component/label'
 import Inputs from '../component/Inputs'
 import Buttons from '../component/Buttons'
 import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi';
-import { RegisterAuth } from '../services/api';
+import { RegisterAuth } from '../services/Authentications';
 import Toaster from '../component/Toaster';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 
 export default function Register() {
 
-  const [ email, setemail ]  = useState();
-  const [ password, setpassword ] = useState(); 
-  const [ confirmpassword, setconfirmpassword ] = useState();  
   const [ alert, setalert ] = useState(false);
+  const [ loader, setloader ] = useState(false);
   const [ text, settext ]  = useState("");
   const [ viewPassword, setviewPassword ] = useState(false);
   const [ viewconfirmPassword, setviewconfirmPassword ] = useState(false);
+  
 
   const { control, handleSubmit, formState:{errors} } = useForm();
   
-  const formRegister = (data) => { 
-    console.log(data);
+  const formRegister = async (data) => { 
+     const Email = data.email; 
+     const Password = data.password; 
+     const Confirm_Password = data.confirmpassword; 
+     setloader(true)
+     
+     try {
+        const { response } = await RegisterAuth(Email, Password, Confirm_Password);
+        setalert(true);
+        settext(response?.data?.message); 
+        
+         if (response.status === 201) {
+            setTimeout(() => {
+                window.location.href = "/Login";
+            }, 2000);
+          }
+
+     } catch (error) {
+        setalert(true);
+        settext(error.response?.data?.message); 
+     }
   }
 
-  const userRegist = async () => {
-    if(password === confirmpassword) {
-        const { response } = await RegisterAuth(email, password);
-        setalert(true);
-        settext(response?.message); 
-       setTimeout(() => {
-         setalert(false);
-       }, 3000)
-
-    } else { 
-      
-        setalert(true);
-        settext("Password harus sesuai dengan confirm password"); 
-
-        setTimeout(() => {
-         setalert(false);
-       }, 3000)
-    }
-    
-  }
-
+    setTimeout(() => {
+       setloader(false)
+       setalert(false)
+    }, 1800);
 
   return (
     <>
@@ -163,12 +164,12 @@ export default function Register() {
                                             Class={"mt-2"}
                                             ClassParrent={"w-full flex items-center relative"}
                                             ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 ${errors.password ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
-                                            type={viewPassword === true ? "text" : "password"}
+                                            type={viewconfirmPassword === true ? "text" : "password"}
                                             value={field.value}
                                             onChange={field.onChange}
                                             hiddenPassword={ 
-                                            <div className='absolute cursor-pointer right-1 mr-2' onClick={() => setviewPassword(prev => !prev)}>
-                                                {viewPassword === true ? ( <PiEyeThin className='text-2xl' /> ) 
+                                            <div className='absolute cursor-pointer right-1 mr-2' onClick={() => setviewconfirmPassword(prev => !prev)}>
+                                                {viewconfirmPassword === true ? ( <PiEyeThin className='text-2xl' /> ) 
                                                       :( <PiEyeSlashThin className='text-2xl' />)}
                                              </div>}
                                           />
@@ -185,15 +186,18 @@ export default function Register() {
                         </Link> 
                         </div>
         
-                        <Buttons
-                        Classparrent={"mt-6"}
-                        Classchild={"w-full"}
-                        Classbutton={
-                            "w-full bg-[#3F47F4] cursor-pointer hover:bg-blue-600 transition text-white py-3 rounded-xl text-lg font-semibold"
-                        }
-                        type={"sumbit"}
-                        Title={"Register"}
-                        />
+                         <Buttons
+                            Classparrent={"mt-6"}
+                            Classchild={"w-full"}
+                            Classbutton={`
+                            w-full ${loader === true ? "bg-indigo-400" : "bg-[#3F47F4]"} 
+                            disabled:cursor-not-allowed cursor-pointer transition text-white py-3 rounded-xl 
+                            text-lg font-semibold` }
+                            Title={loader === true ? (
+                                <div className='flex justify-center items-center gap-x-2'> 
+                                   <svg width={"24px"} fill="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+                                     <span className='text-white text-md'>Loading</span>
+                                </div> ) : "Register"} type={"sumbit"}/>
                     </div>
                   </form>
                   </div>
