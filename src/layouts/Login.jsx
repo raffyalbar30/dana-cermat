@@ -140,12 +140,20 @@ export default function Login() {
                                     <span className='text-sm text-red-500'>{errors.password.message}</span>
                                 )}
                             </div>
+
+                            {/* forgot password */}
                             <div className="flex justify-between text-sm text-blue-600 mt-2">
+
                             <Link to={"/Register"}>
-                            <span className="cursor-pointer">Belum punya akun?</span>
+                            <span className="cursor-pointer">Belum punya account?</span>
                             </Link>
+
+                            <Link to={"/Forgotpassword"}>
                             <span className="cursor-pointer">Lupa password?</span>
+                            </Link>
+
                             </div>
+
                             <Buttons
                             Classparrent={"mt-6"}
                             Classchild={"w-full"}
