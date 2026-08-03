@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import Toaster from '../component/Toaster'
 import { FaPaperPlane } from 'react-icons/fa'
+import { IoSend } from "react-icons/io5";
 
 const Forgotpassword = () => {
     return (
@@ -37,7 +38,7 @@ const Forgotpassword = () => {
                                 <div>
                                 <Label Children={"Kode-OTP"} ClassText={"text-left text-gray-600"} />
 
-                                <div className="relative mt-2">
+                                <div className="relative z-0 mt-2">
                                  <Inputs
                                     inputMode="numeric"
                                     Children={"Number OTP"}
@@ -50,9 +51,9 @@ const Forgotpassword = () => {
 
                                     <button
                                     type="button"
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-500 transition"
+                                    className="absolute z-10 border border-solid p-4 right-0 rounded-r-lg rounded-br-lg bg-[#3F47F4] top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-500 transition"
                                     >
-                                    <FaPaperPlane size={18} />
+                                    <FaPaperPlane className='text-white' size={18} />
                                     </button>
                                 </div>
                                 </div>
