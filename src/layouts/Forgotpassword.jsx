@@ -11,6 +11,17 @@ import { FaPaperPlane } from 'react-icons/fa'
 import { IoSend } from "react-icons/io5";
 
 const Forgotpassword = () => {
+
+    // react-hook-form
+    const { control, handleSubmit, formState:{errors} } = useForm();
+
+    const formForgot = (data) => {
+        const email = data.email; 
+        const kodeOTP = data.kodeOTP; 
+
+        console.log(email);
+    }
+
     return (
          <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                     <div className="w-[1020px] h-[750px] bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
@@ -22,64 +33,106 @@ const Forgotpassword = () => {
                             Silahkan masukan email anda untuk mendapatkan OTP untuk meriset 
                             password anda!
                         </p>
-                            {/* inputs password */}
-                            <div className="mt-8 space-y-4">
-                                 <div>
-                                    <Label Children={"Email Address"} ClassText={"text-left text-gray-600"} />
-                                    <Inputs
-                                     Children={"Masukan email@gmail.com"}
-                                     Class={"mt-2"}
-                                     type={"email"}
-                                     ClassParrent={"flex items-center relative"}
-                                     ClassInput={`p-3 rounded-xl bg-slate-100 focus:outline-none w-full focus:ring-2 ring-2 ring-blue-500 focus:ring-blue-500`}
-                                    />
-                                 </div>
 
-                                <div>
-                                <Label Children={"Kode-OTP"} ClassText={"text-left text-gray-600"} />
+                           <form onSubmit={handleSubmit(formForgot)}>
+                                {/* inputs email */}
+                                <div className="mt-8 space-y-4">
+                                    <div>
+                                        <Label Children={"Email Address"} ClassText={"text-left text-gray-600"} />
+                                        <Controller
+                                           name="email"
+                                           control={control}
+                                           defaultValue=""
+                                           rules={{
+                                                required: "Email tidak boleh kosong!",
+                                                pattern: {
+                                                    value: /^[^\s@]+@gmail\.com$/,
+                                                    message: "Email harus pakai @gmail.com",
+                                                },
+                                           }}
+                                           render={({field}) => (
+                                               <Inputs
+                                                Children={"Masukan email@gmail.com"}
+                                                Class={"mt-2"}
+                                                type={"email"}
+                                                ClassParrent={"flex items-center relative"}
+                                                ClassInput={`p-3 rounded-xl bg-slate-100 focus:outline-none w-full focus:ring-2 ${errors.email ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
+                                                value={field.value}
+                                                onChange={field.onChange}/>
+                                           )}
+                                        />
+                                        { errors.email && ( 
+                                          <span className='text-sm text-red-500'>{errors.email.message}</span>
+                                        )}
+                                    </div>
 
-                                <div className="relative z-0 mt-2">
-                                 <Inputs
-                                    inputMode="numeric"
-                                    Children={"Number OTP"}
-                                    type={"text"}
-                                    ClassParrent={"flex items-center"}
-                                    ClassInput={
-                                        "p-3 pr-14 rounded-xl bg-slate-100 w-full focus:outline-none ring-2 ring-blue-500 focus:ring-2 focus:ring-blue-500"
-                                    }
-                                    />
+                                    <div className='mt-2'>
+                                    <Label Children={"Kode-OTP"} ClassText={"text-left text-gray-600"} />
+                                    <div className="relative z-0 mt-2">
+                                    <Controller
+                                        name="kodeOTP"
+                                        control={control}
+                                        defaultValue=""
+                                        rules={{
+                                                required: "OTP wajib diisi",
+                                                maxLength: {
+                                                value: 5,
+                                                message: "OTP maximal 5 digit",
+                                                },
+                                                pattern: {
+                                                value: /^[0-9]+$/,
+                                                message: "OTP harus berupa angka",
+                                                },
+                                            }}
+                                        render={({field}) => (
+                                            <Inputs
+                                                inputMode="numeric"
+                                                Children={"Number OTP"}
+                                                type={"text"}
+                                                ClassParrent={"flex items-center"}
+                                                ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 ${errors.kodeOTP ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
+                                                value={field.value}
+                                                onChange={field.onChange}/>
+                                               
+                                        )}
+                                       />
+                                            <button
+                                               type="button"
+                                                 className="absolute right-1 top-1/2 -translate-y-1/2 p-3 rounded-lg bg-[#3F47F4]">
+                                                   <FaPaperPlane className="text-white" />
+                                              </button>
+                                    </div>
 
-                                    <button
-                                    type="button"
-                                    className="absolute z-10 border border-solid p-4 right-0 rounded-r-lg rounded-br-lg bg-[#3F47F4] top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-500 transition"
-                                    >
-                                    <FaPaperPlane className='text-white' size={18} />
-                                    </button>
+                                        {errors.kodeOTP && (
+                                             <span className="mt-1 block text-sm text-red-500">
+                                                        {errors.kodeOTP.message}
+                                            </span>
+                                         )}
+                                    </div>
+
+                                    {/* forgot password */}
+                                    <div className="flex justify-between text-sm text-blue-600 mt-2">
+                                    
+                                        <Link to={"/Register"}>
+                                        <span className="cursor-pointer">Belum punya account?</span>
+                                        </Link>
+                                    
+                                        <Link to={"/Login"}>
+                                            <span className="cursor-pointer">Sudah punya account?</span>
+                                        </Link>
+                                    
+                                    </div>
+
+                                    <Buttons
+                                    Classparrent={"mt-6"}
+                                    Classchild={"w-full"}
+                                    Classbutton={`
+                                            w-full bg-blue-700 disabled:cursor-not-allowed cursor-pointer transition text-white py-3 rounded-xl text-lg font-semibold`
+                                        }
+                                        Title={"Forgot password"} type={"sumbit"}/>
+
                                 </div>
-                                </div>
-
-                                  {/* forgot password */}
-                                 <div className="flex justify-between text-sm text-blue-600 mt-2">
-                                 
-                                     <Link to={"/Register"}>
-                                       <span className="cursor-pointer">Belum punya account?</span>
-                                     </Link>
-                                 
-                                     <Link to={"/Login"}>
-                                          <span className="cursor-pointer">Sudah punya account?</span>
-                                     </Link>
-                                 
-                                 </div>
-
-                                 <Buttons
-                                   Classparrent={"mt-6"}
-                                   Classchild={"w-full"}
-                                   Classbutton={`
-                                         w-full bg-blue-700 disabled:cursor-not-allowed cursor-pointer transition text-white py-3 rounded-xl text-lg font-semibold`
-                                       }
-                                    Title={"Forgot password now"} type={"sumbit"}/>
-
-                            </div>
+                           </form>
                         </div>
         
                         {/* RIGHT - IMAGE */}
