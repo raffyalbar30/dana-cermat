@@ -21,7 +21,7 @@ const Forgotpassword = () => {
 
         console.log(email);
     }
-
+//    update
     return (
          <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                     <div className="w-[1020px] h-[750px] bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
