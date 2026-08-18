@@ -8,7 +8,8 @@ export const EndpointApi = axios.create({
     headers: {
         "Content-Type" : "application/json"
     }
-})
+});
+
 
 
 export const FormTransaksi = async(params) => { 

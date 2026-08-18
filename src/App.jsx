@@ -10,6 +10,7 @@ import Analytics from './pages/Analytics';
 import Register from './layouts/Register';
 import DanaCermatLanding from './pages/Homepages';
 import Forgotpasswordpages from './pages/Forgotpasswordpages';
+import NewPasswordpage from './pages/NewPasswordpage';
 
 
 
@@ -21,7 +22,8 @@ function App() {
          <Route path="/" element={<DanaCermatLanding/>}/>
          <Route path="/Login" element={<Loginpages/>}/>
          <Route path="/Register" element={<Register/>}/>
-         <Route path="/Forgotpassword" element={<Forgotpasswordpages/>}/>
+         <Route path="/Forgot/password" element={<Forgotpasswordpages/>}/>
+         <Route path="/Forgot/password/newpassword" element={<NewPasswordpage/>}/>
          <Route path="/Dashboard" element={<Routers Children={<Dashboard/>}/>}/>
          <Route path="/Transactions" element={<Routers Children={<Transactions/>}/>}/>
          <Route path="/Budget" element={<Routers Children={<BudgetExpanses/>}/>}/>

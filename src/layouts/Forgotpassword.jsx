@@ -21,7 +21,8 @@ const Forgotpassword = () => {
 
         console.log(email);
     }
-//    update
+
+   //    update
     return (
          <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                     <div className="w-[1020px] h-[750px] bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
@@ -76,8 +77,8 @@ const Forgotpassword = () => {
                                         rules={{
                                                 required: "OTP wajib diisi",
                                                 maxLength: {
-                                                value: 5,
-                                                message: "OTP maximal 5 digit",
+                                                value: 6,
+                                                message: "OTP maximal 6 digit",
                                                 },
                                                 pattern: {
                                                 value: /^[0-9]+$/,
@@ -129,7 +130,7 @@ const Forgotpassword = () => {
                                     Classbutton={`
                                             w-full bg-blue-700 disabled:cursor-not-allowed cursor-pointer transition text-white py-3 rounded-xl text-lg font-semibold`
                                         }
-                                        Title={"Forgot password"} type={"sumbit"}/>
+                                        Title={"Create new password"} type={"sumbit"}/>
 
                                 </div>
                            </form>
@@ -149,7 +150,7 @@ const Forgotpassword = () => {
                         </div>
         
                     </div>
-                </div>
+        </div>
     );
 }
 
