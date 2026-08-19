@@ -148,7 +148,7 @@ export default function Login() {
                             <span className="cursor-pointer">Belum punya account?</span>
                             </Link>
 
-                            <Link to={"/Forgotpassword"}>
+                            <Link to={"/Forgot/password"}>
                             <span className="cursor-pointer">Lupa password?</span>
                             </Link>
 

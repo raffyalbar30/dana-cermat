@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Label from '../component/label'
 import Inputs from '../component/Inputs'
 import Buttons from '../component/Buttons'
-import { LoginAuth } from '../services/Authentications'
 import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
@@ -13,19 +12,44 @@ import { IoSend } from "react-icons/io5";
 const Forgotpassword = () => {
 
     // react-hook-form
-    const { control, handleSubmit, formState:{errors} } = useForm();
+    const { control, handleSubmit, trigger, getValues, formState:{errors} } = useForm();
+    const [ alert, setalert ] = useState(false); 
+    const [ text, settext ] = useState(""); 
+    const [ loader, setloader ] = useState(false);
+    const [ loaderOTP, setloaderOTP ] = useState(false);
 
     const formForgot = (data) => {
         const email = data.email; 
         const kodeOTP = data.kodeOTP; 
-
-        console.log(email);
+        setloader(true); 
     }
+
+
+    const SendingOTP = async () => {
+        const emailtrigger = await trigger("email");
+        if (!emailtrigger) return;
+
+        const email = getValues("email");
+        setloaderOTP(true); 
+
+        try {
+            // const { response } = SendOTP(email);
+            settext(response.data.message); 
+        } catch (error) {
+            settext(error.data.message); 
+        }
+    }
+  
+    setTimeout(() => {
+       setloader(false);
+       setloaderOTP(false);
+       setalert(false);
+    }, 1500);
 
    //    update
     return (
          <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-                    <div className="w-[1020px] h-[750px] bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
+             <div className="w-[1020px] h-[750px] bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
                         
                         {/* LEFT - FORM */}
                         <div className="p-10 mt-32">
@@ -95,12 +119,18 @@ const Forgotpassword = () => {
                                                 value={field.value}
                                                 onChange={field.onChange}/>
                                                
-                                        )}
-                                       />
+                                             )}
+                                          />
                                             <button
+                                              onClick={SendingOTP}
                                                type="button"
                                                  className="absolute right-1 top-1/2 -translate-y-1/2 p-3 rounded-lg bg-[#3F47F4]">
-                                                   <FaPaperPlane className="text-white" />
+                                                    { loaderOTP === true ? (
+                                                        <div className='flex justify-center items-center gap-x-2'> 
+                                                            <svg width={"18px"} fill="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+                                                      </div> ) 
+                                                      : <FaPaperPlane className="text-white" /> 
+                                                     }
                                               </button>
                                     </div>
 
@@ -130,8 +160,12 @@ const Forgotpassword = () => {
                                     Classbutton={`
                                             w-full bg-blue-700 disabled:cursor-not-allowed cursor-pointer transition text-white py-3 rounded-xl text-lg font-semibold`
                                         }
-                                        Title={"Create new password"} type={"sumbit"}/>
-
+                                        Title={ loader === true ? (
+                                        <div className='flex justify-center items-center gap-x-2'> 
+                                            <svg width={"24px"} fill="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+                                            <span className='text-white text-md'>Loading</span>
+                                        </div>
+                                    ) : "Create new password"} type={"sumbit"}/>
                                 </div>
                            </form>
                         </div>
