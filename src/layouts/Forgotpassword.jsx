@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import Label from '../component/label'
-import Inputs from '../component/Inputs'
-import Buttons from '../component/Buttons'
-import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi'
-import { Link, useNavigate } from 'react-router-dom'
-import { useForm, Controller } from 'react-hook-form'
-import Toaster from '../component/Toaster'
-import { FaPaperPlane } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react';
+import Label from '../component/label';
+import Inputs from '../component/Inputs';
+import Buttons from '../component/Buttons';
+import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
+import Toaster from '../component/Toaster';
+import { FaPaperPlane } from 'react-icons/fa';
 import { IoSend } from "react-icons/io5";
-import { SendOTP, VerifyOTP } from '../services/service'
+import { SendOTP, VerifyOTP } from '../services/service';
+import { useSearchParams } from "react-router-dom";
+
+
 
 const Forgotpassword = () => {
 
@@ -19,12 +22,16 @@ const Forgotpassword = () => {
     const [ loader, setloader ] = useState(false);
     const [ loaderOTP, setloaderOTP ] = useState(false);
 
+
+
     const navigate = useNavigate(); 
 
     const formForgot = async (data) => {
         const email = data.email; 
         const kodeOTP = data.kodeOTP; 
+        const encodedEmail = btoa(email);
         setloader(true); 
+
 
         try {
             const { response } = await VerifyOTP(email, kodeOTP);
@@ -33,7 +40,7 @@ const Forgotpassword = () => {
 
             if(response.status === 201) {
               setTimeout(() => {
-                navigate("/Forgot/newpassword")
+                 navigate(`/Forgot/newpassword/ressetpassword?email=${encodedEmail}&OTP=${kodeOTP}`);
               }, 2000);
             }
 
@@ -64,9 +71,10 @@ const Forgotpassword = () => {
   
     setTimeout(() => {
        setloader(false);
-       setloaderOTP(false);
        setalert(false);
+       setloaderOTP(false);
     }, 1500);
+
        
 
    //    update

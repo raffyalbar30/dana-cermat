@@ -11,6 +11,8 @@ import Register from './layouts/Register';
 import DanaCermatLanding from './pages/Homepages';
 import Forgotpasswordpages from './pages/Forgotpasswordpages';
 import NewPasswordpage from './pages/NewPasswordpage';
+import ProtectedRoute from '../utils/Authentication';
+import Ressetpassword from '../utils/Ressetpassword';
 
 
 
@@ -23,14 +25,18 @@ function App() {
          <Route path="/Login" element={<Loginpages/>}/>
          <Route path="/Register" element={<Register/>}/>
          <Route path="/Forgot/password" element={<Forgotpasswordpages/>}/>
-         <Route path="/Forgot/newpassword" element={<NewPasswordpage/>}/>
-         <Route path="/Dashboard" element={<Routers Children={<Dashboard/>}/>}/>
-         <Route path="/Transactions" element={<Routers Children={<Transactions/>}/>}/>
-         <Route path="/Budget" element={<Routers Children={<BudgetExpanses/>}/>}/>
-         <Route path="/Analytics" element={<Routers Children={<Analytics/>}/>}/>
-         <Route path="/Aiasistent" element={<Routers Children={<ChatBotUI/>}/>}/>
+         <Route element={<Ressetpassword/>}>
+            <Route path="/Forgot/newpassword/:encodedEmail/:Otp" element={<NewPasswordpage/>}/>
+         </Route>
+         <Route element={<ProtectedRoute/>}>
+              <Route path="/Dashboard" element={<Routers Children={<Dashboard/>}/>}/>
+              <Route path="/Transactions" element={<Routers Children={<Transactions/>}/>}/>
+              <Route path="/Budget" element={<Routers Children={<BudgetExpanses/>}/>}/>
+              <Route path="/Analytics" element={<Routers Children={<Analytics/>}/>}/>
+              <Route path="/Aiasistent" element={<Routers Children={<ChatBotUI/>}/>}/>
+         </Route>
      </Routes>
   )
 }
 
-export default App
+export default App;
