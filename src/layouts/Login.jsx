@@ -55,7 +55,7 @@ export default function Login() {
 
          <div className={`${ alert === true  ? "active" : "hidden"} flex justify-center`}>
              <Toaster className={`${alert === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
-              stateNotif={() => setalert(false)} Title={titleAlert}></Toaster>
+              stateNotif={() => setalert(false)}  ClassTitle={"text-[18px]"} Title={titleAlert}></Toaster>
         </div>
 
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

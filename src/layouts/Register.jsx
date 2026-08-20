@@ -51,7 +51,7 @@ export default function Register() {
     <>
       <div className={`${ alert === true  ? "active" : "hidden"} flex justify-center`}>
            <Toaster className={`${alert === true ? "dropdown" : ""} transition-all absolute z-10 top-0 text-sm mt-4 w-1/3 h-14`}
-            stateNotif={() => setalert(false)} Title={text}></Toaster>
+            stateNotif={() => setalert(false)}  ClassTitle={"text-[18px]"} Title={text}></Toaster>
         </div>
        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
               <div className="w-[1020px] h-[750px] bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">

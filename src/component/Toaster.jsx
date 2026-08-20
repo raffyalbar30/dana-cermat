@@ -4,7 +4,7 @@ import { IoCloseOutline } from "react-icons/io5";
 
 
 
-const Toaster = ({className, stateNotif, Title}) => {
+const Toaster = ({className, stateNotif, Title, ClassTitle}) => {
     return (
         <div className={className}>
            <div className='w-full h-full bg-white shadow-2xl rounded-sm'> 
@@ -17,7 +17,7 @@ const Toaster = ({className, stateNotif, Title}) => {
                 <div className='border mt-2 ml-2 border-blue-700'> </div>
                 <div className='flex-wrap w-full'>
                 <div className='ml-4 mt-3'> 
-                    <span className='text-[18px]'>{Title}</span>
+                    <span className={ClassTitle}>{Title}</span>
                  </div>
                 </div>
 

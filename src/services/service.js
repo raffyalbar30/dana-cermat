@@ -5,7 +5,7 @@ export const SendOTP = async (email_user) => {
         const response = await EndpointApi.post(`/ResetPassword`, {
              email_user: email_user
         }); 
-        return { response : response.data }
+        return { response : response }
      } catch (error) {
           throw error
      }

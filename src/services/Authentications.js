@@ -27,3 +27,7 @@ export const RegisterAuth = async (email, password, confirmpassword) => {
         throw error
     }
 }
+
+export const ResetPassword = async () => {
+    
+}

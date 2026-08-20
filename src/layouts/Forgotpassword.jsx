@@ -8,6 +8,7 @@ import { useForm, Controller } from 'react-hook-form'
 import Toaster from '../component/Toaster'
 import { FaPaperPlane } from 'react-icons/fa'
 import { IoSend } from "react-icons/io5";
+import { SendOTP } from '../services/service'
 
 const Forgotpassword = () => {
 
@@ -18,10 +19,18 @@ const Forgotpassword = () => {
     const [ loader, setloader ] = useState(false);
     const [ loaderOTP, setloaderOTP ] = useState(false);
 
+    const navigate = useNavigate(); 
+
     const formForgot = (data) => {
         const email = data.email; 
         const kodeOTP = data.kodeOTP; 
         setloader(true); 
+
+        try {
+            
+        } catch (error) {
+            
+        }
     }
 
 
@@ -33,10 +42,13 @@ const Forgotpassword = () => {
         setloaderOTP(true); 
 
         try {
-            // const { response } = SendOTP(email);
-            settext(response.data.message); 
+            const { response } = await SendOTP(email);
+            setalert(true);
+            settext(response?.data?.message); 
+        
         } catch (error) {
-            settext(error.data.message); 
+            setalert(true);
+            settext(error.response?.data?.message);
         }
     }
   
@@ -45,10 +57,17 @@ const Forgotpassword = () => {
        setloaderOTP(false);
        setalert(false);
     }, 1500);
+       
 
    //    update
     return (
-         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <>
+            <div className={`${ alert === true  ? "active" : "hidden"} flex justify-center`}>
+               <Toaster className={`${alert === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
+                     stateNotif={() => setalert(false)} ClassTitle={"text-[17px]"} Title={text}></Toaster>
+            </div>
+
+           <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
              <div className="w-[1020px] h-[750px] bg-white rounded-2xl shadow-lg overflow-hidden grid md:grid-cols-2">
                         
                         {/* LEFT - FORM */}
@@ -99,14 +118,14 @@ const Forgotpassword = () => {
                                         control={control}
                                         defaultValue=""
                                         rules={{
-                                                required: "OTP wajib diisi",
+                                                required: "Kode OTP wajib diisi",
                                                 maxLength: {
                                                 value: 6,
-                                                message: "OTP maximal 6 digit",
+                                                message: "Kode OTP maximal 6 digit",
                                                 },
                                                 pattern: {
                                                 value: /^[0-9]+$/,
-                                                message: "OTP harus berupa angka",
+                                                message: "Kode OTP harus berupa angka",
                                                 },
                                             }}
                                         render={({field}) => (
@@ -184,7 +203,8 @@ const Forgotpassword = () => {
                         </div>
         
                     </div>
-        </div>
+           </div>
+        </>
     );
 }
 
