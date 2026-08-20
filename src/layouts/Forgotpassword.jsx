@@ -8,7 +8,7 @@ import { useForm, Controller } from 'react-hook-form'
 import Toaster from '../component/Toaster'
 import { FaPaperPlane } from 'react-icons/fa'
 import { IoSend } from "react-icons/io5";
-import { SendOTP } from '../services/service'
+import { SendOTP, VerifyOTP } from '../services/service'
 
 const Forgotpassword = () => {
 
@@ -21,15 +21,25 @@ const Forgotpassword = () => {
 
     const navigate = useNavigate(); 
 
-    const formForgot = (data) => {
+    const formForgot = async (data) => {
         const email = data.email; 
         const kodeOTP = data.kodeOTP; 
         setloader(true); 
 
         try {
-            
+            const { response } = await VerifyOTP(email, kodeOTP);
+            setalert(true);
+            settext(response?.data?.message); 
+
+            if(response.status === 201) {
+              setTimeout(() => {
+                navigate("/Forgot/newpassword")
+              }, 2000);
+            }
+
         } catch (error) {
-            
+            setalert(true);
+            settext(error.response?.data?.message);
         }
     }
 
