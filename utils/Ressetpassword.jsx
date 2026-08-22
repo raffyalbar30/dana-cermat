@@ -1,7 +1,9 @@
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, Outlet, useSearchParams } from "react-router-dom";
 
 export default function Ressetpassword() {
-   const {encodedEmail, Otp} = useParams();
-   console.log(encodedEmail)
-  return encodedEmail ? <Outlet /> : <Navigate to="/Login" replace />;
+   const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
+  const otp = searchParams.get("OTP");
+
+  return email && otp ? <Outlet /> : <Navigate to="/Login" replace />;
 }

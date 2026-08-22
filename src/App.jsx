@@ -26,7 +26,7 @@ function App() {
          <Route path="/Register" element={<Register/>}/>
          <Route path="/Forgot/password" element={<Forgotpasswordpages/>}/>
          <Route element={<Ressetpassword/>}>
-            <Route path="/Forgot/newpassword/:encodedEmail/:Otp" element={<NewPasswordpage/>}/>
+           <Route path="/Forgot/password/createnewpassword" element={<NewPasswordpage/>}/>
          </Route>
          <Route element={<ProtectedRoute/>}>
               <Route path="/Dashboard" element={<Routers Children={<Dashboard/>}/>}/>

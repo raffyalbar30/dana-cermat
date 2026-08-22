@@ -3,13 +3,12 @@ import Label from '../component/label';
 import Inputs from '../component/Inputs';
 import Buttons from '../component/Buttons';
 import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi';
-import { Link, useNavigate } from 'react-router-dom';
+import { createSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import Toaster from '../component/Toaster';
 import { FaPaperPlane } from 'react-icons/fa';
 import { IoSend } from "react-icons/io5";
 import { SendOTP, VerifyOTP } from '../services/service';
-import { useSearchParams } from "react-router-dom";
 
 
 
@@ -39,8 +38,13 @@ const Forgotpassword = () => {
             settext(response?.data?.message); 
 
             if(response.status === 201) {
+                const params = createSearchParams({
+                    email: encodedEmail,
+                    OTP: kodeOTP,
+                });
+
               setTimeout(() => {
-                 navigate(`/Forgot/newpassword/ressetpassword?email=${encodedEmail}&OTP=${kodeOTP}`);
+                 navigate(`/Forgot/password/createnewpassword${params}`);
               }, 2000);
             }
 
@@ -70,12 +74,13 @@ const Forgotpassword = () => {
     }
   
     setTimeout(() => {
-       setloader(false);
        setalert(false);
-       setloaderOTP(false);
-    }, 1500);
+       setloader(false);
+    }, 1300);
 
-       
+    setTimeout(() => {
+       setloaderOTP(false);
+    }, 1000)
 
    //    update
     return (
