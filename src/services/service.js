@@ -22,3 +22,15 @@ export const VerifyOTP = async (email_user, OTP) => {
         throw error
    }
 }
+
+export const CreateNewPassword = async (token, newpassword) => {
+      try {
+          const response = await EndpointApi.post(`/verify/Newpassword`, {
+               token:`${token}`, 
+               newpassword: newpassword
+          })
+          return { response: response }
+      } catch (error) {
+          throw error
+      }
+}

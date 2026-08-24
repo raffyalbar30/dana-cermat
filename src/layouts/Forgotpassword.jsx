@@ -29,6 +29,7 @@ const Forgotpassword = () => {
         const email = data.email; 
         const kodeOTP = data.kodeOTP; 
         const encodedEmail = btoa(email);
+        if (loader) return; 
         setloader(true); 
 
 
@@ -36,6 +37,7 @@ const Forgotpassword = () => {
             const { response } = await VerifyOTP(email, kodeOTP);
             setalert(true);
             settext(response?.data?.message); 
+            sessionStorage.setItem("tokennewpassword", response?.data?.user?.Resetpassword); 
 
             if(response.status === 201) {
                 const params = createSearchParams({
@@ -44,7 +46,7 @@ const Forgotpassword = () => {
                 });
 
               setTimeout(() => {
-                 navigate(`/Forgot/password/createnewpassword${params}`);
+                 navigate(`/Forgot/password/createnewpassword?${params}`);
               }, 2000);
             }
 
@@ -55,21 +57,22 @@ const Forgotpassword = () => {
     }
 
 
-    const SendingOTP = async () => {
+   const SendingOTP = async () => {
         const emailtrigger = await trigger("email");
         if (!emailtrigger) return;
+        if (loader) return; 
 
         const email = getValues("email");
         setloaderOTP(true); 
 
         try {
             const { response } = await SendOTP(email);
-            setalert(true);
             settext(response?.data?.message); 
+            setalert(true);
         
         } catch (error) {
-            setalert(true);
             settext(error.response?.data?.message);
+            setalert(true);
         }
     }
   
@@ -166,10 +169,11 @@ const Forgotpassword = () => {
                                             <button
                                               onClick={SendingOTP}
                                                type="button"
-                                                 className="absolute right-1 top-1/2 -translate-y-1/2 p-3 rounded-lg bg-[#3F47F4]">
+                                               disabled={loaderOTP}
+                                                 className="absolute right-1 top-1/2 disabled:cursor-not-allowed -translate-y-1/2 p-3 rounded-lg bg-[#3F47F4]">
                                                     { loaderOTP === true ? (
                                                         <div className='flex justify-center items-center gap-x-2'> 
-                                                            <svg width={"18px"} fill="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+                                                            <svg className="text-white" width={"18px"} fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
                                                       </div> ) 
                                                       : <FaPaperPlane className="text-white" /> 
                                                      }
@@ -199,12 +203,13 @@ const Forgotpassword = () => {
                                     <Buttons
                                     Classparrent={"mt-6"}
                                     Classchild={"w-full"}
+                                    disabled={loader}
                                     Classbutton={`
-                                            w-full bg-blue-700 disabled:cursor-not-allowed cursor-pointer transition text-white py-3 rounded-xl text-lg font-semibold`
+                                            w-full ${loader === true ? "bg-indigo-400 disabled:cursor-not-allowed" : "bg-[#3F47F4] cursor-pointer "} transition text-white py-3 rounded-xl text-lg font-semibold`
                                         }
                                         Title={ loader === true ? (
                                         <div className='flex justify-center items-center gap-x-2'> 
-                                            <svg width={"24px"} fill="hsl(228, 97%, 42%)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+                                            <svg  className="text-white" width={"24px"} fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
                                             <span className='text-white text-md'>Loading</span>
                                         </div>
                                     ) : "Create new password"} type={"sumbit"}/>
