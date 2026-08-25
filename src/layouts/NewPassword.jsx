@@ -18,11 +18,24 @@ export default function NewPassword() {
      // react-hook-form
        const { control, handleSubmit, formState:{errors} } = useForm();
        const getToken = sessionStorage.getItem("tokennewpassword"); 
+
+       const parseJSON = JSON.parse(getToken);
+       
    
        const formForgot = async (data) => {
            const newpassword = data.password; 
            const newconfirmpassword = data.confirmpassword; 
+           const expired = new Date() > new Date(parseJSON.dateEXP);
            setloader(true); 
+
+           if(expired){
+               settitle("Maaf reset password gagal karena sesi reset berakhir! "); 
+               setalert(true);
+
+                setTimeout(() => {
+                    window.location.href = "/Login"; 
+                }, 1800)
+           }
 
            if(newpassword != newconfirmpassword) {
                settitle("Maaf password harus sama dengan confirm password "); 
@@ -30,7 +43,7 @@ export default function NewPassword() {
                return; 
            }
             try {
-                  const { response } = await CreateNewPassword(getToken, newpassword); 
+                  const { response } = await CreateNewPassword(parseJSON.token, newpassword); 
                   settitle(response?.data?.message);
                   setalert(true);
 

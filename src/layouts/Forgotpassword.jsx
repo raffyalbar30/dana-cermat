@@ -37,7 +37,13 @@ const Forgotpassword = () => {
             const { response } = await VerifyOTP(email, kodeOTP);
             setalert(true);
             settext(response?.data?.message); 
-            sessionStorage.setItem("tokennewpassword", response?.data?.user?.Resetpassword); 
+            sessionStorage.setItem(
+            "tokennewpassword",
+            JSON.stringify({
+                token: response?.data?.user?.Resetpassword,
+                dateEXP: response?.data?.date?.expires_at, // btw ini expires_at, bukan created_at kalau tujuannya buat expiry check
+            })
+          );
 
             if(response.status === 201) {
                 const params = createSearchParams({
