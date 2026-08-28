@@ -37,7 +37,7 @@ export default function AllCards() {
                      <Cards
                      loader={loader}
                      title="Total Income"
-                     value={`Rp. ${parseInt(total[0]?.total_income).toLocaleString("id-ID")}`}
+                     value={`Rp. ${ !total[0]?.total_income ? "0" : parseInt(total[0]?.total_income).toLocaleString("id-ID")}`}
                      desc="+12% from last month"
                      color="text-green-600"
                      icons={<IoIosTrendingUp/>}
@@ -45,7 +45,7 @@ export default function AllCards() {
                      <Cards
                      loader={loader}
                      title="Total Expenses"
-                     value={`Rp. ${parseInt(total[0]?.total_expense).toLocaleString("id-ID")}`}
+                     value={`Rp. ${!total[0]?.total_expense ? "0" : parseInt(total[0]?.total_expense).toLocaleString("id-ID")}`}
                      desc="-8% from last month"
                      color="text-red-500"
                      icons={<IoIosTrendingDown/>}
@@ -53,7 +53,7 @@ export default function AllCards() {
                      <Cards
                      loader={loader}
                      title="Net Belance"
-                     value={`Rp. ${parseInt(total[0]?.net_balance).toLocaleString("id-ID")}`}
+                     value={`Rp. ${!total[0]?.net_balance ? "0" : parseInt(total[0]?.net_balance).toLocaleString("id-ID")}`}
                      desc="24.0% form last month"
                      color="text-blue-600"
                      icons={<GiReceiveMoney/>}

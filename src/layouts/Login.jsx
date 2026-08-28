@@ -15,38 +15,44 @@ export default function Login() {
   const [ alert, setalert ] = useState(false); 
   const [ titleAlert, settitleAlert ] = useState("");
 
-//  React navigations 
-  const navigate = useNavigate();
-
 // use - hook - form 
   const { control, handleSubmit, formState:{ errors } } = useForm();
 
   const formLogin = async (data) => {
-    const email = data.email 
-    const password = data.password
-    setloader(true)
-       
-        try {
-           const { response } = await LoginAuth( email, password );
-           const token = sessionStorage.setItem("Token", response?.data?.accesToken);
+  const email = data.email;
+  const password = data.password;
+  setloader(true);
 
-          if (response.status === 201) {
-            setTimeout(() => {
-                window.location.href = "/Dashboard";
-            }, 2000);
-          }
-           
-        } catch (error) {
-             setalert(true);
-             settitleAlert(error.response?.data?.message); 
-        }
-  }
- 
+  try {
+    const { response } = await LoginAuth(email, password); 
+    sessionStorage.setItem("Token", response?.data?.accesToken);
+    const getaccessToken = sessionStorage.getItem("Token");
+    const getForgetToken = sessionStorage.getItem("tokennewpassword"); 
+
+    if(getForgetToken){
+        sessionStorage.clear("tokennewpassword");
+    }
+
+    if (getaccessToken) {
+        setalert(true);
+        settitleAlert("Login telah berhasil!!");
+        setTimeout(() => {
+            window.location.href = "/Dashboard";
+        }, 1800);
+    } 
+
+    } catch (error) {
+        setalert(true);
+        settitleAlert(error.response?.data?.message);
+    } finally {
+        setloader(false); 
+    }
+
+};
     setTimeout(() => {
        setloader(false)
        setalert(false)
     }, 1500);
-
 
 
   return (
