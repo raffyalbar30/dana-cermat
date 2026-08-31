@@ -110,17 +110,17 @@ export default function NewPassword() {
                                                           render={({ field }) => (
                                                               <Inputs
                                                                Children={"Masukan password"}
-                                                                                          Class={"mt-2"}
-                                                                                          ClassParrent={"w-full flex items-center relative"}
-                                                                                          ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 ${errors.password ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
-                                                                                          type={viewPassword === true ? "text" : "password"}
-                                                                                          value={field.value}
-                                                                                          onChange={field.onChange}
-                                                                                          hiddenPassword={ 
-                                                                                          <div className='absolute cursor-pointer right-1 mr-2' onClick={() => setviewPassword(prev => !prev)}>
+                                                                  Class={"mt-2"}
+                                                                    ClassParrent={"w-full flex items-center relative"}
+                                                                      ClassInput={`w-full p-3 rounded-xl bg-slate-100 focus:outline-none focus:ring-2 ${errors.password ? "focus:ring-red-500 ring-2 ring-red-500 placeholder:text-red-500" : "focus:ring-blue-500"}`}
+                                                                         type={viewPassword === true ? "text" : "password"}
+                                                                            value={field.value}
+                                                                                onChange={field.onChange}
+                                                                                  hiddenPassword={ 
+                                                                                 <div className='absolute cursor-pointer right-1 mr-2' onClick={() => setviewPassword(prev => !prev)}>
                                                                                               {viewPassword === true ? ( <PiEyeThin className='text-2xl' /> ) 
                                                                                               :( <PiEyeSlashThin className='text-2xl' />)}
-                                                               </div>}
+                                                                                   </div>}
                                                               />
                                                         )}
                                                                           />
