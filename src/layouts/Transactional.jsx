@@ -9,7 +9,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import Toaster from "../component/Toaster";
 import LoaderPage from "../component/LoaderPage";
 import { FiAlertTriangle } from "react-icons/fi";
-import { AddTransactions, Dellatetransactions, FormTransaksi, GetAlltransactions, Renametransactions } from "../services/api";
+import { AddTransactions, Dellatetransactions, GetAlltransactions, Renametransactions } from "../services/api";
 import { MdWindow } from "react-icons/md";
 import { LuNotebookPen } from "react-icons/lu";
 import Notfound from "../component/Notfound";
@@ -65,7 +65,7 @@ export default function Transactional() {
   const [ datedellated, setdatedellated ] = useState("");
 
 
-  const token = localStorage.getItem("Token"); 
+  const token = sessionStorage.getItem("Token");
 
 
   const handleClick = () => {
@@ -73,12 +73,11 @@ export default function Transactional() {
   };
 
   const Category = async (data) => {
-  try {
-    const { response } = await FormTransaksi(data);
-    setGetCategory(response.data);
-  } catch (error) {
-    console.log(error);
-  }
+     try {
+        setGetCategory("data");
+     } catch (error) {
+        console.log(error);
+      }
   };
   
   // done berhasil 
@@ -401,12 +400,14 @@ export default function Transactional() {
            </div>
           
             }/> ) : ( isOpen === true ? ( 
+
           // Modal add transactions 
             <ToasterModal
             isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}
             Icons={<FcMoneyTransfer size={700}/>} Title={"Add your transactions"} 
             describeTitle={"Make changes to your transaction details and keep your financial records accurate."}
             FormsAddTransactions={<AddFormTransactions setIsOpen={setisOpen}/>}/>
+
            ) : dellate === true ?  (
             <div className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
                 dellate

@@ -10,23 +10,22 @@ export const EndpointApi = axios.create({
     }
 });
 
+export const Getcategory= async (type_categories) => { 
+    console.log("function jalan!", type_categories); 
 
-
-export const FormTransaksi = async(params) => { 
     try {
-        const response = await EndpointApi.get(`/Transaksi/v1/getCategories?type_categories=${params}`)
-        .then(ress => {
-            return ress
-         });
-        
-       return { response: response.data}
-
+        const response = await EndpointApi.get(`/Transaksi/v1/getCategories`, {
+            params: { type_categories }
+        });
+        console.log(response);
+        return { response: response.data };
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
+
 }
 
-export const AddTransactions = async (token, category, amount, descriptions, date ) => {
+export const AddTransactions = async (token, category, amount, descriptions, date) => {
     try {
         const response = await EndpointApi.post(`/Transaksi`, {
               id_categories: category,

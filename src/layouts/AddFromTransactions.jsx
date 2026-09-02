@@ -1,14 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Label from '../component/Label';
+import { AddTransactions, EndpointApi, Getcategory } from '../services/api';
 
 
 const AddFormTransactions = ({setIsOpen}) => {
+    const [ category, setcategory ] = useState([]); 
     const { control, handleSubmit, formState:{errors} } = useForm();
+    const token = sessionStorage.getItem("Token"); 
+
+    const Getcategory = async (type_categories) => { 
+    try {
+        const response = await EndpointApi.get(`/Transaksi/v1/getCategories`, {
+            params: { type_categories }
+        });
+        console.log(response.data);
+        return { response: response.data };
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
+    const handleAddtransactions = async (data) => {
+        const TypeBudget = data.TypeBudget; 
+
+        if (TypeBudget){
+           return await Getcategory('Expanses');   
+        }
+
+       try {
+          const { response } = await AddTransactions(token);
+       } catch (error) {
+         console.log(error); 
+       }
+    }
+    
+    console.log(category); 
 
     return (
         <div>
-             <form>
+             <form onSubmit={handleSubmit(handleAddtransactions)}>
                  <div className="mt-8 space-y-4">
                       <div className="w-full mt-4">
                           <Label Children={"Type Budget"} ClassText={"text-left text-gray-600"}/>
