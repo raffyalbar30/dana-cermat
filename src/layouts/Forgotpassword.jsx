@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Label from '../component/label';
+import Label from '../component/Label';
 import Inputs from '../component/Inputs';
 import Buttons from '../component/Buttons';
 import { PiEyeSlashThin, PiEyeThin } from 'react-icons/pi';

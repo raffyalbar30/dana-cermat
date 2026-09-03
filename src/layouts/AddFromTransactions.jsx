@@ -1,41 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Label from '../component/Label';
-import { AddTransactions, EndpointApi, Getcategory } from '../services/api';
+import { AddTransactions, Getcategory } from '../services/api';
 
 
 const AddFormTransactions = ({setIsOpen}) => {
     const [ category, setcategory ] = useState([]); 
-    const { control, handleSubmit, formState:{errors} } = useForm();
+    const { control, handleSubmit, watch, getValues, formState:{errors} } = useForm();
     const token = sessionStorage.getItem("Token"); 
 
-    const Getcategory = async (type_categories) => { 
-    try {
-        const response = await EndpointApi.get(`/Transaksi/v1/getCategories`, {
-            params: { type_categories }
-        });
-        console.log(response.data);
-        return { response: response.data };
-    } catch (error) {
-        console.error(error);
-    }
-  }
+     const typeBudget = watch("TypeBudget");
+
+     const getCategory = !typeBudget ? "Expanses" : typeBudget;
+
+    const Category = async (budgetType) => {
+        try {
+            const { response } = await Getcategory(budgetType);
+            setcategory(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        if (getCategory) {
+            Category(getCategory); 
+        }
+    }, [typeBudget]);
 
     const handleAddtransactions = async (data) => {
-        const TypeBudget = data.TypeBudget; 
-
-        if (TypeBudget){
-           return await Getcategory('Expanses');   
-        }
+        const formCategory = getValues("TypeCategory"); 
+        const amount = data.Amount; 
+        const date = data.Date; 
+        const description = data.Description; 
 
        try {
-          const { response } = await AddTransactions(token);
+          const { response } = await AddTransactions(token, formCategory, amount, description, date);
+          console.log(response); 
        } catch (error) {
          console.log(error); 
        }
     }
-    
-    console.log(category); 
+
 
     return (
         <div>
@@ -46,10 +52,10 @@ const AddFormTransactions = ({setIsOpen}) => {
                              <div className="relative w-full mt-1">
                                 <Controller
                                    name="TypeBudget"
-                                            control={control}
-                                            rules={{ required: 'Kategori wajib dipilih' }}
-                                            render={({ field }) => (
-                                                <select
+                                    control={control}
+                                     rules={{ required: 'Kategori wajib dipilih' }}
+                                       render={({ field }) => (
+                                           <select
                                                         className={`border focus:outline-none focus:ring-2 ${
                                                         errors.TypeBudget
                                                             ? "focus:ring-red-500 ring-2 ring-red-500 border-red-500 placeholder:text-red-500"
@@ -57,10 +63,9 @@ const AddFormTransactions = ({setIsOpen}) => {
                                                         } w-full flex justify-between items-center text-left p-2 border rounded-md bg-gray-50`}
                                                         {...field}
                                                 >
-                                                <option value="">Pilih kategori</option>
                                                 <option value="Expanses">Expanses</option>
                                                 <option value="Income">Income</option>
-                                                </select>
+                                            </select>
                                             )}
                                             />
                                         {errors.TypeBudget && <p className="text-red-500 text-sm">{errors.TypeBudget.message}</p>}
@@ -75,17 +80,23 @@ const AddFormTransactions = ({setIsOpen}) => {
                                             control={control}
                                             rules={{ required: 'Kategori wajib dipilih' }}
                                             render={({ field }) => (
-                                                <select
-                                                        className={`border focus:outline-none focus:ring-2 ${
+                                                 <select
+                                                   className={`border focus:outline-none focus:ring-2 ${
                                                         errors.TypeCategory
                                                             ? "focus:ring-red-500 ring-2 ring-red-500 border-red-500 placeholder:text-red-500"
                                                             : "focus:ring-blue-500 border-blue-500"
-                                                        } w-full flex justify-between items-center text-left p-2 border rounded-md bg-gray-50`}
-                                                        {...field}
+                                                    } w-full flex justify-between items-center text-left p-2 border rounded-md bg-gray-50`}
+                                                    {...field}
                                                 >
-                                                <option value="">Pilih kategori</option>
-                                                <option value="Expanses">Expanses</option>
-                                                <option value="Income">Income</option>
+                                                  {category?.map((data) => {
+                                                     return (
+                                                        <>
+                                                            <option key={data?.categories_id} value={data?.categories_id}>
+                                                             {data?.name_categories}
+                                                            </option>
+                                                        </>
+                                                     )
+                                                  })}
                                                 </select>
                                             )}
                                             />
