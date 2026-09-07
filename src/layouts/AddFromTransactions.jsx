@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Label from '../component/Label';
 import { AddTransactions, Getcategory } from '../services/api';
+import Buttons from '../component/Buttons';
 
 
-const AddFormTransactions = ({setIsOpen}) => {
+const AddFormTransactions = ({setIsOpen, setAlert, setTitle}) => {
     const [ category, setcategory ] = useState([]); 
+    const [ loader, setloader ] = useState(false);
+
     const { control, handleSubmit, watch, getValues, formState:{errors} } = useForm();
     const token = sessionStorage.getItem("Token"); 
 
-     const typeBudget = watch("TypeBudget");
-
-     const getCategory = !typeBudget ? "Expanses" : typeBudget;
+    const typeBudget = watch("TypeBudget");
+    const getCategory = !typeBudget ? "Expanses" : typeBudget;
 
     const Category = async (budgetType) => {
         try {
@@ -33,18 +35,27 @@ const AddFormTransactions = ({setIsOpen}) => {
         const amount = data.Amount; 
         const date = data.Date; 
         const description = data.Description; 
+        setloader(true); 
 
        try {
           const { response } = await AddTransactions(token, formCategory, amount, description, date);
-          console.log(response); 
+          setTitle(response.message); 
+          setAlert(true);
+          setIsOpen(false); 
+
        } catch (error) {
-         console.log(error); 
+           setTitle(error.response.message); 
+           setAlert(true);
        }
     }
 
+     setTimeout(() => {
+       setloader(false);
+    }, 1300);
 
     return (
-        <div>
+        <>
+            <div>
              <form onSubmit={handleSubmit(handleAddtransactions)}>
                  <div className="mt-8 space-y-4">
                       <div className="w-full mt-4">
@@ -193,24 +204,31 @@ const AddFormTransactions = ({setIsOpen}) => {
                                 </div>
                                        {/* Actions */}
                                <div className="mt-8 flex flex-col gap-3">
-                                        <button
-                                        type="submit"
-                                        className="rounded-xl bg-[#3F47F4] py-3 cursor-pointer font-medium text-white transition"
-                                        >
-                                        Update transactions
-                                        </button>
+                                        <Buttons
+                                          Classparrent={"mt-4"}
+                                          Classchild={"w-full"}
+                                          disabled={loader}
+                                          Classbutton={`
+                                             w-full ${loader === true ? "bg-indigo-400 disabled:cursor-not-allowed" : "bg-[#3F47F4] cursor-pointer "} transition text-white py-3 rounded-xl text-lg font-semibold`}
+                                           Title={ loader === true ? (
+                                                <div className='flex justify-center items-center gap-x-2'> 
+                                                   <svg width={"24px"} fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+                                                   <span className='text-white text-md'>Loading</span>
+                                                 </div>
+                                              ) : "Add transactions"}/>
             
                                         <button
                                         onClick={()=> setIsOpen(false)}
                                         type="button"
                                         className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
                                         >
-                                        Cancel
+                                        Cancel add transactions
                                         </button>
                                </div>
                  </div>
               </form>
-        </div>
+            </div>
+        </>
     );
 }
 
