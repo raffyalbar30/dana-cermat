@@ -30,6 +30,11 @@ export default function Transactional() {
 
   // State untuk dropdown selected
   const [isOpen, setisOpen] = useState(false);
+  // state update transactions
+  const [updatetransactions, setupdatetransactions] = useState(false);
+
+  // State untuk get updateTransactions 
+  const [ getUpdateTransactions, setgetUpdateTransactions ] = useState([])
 
   // State menu
   const [type, settype] = useState("Expanses");
@@ -49,8 +54,6 @@ export default function Transactional() {
   const [active, setactive] = useState();
   const [nextPage, setnextPage] = useState(1);
 
-  // state update transactions
-  const [updatetransactions, setupdatetransactions] = useState(false);
   const [confirmupdate, setconfirmupdate] = useState(false);
   const [renameid, setrenameid] = useState();
   const [renametypebudget, setrenametypebudget] = useState("");
@@ -149,7 +152,8 @@ export default function Transactional() {
   setTimeout(() => {
     setalert(false);
   }, 1300);
-
+  
+ 
   return (
     <>
       <div
@@ -174,7 +178,16 @@ export default function Transactional() {
             describeTitle={
               "Update your transaction names to keep your records easy to understand."
             }
-            FormsAddTransactions={<UpdateTransactions typebudget={renametypebudget} typecategoris={renamecategory}/>}
+            FormsAddTransactions={
+            <UpdateTransactions 
+            setgetUpdateTransactions={setgetUpdateTransactions}
+            typebudget={renametypebudget} 
+            typecategoris={renamecategory}  
+            amount={renameamount}
+            date={renamedate} 
+            description={renamedescriptions}
+            setupdatetransactions={setupdatetransactions}
+            />}
           />
         ) : isOpen === true ? (
           // Modal add transactions

@@ -1,27 +1,86 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Label from "../component/Label";
 import Buttons from "../component/Buttons";
+import { Getcategory } from "../services/api";
 
 const UpdateTransactions = ({
   typebudget,
-  typecategoris,
   amount,
   date,
   description,
+  setupdatetransactions,
+  setgetUpdateTransactions
 }) => {
+
   const {
     control,
     handleSubmit,
-    watch,
     getValues,
+    reset, 
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      Amount: "",
+      Date: "",
+      Description: "",
+    },
+  });
+
+
   const [loader, setloader] = useState(false);
+  const [allcategory, setallcategory ] = useState([]); 
+
+  const getCategory = async () => {
+     const { response } = await Getcategory(typebudget); 
+     setallcategory(response.data); 
+  }
+  
+ 
+  const handleConfirm = (data) => {
+    const typeBudget = typebudget; 
+    const typecategory = getValues("TypeCategory");
+    const amount = data.Amount; 
+    const date = data.Date; 
+    const description = data.Description;
+    
+    const allData = {
+        budget: typeBudget, 
+        categoris : typecategory, 
+        amount: amount, 
+        date: date, 
+        descrb: description
+    }
+    setloader(true);
+    setgetUpdateTransactions(allData); 
+    setTimeout(() => {
+      setupdatetransactions(false);
+    }, 1800)
+  }
+
+  useEffect(() => {
+    getCategory();
+  }, []); 
+  
+  useEffect(() => {
+    reset({
+      Amount: amount || "",
+      Date: date ? new Date(date).toLocaleDateString("en-CA", 
+        {
+          timeZone: "Asia/Jakarta",
+        }) : "" || "",
+      Description: description || "",
+    });
+  }, [amount, date, description, reset]);
+
+  setTimeout(() => {
+    setloader(false)
+  }, 1300);
+   
   return (
     <div>
       <div>
-        <form>
+        <form onSubmit={handleSubmit(handleConfirm)}>
           <div className="mt-8 space-y-4">
             <div className="w-full mt-4">
               <Label
@@ -32,18 +91,12 @@ const UpdateTransactions = ({
                 <Controller
                   name="TypeBudget"
                   control={control}
-                  rules={{ required: "Kategori wajib dipilih" }}
                   render={() => (
-                    <button className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
+                    <div className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50">
                       <span className="text-slate-600">{typebudget}</span>
-                    </button>
+                    </div>
                   )}
                 />
-                {errors.TypeBudget && (
-                  <p className="text-red-500 text-sm">
-                    {errors.TypeBudget.message}
-                  </p>
-                )}
               </div>
             </div>
 
@@ -66,16 +119,15 @@ const UpdateTransactions = ({
                       } w-full flex justify-between items-center text-left p-2 border rounded-md bg-gray-50`}
                       {...field}
                     >
-                      <option>{typecategoris}</option>
-                      {/* {typecategoris?.map((data) => {
-                                                                 return (
-                                                                    <>
-                                                                        <option key={data?.categories_id} value={data?.categories_id}>
-                                                                         {data?.name_categories}
-                                                                        </option>
-                                                                    </>
-                                                                 )
-                                                              })} */}
+                      {allcategory?.map((data) => {
+                                  return (
+                                     <>
+                                        <option key={data?.categories_id} value={data?.categories_id}>
+                                             {data?.name_categories}
+                                         </option>
+                                     </>
+                                 )
+                          })}
                     </select>
                   )}
                 />
@@ -114,6 +166,7 @@ const UpdateTransactions = ({
                           : "focus:ring-blue-500 border-blue-500"
                       } w-full p-2 border rounded-md bg-gray-50`}
                       {...field}
+                      value={field.value ?? ""}
                       onChange={(e) => {
                         const value = e.target.value.replace(/[^0-9]/g, "");
                         field.onChange(value);
@@ -145,6 +198,7 @@ const UpdateTransactions = ({
                           : "focus:ring-blue-500 border-blue-500"
                       } w-full p-2 border rounded-md bg-gray-50`}
                       {...field}
+                      value={field.value ?? ""}
                     />
                   )}
                 />
@@ -180,6 +234,7 @@ const UpdateTransactions = ({
                           : "focus:ring-blue-500 border-blue-500"
                       } w-full p-2 border rounded-md bg-gray-50`}
                       {...field}
+                      value={field.value ?? ""}
                     />
                   )}
                 />
@@ -197,7 +252,7 @@ const UpdateTransactions = ({
                 Classchild={"w-full"}
                 disabled={loader}
                 Classbutton={`
-                                                         w-full ${loader === true ? "bg-indigo-400 disabled:cursor-not-allowed" : "bg-[#3F47F4] cursor-pointer "} transition text-white py-3 rounded-xl text-lg font-semibold`}
+                 w-full ${loader === true ? "bg-indigo-400 disabled:cursor-not-allowed" : "bg-[#3F47F4] cursor-pointer "} transition text-white py-3 rounded-xl text-lg font-semibold`}
                 Title={
                   loader === true ? (
                     <div className="flex justify-center items-center gap-x-2">
@@ -224,7 +279,7 @@ const UpdateTransactions = ({
                       <span className="text-white text-md">Loading</span>
                     </div>
                   ) : (
-                    "Add transactions"
+                    "Update transactions"
                   )
                 }
               />
@@ -234,7 +289,7 @@ const UpdateTransactions = ({
                 type="button"
                 className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
               >
-                Cancel add transactions
+                Cancel Update transactions
               </button>
             </div>
           </div>
