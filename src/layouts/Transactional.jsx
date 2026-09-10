@@ -153,7 +153,7 @@ export default function Transactional() {
     setalert(false);
   }, 1300);
   
- 
+
   return (
     <>
       <div
@@ -173,7 +173,7 @@ export default function Transactional() {
           <ToasterModal
             isOpen={updatetransactions}
             setisOpen={setupdatetransactions}
-            Icons={<PiNotePencil size={700} />}
+            Icons={<LuNotebookPen size={70} className="text-blue-700" />}
             Title={"Rename your transactions"}
             describeTitle={
               "Update your transaction names to keep your records easy to understand."
@@ -187,6 +187,7 @@ export default function Transactional() {
             date={renamedate} 
             description={renamedescriptions}
             setupdatetransactions={setupdatetransactions}
+            setconfirmupdate={setconfirmupdate}
             />}
           />
         ) : isOpen === true ? (
@@ -356,50 +357,42 @@ export default function Transactional() {
                   <div className="flex justify-between py-2">
                     <span className="text-gray-500">Type</span>
                     <span
-                      className={`rounded-full px-3 py-1 text-sm font-medium  ${Renametypecategories === "Income" ? "text-green-600 bg-green-300" : "text-red-600 bg-red-300"}`}
+                      className={`rounded-full px-3 py-1 text-sm font-medium  ${getUpdateTransactions.budget === "Income" ? "text-white bg-green-300" : "text-white bg-red-300"}`}
                     >
-                      {Renametypecategories}
+                     {getUpdateTransactions.budget}
                     </span>
                   </div>
 
                   <div className="flex justify-between py-2">
                     <span className="text-gray-500">Category</span>
                     <span className="font-medium text-gray-800">
-                      {!nameCategoris ? RenameNameCategoris : nameCategoris}
+                        {getUpdateTransactions.categoris}
                     </span>
                   </div>
 
                   <div className="flex justify-between py-2">
                     <span className="text-gray-500">Amount</span>
                     <span className="font-semibold text-gray-900">
-                      {Number(amount).toLocaleString("id-ID")}
+                       {getUpdateTransactions.amount}
                     </span>
                   </div>
 
                   <div className="flex justify-between py-2">
                     <span className="text-gray-500">Date</span>
                     <span className="font-medium text-gray-800">
-                      {date
-                        ? `${new Date(date).getFullYear()}-${String(
-                            new Date(date).getMonth() + 1,
-                          ).padStart(
-                            2,
-                            "0",
-                          )}-${String(new Date(date).getDate()).padStart(2, "0")}`
-                        : ""}
+                       {getUpdateTransactions.date}
                     </span>
                   </div>
 
                   <div className="border-t border-gray-300 pt-3 mt-3">
                     <p className="text-gray-500 mb-1">Description</p>
-                    <p className="text-gray-800">{descriptions}</p>
+                    <p className="text-gray-800"> {getUpdateTransactions.desc}</p>
                   </div>
                 </div>
 
                 {/* Action */}
                 <div className="mt-8 flex flex-col gap-3">
                   <button
-                    onClick={() => updateRenametransactions()}
                     className="rounded-xl bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
                   >
                     Update Transaction

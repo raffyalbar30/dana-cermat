@@ -50,7 +50,6 @@ export const GetAlltransactions = async (token, pages) => {
             "Content-Type": "application/json"
         }
       })
-      console.log(response);
       return { response: response }
    } catch (error) { 
         console.log(error);

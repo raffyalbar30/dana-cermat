@@ -12,10 +12,8 @@ export default function ToasterModal({
 
   return (
       <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}>
-        <div className={`fixed inset-0 flex items-center justify-center p-4
-                    transition-all duration-300 ${ isOpen ? "dropdown" : "dropdownout" }`}>
-        <div className={`relative mt-8 w-[700px] h-[700px] max-h-[85vh] overflow-y-auto rounded-2xl bg-white shadow-xl transition-all duration-300 ${
-                isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0" }`}>
+        <div className={`flex items-center justify-center`}>
+        <div className={`relative w-full mt-8 h-[700px] max-h-[85vh] overflow-y-auto rounded-2xl transition-all duration-300 `}>
             {/* Close Button */}
             <button
             onClick={()=> setisOpen(false)}
@@ -25,8 +23,7 @@ export default function ToasterModal({
 
             <div className="p-8">
             {/* Icon */}
-
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl">
+            <div className="mx-auto flex h-20 w-20 p-4 items-center justify-center bg-blue-100 rounded-2xl">
                 {Icons}
             </div>
 

@@ -6,11 +6,13 @@ import { Getcategory } from "../services/api";
 
 const UpdateTransactions = ({
   typebudget,
+  typecategoris,
   amount,
   date,
   description,
   setupdatetransactions,
-  setgetUpdateTransactions
+  setgetUpdateTransactions, 
+  setconfirmupdate
 }) => {
 
   const {
@@ -43,19 +45,25 @@ const UpdateTransactions = ({
     const amount = data.Amount; 
     const date = data.Date; 
     const description = data.Description;
-    
+
+    const typecategorname = allcategory.find(
+      (item) => String(item?.categories_id) === String(typecategory)
+    )?.name_categories ?? "-"; 
+
     const allData = {
         budget: typeBudget, 
-        categoris : typecategory, 
+        categoris : typecategorname, 
         amount: amount, 
         date: date, 
-        descrb: description
+        desc: description
     }
     setloader(true);
     setgetUpdateTransactions(allData); 
     setTimeout(() => {
       setupdatetransactions(false);
-    }, 1800)
+    }, 1800); 
+
+    setconfirmupdate(true); 
   }
 
   useEffect(() => {
@@ -119,15 +127,16 @@ const UpdateTransactions = ({
                       } w-full flex justify-between items-center text-left p-2 border rounded-md bg-gray-50`}
                       {...field}
                     >
-                      {allcategory?.map((data) => {
-                                  return (
-                                     <>
-                                        <option key={data?.categories_id} value={data?.categories_id}>
-                                             {data?.name_categories}
-                                         </option>
-                                     </>
-                                 )
-                          })}
+                      {allcategory
+                        ?.slice()
+                        .sort((a, b) =>
+                          a?.name_categories === typecategoris ? -1 : b?.name_categories === typecategoris ? 1 : 0
+                        )
+                        .map((data) => (
+                          <option key={data?.categories_id} value={data?.categories_id}>
+                            {data?.name_categories}
+                          </option>
+                        ))}
                     </select>
                   )}
                 />
