@@ -54,6 +54,7 @@ export default function Transactional() {
 
   const [confirmupdate, setconfirmupdate] = useState(false);
   const [renameid, setrenameid] = useState();
+  const [renametypeid, setrenametypeid ] = useState();
   const [renametypebudget, setrenametypebudget] = useState("");
   const [renamecategory, setrenamecategory] = useState([]);
   const [renameamount, setrenameamount] = useState();
@@ -144,7 +145,6 @@ export default function Transactional() {
     setalert(false);
   }, 1300);
   
-  console.log(getDellateTransactions); 
   
   return (
     <>
@@ -174,6 +174,7 @@ export default function Transactional() {
             <UpdateTransactions 
             setgetUpdateTransactions={setgetUpdateTransactions}
             typebudget={renametypebudget} 
+            setrenametypeid={setrenametypeid}
             typecategoris={renamecategory}  
             amount={renameamount}
             date={renamedate} 
@@ -213,6 +214,10 @@ export default function Transactional() {
             <ToasterModalConfirm 
             confirmupdate={confirmupdate}
             Chilldren={<Modalconfirm 
+              renameid={renameid}
+              renametypeid={renametypeid}
+              loader={loader}
+              setloader={setloader}
               setconfirmupdate={setconfirmupdate}
               Icons={<LuNotebookPen size={40} className="text-blue-700" />}
               getUpdateTransactions={getUpdateTransactions}

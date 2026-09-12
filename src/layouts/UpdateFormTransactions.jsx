@@ -12,7 +12,8 @@ const UpdateTransactions = ({
   description,
   setupdatetransactions,
   setgetUpdateTransactions, 
-  setconfirmupdate
+  setconfirmupdate, 
+  setrenametypeid
 }) => {
 
   const {
@@ -45,6 +46,7 @@ const UpdateTransactions = ({
     const amount = data.Amount; 
     const date = data.Date; 
     const description = data.Description;
+    setrenametypeid(typecategory);
 
     const typecategorname = allcategory.find(
       (item) => String(item?.categories_id) === String(typecategory)
