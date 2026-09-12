@@ -56,20 +56,20 @@ const Modaldellate = ({setdellate, Icons, getDellateTransactions}) => {
                               <div className="flex justify-between py-2">
                                 <span className="text-gray-500">Date</span>
                                 <span>
-                                   {getDellateTransactions.date
-                                    ? `${new Date(getDellateTransactions.date).getFullYear()}-${String(
-                                        new Date(getDellateTransactions.date).getMonth() + 1,
+                                   {getDellateTransactions.created_at
+                                    ? `${new Date(getDellateTransactions.created_at).getFullYear()}-${String(
+                                        new Date(getDellateTransactions.created_at).getMonth() + 1,
                                     ).padStart(
                                         2,
                                         "0",
-                                    )}-${String(new Date(getDellateTransactions.date).getDate()).padStart(2, "0")}`
+                                    )}-${String(new Date(getDellateTransactions.created_at).getDate()).padStart(2, "0")}`
                                     : ""}
                                 </span>
                               </div>
             
                               <div className="border-t border-gray-300 pt-3 mt-3">
                                 <p className="text-gray-500 mb-1">Description</p>
-                                <p className="text-gray-800">{getDellateTransactions.desc}</p>
+                                <p className="text-gray-800">{getDellateTransactions.descriptions}</p>
                               </div>
                             </div>
             

@@ -25,6 +25,7 @@ import UpdateTransactions from "./UpdateFormTransactions";
 import ToasterModalConfirm from "../../utils/ToasterModalConfirm";
 import Modalconfirm from "./Modalconfirm";
 import Modaldellate from "./Modaldellate";
+import ToasterModalDellate from "../../utils/ToastrModalDellate";
 
 export default function Transactional() {
   // state title toaster
@@ -143,6 +144,8 @@ export default function Transactional() {
     setalert(false);
   }, 1300);
   
+  console.log(getDellateTransactions); 
+  
   return (
     <>
       <div
@@ -199,8 +202,8 @@ export default function Transactional() {
             }
           />
         ) : dellate === true ? (
-          <ToasterModal 
-          confirmupdate={dellate}
+          <ToasterModalDellate
+          dellatedconfim={dellate}
           Chilldren={<Modaldellate
             setdellate={setdellate}
             Icons={<FiAlertTriangle size={40} className="text-red-600" />}
