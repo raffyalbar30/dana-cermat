@@ -22,6 +22,9 @@ import { FcMoneyTransfer } from "react-icons/fc";
 import ToasterModal from "../../utils/ToasterModal";
 import AddFormTransactions from "./AddFromTransactions";
 import UpdateTransactions from "./UpdateFormTransactions";
+import ToasterModalConfirm from "../../utils/ToasterModalConfirm";
+import Modalconfirm from "./Modalconfirm";
+import Modaldellate from "./Modaldellate";
 
 export default function Transactional() {
   // state title toaster
@@ -33,17 +36,11 @@ export default function Transactional() {
   // state update transactions
   const [updatetransactions, setupdatetransactions] = useState(false);
 
-  // State untuk get updateTransactions 
-  const [ getUpdateTransactions, setgetUpdateTransactions ] = useState([])
+  // State untuk get updateTransactions & get dellateTransactions
+  const [ getUpdateTransactions, setgetUpdateTransactions ] = useState([]);
+  const [ getDellateTransactions, setgetDellateTransactions ] = useState([]);
 
   // State menu
-  const [type, settype] = useState("Expanses");
-  const [idCategory, setidCategory] = useState();
-  const [nameCategoris, setnameCategories] = useState();
-  const [amount, setamount] = useState();
-  const [descriptions, setdescriptions] = useState("");
-  const [date, setdate] = useState();
-  const [getCategory, setGetCategory] = useState([]);
   const [AllTransactions, setAllTransactions] = useState([]);
 
   // State loader
@@ -61,18 +58,11 @@ export default function Transactional() {
   const [renameamount, setrenameamount] = useState();
   const [renamedescriptions, setrenamedescriptions] = useState("");
   const [renamedate, setrenamedate] = useState("");
-  const [RenameNameCategoris, setRenameNameCategoris] = useState();
-  const [categoriespopup, setcategoriespopup] = useState("");
+  
 
   // state delate transactions
   const [dellate, setdellate] = useState(false);
-  const [getIdDellated, setgetIdDellated] = useState(null);
-  const [typecategoriesdellated, settypecategoriesdellated] = useState("");
-  const [namecategoriesdellated, setnamecategoriesdellated] = useState("");
-  const [amountdellated, setamountdellated] = useState(null);
-  const [descriptionsdellated, setdescriptionsdellated] = useState("");
-  const [datedellated, setdatedellated] = useState("");
-
+ 
   const token = sessionStorage.getItem("Token");
 
   const handleClick = () => {
@@ -153,7 +143,6 @@ export default function Transactional() {
     setalert(false);
   }, 1300);
   
-
   return (
     <>
       <div
@@ -210,204 +199,22 @@ export default function Transactional() {
             }
           />
         ) : dellate === true ? (
-          <div
-            className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
-              dellate ? "dropdown" : "opacity-0 invisible"
-            }`}
-          >
-            <div
-              className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
-                dellate ? "scale-100 opacity-100" : "scale-95 opacity-0"
-              }`}
-            >
-              {/* Close Button */}
-              <button
-                onClick={() => {
-                  window.location.reload;
-                  setdellate(false);
-                }}
-                className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
-              >
-                ✕
-              </button>
-
-              <div className="p-8">
-                {/* Icon */}
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-red-100">
-                  <FiAlertTriangle size={40} className="text-red-600" />
-                </div>
-
-                {/* Heading */}
-                <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-                  Delete Transaction
-                </h2>
-
-                <p className="mt-3 text-center text-gray-500">
-                  Are you sure you want to delete this transaction?
-                </p>
-
-                {/* Transaction Info */}
-                <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4">
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Type</span>
-                    <span
-                      className={`rounded-full px-3 py-1 text-sm font-medium ${typecategoriesdellated === "Income" ? "text-green-600 bg-green-100" : "text-red-600 bg-red-100"}`}
-                    >
-                      {typecategoriesdellated}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Category</span>
-                    <span className="font-medium">
-                      {namecategoriesdellated}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Amount</span>
-                    <span className="font-semibold">
-                      {amountdellated.toLocaleString("id-ID")}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Date</span>
-                    <span>
-                      {datedellated
-                        ? `${new Date(datedellated).getFullYear()}-${String(
-                            new Date(datedellated).getMonth() + 1,
-                          ).padStart(
-                            2,
-                            "0",
-                          )}-${String(new Date(datedellated).getDate()).padStart(2, "0")}`
-                        : ""}
-                    </span>
-                  </div>
-
-                  <div className="border-t border-gray-300 pt-3 mt-3">
-                    <p className="text-gray-500 mb-1">Description</p>
-                    <p className="text-gray-800">{descriptionsdellated}</p>
-                  </div>
-                </div>
-
-                {/* Warning */}
-                <p className="mt-4 text-center text-sm text-red-500">
-                  This action cannot be undone.
-                </p>
-
-                {/* Actions */}
-                <div className="mt-8 flex flex-col gap-3">
-                  <button
-                    onClick={() => dellatetransactions()}
-                    className="rounded-xl bg-red-600 py-3 cursor-pointer  font-medium text-white transition hover:bg-red-700"
-                  >
-                    Delete Transaction
-                  </button>
-
-                  <button
-                    onClick={() => setdellate(false)}
-                    className="rounded-xl border cursor-pointer  border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ToasterModal 
+          confirmupdate={dellate}
+          Chilldren={<Modaldellate
+            setdellate={setdellate}
+            Icons={<FiAlertTriangle size={40} className="text-red-600" />}
+            getDellateTransactions={getDellateTransactions}
+          />}/>
         ) : confirmupdate === true ? (
-          <div
-            className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
-              confirmupdate ? "dropdown" : "opacity-0 invisible"
-            }`}
-          >
-            <div
-              className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
-                confirmupdate ? "scale-100 opacity-100" : "scale-95 opacity-0"
-              }`}
-            >
-              {/* Close Button */}
-              <button
-                onClick={() => {
-                  window.location.reload;
-                  setconfirmupdate(false);
-                }}
-                className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
-              >
-                ✕
-              </button>
-
-              <div className="p-8">
-                {/* Icon */}
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-100">
-                  <LuNotebookPen size={36} className="text-blue-700" />
-                </div>
-
-                {/* Heading */}
-                <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-                  Confirm Transaction
-                </h2>
-
-                <p className="mt-2 text-center text-gray-500">
-                  Please review the transaction details before updating.
-                </p>
-
-                {/* Detail Card */}
-                <div className="mt-8 rounded-xl border border-gray-200 p-5">
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Type</span>
-                    <span
-                      className={`rounded-full px-3 py-1 text-sm font-medium  ${getUpdateTransactions.budget === "Income" ? "text-white bg-green-300" : "text-white bg-red-300"}`}
-                    >
-                     {getUpdateTransactions.budget}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Category</span>
-                    <span className="font-medium text-gray-800">
-                        {getUpdateTransactions.categoris}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Amount</span>
-                    <span className="font-semibold text-gray-900">
-                       {getUpdateTransactions.amount}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-500">Date</span>
-                    <span className="font-medium text-gray-800">
-                       {getUpdateTransactions.date}
-                    </span>
-                  </div>
-
-                  <div className="border-t border-gray-300 pt-3 mt-3">
-                    <p className="text-gray-500 mb-1">Description</p>
-                    <p className="text-gray-800"> {getUpdateTransactions.desc}</p>
-                  </div>
-                </div>
-
-                {/* Action */}
-                <div className="mt-8 flex flex-col gap-3">
-                  <button
-                    className="rounded-xl bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
-                  >
-                    Update Transaction
-                  </button>
-
-                  <button
-                    onClick={() => setconfirmupdate(false)}
-                    className="rounded-xl border border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            <ToasterModalConfirm 
+            confirmupdate={confirmupdate}
+            Chilldren={<Modalconfirm 
+              setconfirmupdate={setconfirmupdate}
+              Icons={<LuNotebookPen size={40} className="text-blue-700" />}
+              getUpdateTransactions={getUpdateTransactions}
+              />}
+            />
         ) : null}
       </div>
 
@@ -537,7 +344,13 @@ export default function Transactional() {
                             <PiNotePencil size={14} />
                           </button>
 
-                          <button className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer">
+                          <button 
+                            className="p-2 border rounded-md hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {
+                              setdellate(true)
+                               setgetDellateTransactions(item)
+                            }}
+                          >
                             <IoTrashOutline size={14} />
                           </button>
                         </td>

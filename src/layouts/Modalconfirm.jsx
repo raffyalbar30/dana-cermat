@@ -13,19 +13,17 @@ const Modalconfirm = ({ setconfirmupdate, Icons, getUpdateTransactions}) => {
              </button>
             
               <div className="p-8">
-                            {/* Icon */}
-                            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-100">
-                               {Icons}
-                            </div>
-            
-                            {/* Heading */}
-                            <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+              {/* Icon */}
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-100">
+                        {Icons}
+                 </div>
+              {/* Heading */}
+                     <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
                               Confirm Transaction
-                            </h2>
-            
-                            <p className="mt-2 text-center text-gray-500">
+                      </h2>
+                       <p className="mt-2 text-center text-gray-500">
                               Please review the transaction details before updating.
-                            </p>
+                       </p>
             
                             {/* Detail Card */}
                             <div className="mt-8 rounded-xl border border-gray-200 p-5">
