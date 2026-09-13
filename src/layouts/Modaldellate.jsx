@@ -1,5 +1,6 @@
 import React from 'react';
 import Buttons from '../component/Buttons';
+import { Dellatetransactions } from '../services/api';
 
 const Modaldellate = ({
   setdellate, 
@@ -17,10 +18,9 @@ const Modaldellate = ({
 
       try {
         const { response } = await Dellatetransactions(Token, id); 
-        console.log(response);
-         setTitle(response.data.message); 
-         setAlert(true);
-         setdellate(false);
+        setTitle(response.data.message); 
+        setAlert(true);
+        setdellate(false);
       } catch (error) {
          setTitle(error.response.data.message); 
          setAlert(true);

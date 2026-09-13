@@ -84,9 +84,9 @@ export const Renametransactions = async (
    }
 }
 
-export const Dellatetransactions = async ( token, id ) => {
+export const Dellatetransactions = async (token, id) => {
     try {
-        const response = await EndpointApi.post(`/Transaksi/v1/dellateTransaksi`, {
+        const response = await EndpointApi.post(`/Transaksi/v1/deleteTransaksi`, {
             idtransactions: id,
         },{
               headers: {
