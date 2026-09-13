@@ -296,11 +296,11 @@ const UpdateTransactions = ({
               />
 
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => setupdatetransactions(false)}
                 type="button"
                 className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
               >
-                Cancel Update transactions
+                Cancel update transactions
               </button>
             </div>
           </div>

@@ -57,6 +57,7 @@ export const GetAlltransactions = async (token, pages) => {
 }
 
 export const Renametransactions = async (
+    token,
     RenameIdTransactions,
     id_categories, 
     amount, 
@@ -65,24 +66,34 @@ export const Renametransactions = async (
    try { 
       const response = await EndpointApi.post(`/Transaksi/v1/renameTransaksi`, 
         {
-            idtransaction: RenameIdTransactions,
-            id_categories : id_categories, 
-            amount : amount, 
-            date : date, 
+            amount: amount,
             descriptions: descriptions,
-        }
-      )
+            id_categories: id_categories,
+            date: date,
+            idtransaction: RenameIdTransactions
+        },{
+              headers: {
+              authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+         }); 
+
       return { response : response}
    } catch (error) {
       console.log(error);
    }
 }
 
-export const Dellatetransactions = async ( id ) => {
+export const Dellatetransactions = async ( token, id ) => {
     try {
         const response = await EndpointApi.post(`/Transaksi/v1/dellateTransaksi`, {
             idtransactions: id,
-        })
+        },{
+              headers: {
+              authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+         })
 
        return { response: response }
     } catch (error) {

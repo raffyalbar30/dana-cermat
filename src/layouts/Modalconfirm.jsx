@@ -2,22 +2,34 @@ import React from 'react';
 import { Renametransactions } from '../services/api';
 import Buttons from '../component/Buttons';
 
-const Modalconfirm = ({ setconfirmupdate, Icons, getUpdateTransactions, renameid, renametypeid, loader, setloader}) => {
+const Modalconfirm = ({ 
+  setconfirmupdate, 
+  Icons,
+  getUpdateTransactions, 
+  renameid, 
+  renametypeid,
+  loader, 
+  setloader, 
+  setTitle,
+  setAlert}) => {
    
   const handleUpdateTransactions = async () => {
+      const Token = sessionStorage.getItem("Token");
       const Idrename = renameid;  
       const Category = renametypeid; 
       const Amount = getUpdateTransactions.amount; 
       const Date = getUpdateTransactions.date; 
       const Descriptions = getUpdateTransactions.desc; 
+      setloader(true);
 
       try {
-        const { response } = await Renametransactions(Idrename, Category, Amount, Date, Descriptions); 
-        console.log(response); 
-        setloader(true);
-        setconfirmupdate(false);
+        const { response } = await Renametransactions(Token, Idrename, Category, Amount, Date, Descriptions); 
+         setTitle(response.data.message); 
+         setAlert(true);
+         setconfirmupdate(false);
       } catch (error) {
-        console.log(error);
+        setTitle(error.response.data.message);
+        setAlert(true);
       }
   }
 
@@ -102,13 +114,13 @@ const Modalconfirm = ({ setconfirmupdate, Icons, getUpdateTransactions, renameid
                                                                                  <svg width={"24px"} fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
                                                                                  <span className='text-white text-md'>Loading</span>
                                    </div>
-                                 ) : "Update Transactions"}/>
+                                 ) : "Update transactions"}/>
             
                               <button
                                 onClick={() => setconfirmupdate(false)}
                                 className="rounded-xl border border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
                               >
-                                Cancel
+                                Cancel update transactions
                               </button>
                             </div>
                </div>

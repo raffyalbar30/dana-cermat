@@ -207,6 +207,10 @@ export default function Transactional() {
           dellatedconfim={dellate}
           Chilldren={<Modaldellate
             setdellate={setdellate}
+            loader={loader}
+            setloader={setloader}
+            setTitle={settitle}
+            setAlert={setalert}
             Icons={<FiAlertTriangle size={40} className="text-red-600" />}
             getDellateTransactions={getDellateTransactions}
           />}/>
@@ -218,6 +222,8 @@ export default function Transactional() {
               renametypeid={renametypeid}
               loader={loader}
               setloader={setloader}
+              setTitle={settitle}
+              setAlert={setalert}
               setconfirmupdate={setconfirmupdate}
               Icons={<LuNotebookPen size={40} className="text-blue-700" />}
               getUpdateTransactions={getUpdateTransactions}
