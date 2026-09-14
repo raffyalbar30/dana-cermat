@@ -55,21 +55,21 @@ export default function Budget() {
         
         <div>
           <h3 className="text-2xl font-semibold text-green-600">
-            {`Rp. ${parseInt(total[0]?.total_budget).toLocaleString("id-ID")}`}
+            {`Rp. ${!total[0]?.total_budget ? "0" : parseInt(total[0]?.total_budget).toLocaleString("id-ID")}`}
           </h3>
           <p className="text-sm text-gray-400">Total Budget</p>
         </div>
 
         <div>
           <h3 className="text-2xl font-semibold text-yellow-700">
-            {`Rp. ${parseInt(total[0]?.total_spending).toLocaleString("id-ID")}`}
+            {`Rp. ${!total[0]?.total_spending ? "0" : parseInt(total[0]?.total_spending).toLocaleString("id-ID")}`}
           </h3>
           <p className="text-sm text-gray-400">Total Spent</p>
         </div>
 
         <div>
           <h3 className="text-2xl font-semibold text-blue-600">
-            {`Rp. ${parseInt(total[0]?.total_remaining).toLocaleString("id-ID")}`}
+            {`Rp. ${!total[0]?.total_remaining ? "0" : parseInt(total[0]?.total_remaining).toLocaleString("id-ID")}`}
           </h3>
           <p className="text-sm text-gray-400">Remaining</p>
         </div>

@@ -49,7 +49,6 @@ export default function Transactional() {
 
   // state Paginations
   const [Page, setPage] = useState([]);
-  const [active, setactive] = useState();
   const [nextPage, setnextPage] = useState(1);
 
   const [confirmupdate, setconfirmupdate] = useState(false);

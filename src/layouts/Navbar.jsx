@@ -4,9 +4,9 @@ import { GrTarget } from "react-icons/gr";
 import { GrMoney } from "react-icons/gr";
 import { GrAnalytics } from "react-icons/gr";
 import { BsRobot } from "react-icons/bs";
-import Label from '../component/label';
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import Label from "../component/Label";
 
 
 
@@ -43,9 +43,6 @@ const Navbar = () => {
 
 const [ active, setactive ] = useState("Dashboard"); 
 const location = useLocation();
-
-
-
 
     return (
         <div className='h-full w-[300px] fixed border border-l-0 border-t-0 border-b-0 bg-white border-slate-200 flex-wrap ml-4 mr-4'>
