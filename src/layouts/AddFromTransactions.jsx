@@ -42,6 +42,9 @@ const AddFormTransactions = ({setIsOpen, setAlert, setTitle}) => {
           setTitle(response.message); 
           setAlert(true);
           setIsOpen(false); 
+          setTimeout(() => {
+             window.location.reload();
+          }, 1800);
 
        } catch (error) {
            setTitle(error.response.message); 

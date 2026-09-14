@@ -27,6 +27,10 @@ const Modalconfirm = ({
          setTitle(response.data.message); 
          setAlert(true);
          setconfirmupdate(false);
+         setTimeout(() => {
+             window.location.reload();
+          }, 1800);
+
       } catch (error) {
         setTitle(error.response.data.message);
         setAlert(true);
