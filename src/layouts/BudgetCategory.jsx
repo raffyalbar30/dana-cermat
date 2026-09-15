@@ -1,6 +1,7 @@
 import { IoTrashOutline } from "react-icons/io5";
 import { PiNotePencil } from "react-icons/pi";
 import { IoWarningOutline } from "react-icons/io5";
+import { GiReceiveMoney } from "react-icons/gi";
 import { useEffect, useState } from "react";
 import Modal from "../component/Modal";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -19,6 +20,7 @@ import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import ToasterModal from "../../utils/ToasterModal";
 import { CiMoneyCheck1 } from "react-icons/ci";
 import AddFromAddBudget from "./AddFromAddBudget";
+import UpdateFromAddBudget from "./UpdateFromBudget";
 
 
 export default function BudgetCategory() {
@@ -29,6 +31,7 @@ export default function BudgetCategory() {
 
   // text 
   const [title, settitle] = useState("");
+  const Token = sessionStorage.getItem("Token");
 
   const [dropdown, setdropdown] = useState(false);
   const [dropdownperiod, setdropdownperiod] = useState(false);
@@ -64,8 +67,6 @@ export default function BudgetCategory() {
 
   // notifications
   const [notifications, setnotifications] = useState(false);
-
-  const token = localStorage.getItem("Token");
 
   const HandleOpenBudget = () => {
     return setisOpenBudget(true);
@@ -153,7 +154,7 @@ export default function BudgetCategory() {
   const GetAllBudgets = async () => {
     setloader(true);
     try {
-      const { response } = await GetAllbudgets(token);
+      const { response } = await GetAllbudgets(Token);
       setdataAllbudgets(response);
     } catch (error) {
       console.log(error);
@@ -201,8 +202,7 @@ export default function BudgetCategory() {
       setloader(false);
     }, 2000);
   }, [loader]);
-
-
+ 
   return (
     <>
       <div
@@ -215,190 +215,20 @@ export default function BudgetCategory() {
           ></Toaster>
       </div>
       {isRenameBudget === true ? (
-        <Modal
-          isOpen={isRenameBudget}
-          children={
-            <div
-              className={`transition-all ${isRenameBudget === true ? "dropdown" : "opacity-0 invisible"}`}
-            >
-              <div className="flex justify-between">
-                <div className="ml-4 mt-4">
-                  <h2 className="text-lg font-semibold">Update Budgets</h2>
-                  <p className="text-sm text-gray-500">
-                    {" "}
-                    Update Your Budgets For Financial Stable
-                  </p>
-                </div>
-                <div className="mr-4 mt-4">
-                  <button
-                    onClick={() => setisRenameBudget(false)}
-                    className="text-gray-400  text-[18px] cursor-pointer hover:text-black"
-                  >
-                    {" "}
-                    ✕{" "}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex gap-x-4 items-center justify-between">
-                {/* Form create add */}
-                <div className="w-1/2 ml-4 mt-4">
-                  <label className="text-sm text-gray-600">Categories</label>
-                  <div className="relative w-full mt-1">
-                    <button
-                      onClick={() => setdropdown(true)}
-                      className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50"
-                    >
-                      <span>{getnamecategories}</span>
-                      <span>
-                        {" "}
-                        <IoMdArrowDropdown />{" "}
-                      </span>
-                    </button>
-                    <ul
-                      className={`${dropdown === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}
-                    >
-                      {categories?.data?.map((items) => {
-                        return (
-                          <li
-                            data-value={items?.name_categories}
-                            onClick={(e) => {
-                              setgetIdCategory(items?.categories_id);
-                              setdropdown(false);
-                              setgetnamecategories(e.target.dataset.value);
-                            }}
-                            className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer"
-                          >
-                            {items?.name_categories}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="w-1/2 mr-4 mt-4">
-                  <label className="text-sm text-gray-600">Budget Amount</label>
-                  <input
-                    type="number"
-                    value={getamount.toLocaleString("id-ID")}
-                    placeholder="Masukan jumlah nominal"
-                    className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                    onChange={(e) => setgetamount(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="flex-wrap mr-4">
-                <div className="full ml-4 mt-4">
-                  <label className="text-sm text-gray-600">
-                    Periode Budgeting
-                  </label>
-                  <div className="relative w-full mt-1">
-                    <button
-                      onClick={() => setdropdownperiod(true)}
-                      className="w-full flex justify-between items-center text-left p-2 border border-slate-400 rounded-md bg-gray-50"
-                    >
-                      <span>{!periode ? getperiod : "three day"}</span>
-                      <span>
-                        {" "}
-                        <IoMdArrowDropdown />{" "}
-                      </span>
-                    </button>
-                    <ul
-                      className={`${dropdownperiod === true ? "dropdown" : "hidden"} absolute left-0 top-full mt-1 w-full bg-gray-50 border border-slate-400 rounded-md shadow z-50`}
-                    >
-                      <li
-                        data-value="threeday"
-                        onClick={(e) => {
-                          setdropdownperiod(false);
-                          setgetperiod(e.target.dataset.value);
-                        }}
-                        className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer"
-                      >
-                        three day
-                      </li>
-                      <li
-                        data-value="weekly"
-                        onClick={(e) => {
-                          setdropdownperiod(false);
-                          setgetperiod(e.target.dataset.value);
-                        }}
-                        className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer"
-                      >
-                        weekly
-                      </li>
-                      <li
-                        data-value="monthly"
-                        onClick={(e) => {
-                          setdropdownperiod(false);
-                          setgetperiod(e.target.dataset.value);
-                        }}
-                        className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer"
-                      >
-                        monthly
-                      </li>
-                      <li
-                        data-value="yearly"
-                        onClick={(e) => {
-                          setdropdownperiod(false);
-                          setgetperiod(e.target.dataset.value);
-                        }}
-                        className="px-4 py-2 hover:bg-slate-100 flex justify-between cursor-pointer"
-                      >
-                        yearly
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Date */}
-                <diV className="mr-4">
-                  <div className="w-full ml-4 mt-4">
-                    <label className="text-sm text-gray-600">Start Date</label>
-                    <input
-                      type="date"
-                      value={
-                        getstartdate
-                          ? `${new Date(getstartdate).getFullYear()}-${String(
-                              new Date(getstartdate).getMonth() + 1,
-                            ).padStart(
-                              2,
-                              "0",
-                            )}-${String(new Date(getstartdate).getDate()).padStart(2, "0")}`
-                          : ""
-                      }
-                      className="w-full mt-1 p-2 border border-slate-400 focus:outline-blue-600 rounded-md bg-gray-50"
-                      onChange={(e) => setgetstartdate(e.target.value)}
-                    />
-                  </div>
-                </diV>
-
-                <div className="mr-4">
-                  <button
-                    onClick={() => HandleRenamePopup()}
-                    type="submit"
-                    className={` flex gap-x-2 justify-center items-center w-full ml-4 mt-6 mb-2 bg-blue-700 disabled:bg-blue-600
-                        cursor-pointer text-white py-2 rounded-md`}
-                  >
-                    <span> Add Rename budgeting </span>
-                  </button>
-                </div>
-
-                <div className="mr-4">
-                  <button
-                    onClick={() => setisRenameBudget(false)}
-                    type="submit"
-                    className={` flex gap-x-2 justify-center items-center w-full ml-4 mt-2 mb-6 bg-transparent border border-solid border-slate-300 disabled:bg-blue-600
-                        cursor-pointer text-slate-700 py-2 rounded-md`}
-                  >
-                    <span> Cancel Rename budgeting </span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          }
-        />
+        <ToasterModal 
+           isOpen={isRenameBudget}
+           setisOpen={setisRenameBudget}
+           Title={"Rename Budget"}
+           describeTitle={"Set clear boundaries for your money and watch your progress in real time"}
+           Icons={<GiReceiveMoney size={70} className="text-blue-700"/>}
+           FormsAddTransactions={<UpdateFromAddBudget 
+            category={categories}
+            loader={loader}
+            setloader={setloader}
+            settitle={settitle}
+            setAlert={setnotifications}
+            setisOpenBudget={setisOpenBudget} />
+          }/>
       ) : dellateBudgets === true ? (
         <div
           className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
@@ -502,8 +332,7 @@ export default function BudgetCategory() {
             settitle={settitle}
             setAlert={setnotifications}
             setisOpenBudget={setisOpenBudget} />
-          }
-            />
+          }/>
       ) : confirmupdate === true ? (
         <div
           className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${

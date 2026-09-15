@@ -4,7 +4,7 @@ import Label from "../component/Label";
 import Buttons from "../component/Buttons";
 import { Addbudgets } from "../services/api";
 
-const AddFromAddBudget = ({ 
+const UpdateFromAddBudget = ({ 
   category, 
   loader, 
   setloader, 
@@ -242,7 +242,7 @@ const AddFromAddBudget = ({
                     <span className="text-white text-md">Loading</span>
                   </div>
                 ) : (
-                  "Add budgeting"
+                  "Rename budgeting"
                 )
               }
             />
@@ -252,7 +252,7 @@ const AddFromAddBudget = ({
               type="button"
               className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
             >
-              Cancel budgeting
+              Cancel Rename budgeting
             </button>
           </div>
         </div>
@@ -261,4 +261,4 @@ const AddFromAddBudget = ({
   );
 };
 
-export default AddFromAddBudget;
+export default UpdateFromAddBudget;

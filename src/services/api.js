@@ -136,11 +136,11 @@ export const Addbudgets = async (
     }
 }
 
-export const GetAllbudgets = async (token) => {
+export const GetAllbudgets = async (Token) => {
     try {
        const response = await EndpointApi.get(`/Budgets/v1/getAllBudgets`, {
            headers: {
-            authorization: `Bearer ${token}`, 
+            authorization: `Bearer ${Token}`, 
             "Content-Type": "application/json"
           }
        }); 
