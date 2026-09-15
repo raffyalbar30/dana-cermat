@@ -2,13 +2,13 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import Label from "../component/Label";
 import Buttons from "../component/Buttons";
+import { Addbudgets } from "../services/api";
 
-const AddFromAddBudget = ({ category, loader}) => {
+const AddFromAddBudget = ({ category, loader, setloader, settitle, setAlert, setisOpenBudget}) => {
   const {
     control,
     handleSubmit,
     watch,
-    getValues,
     formState: { errors },
   } = useForm();
   const token = sessionStorage.getItem("Token");
@@ -29,10 +29,31 @@ const AddFromAddBudget = ({ category, loader}) => {
         id: 4, 
         priode: "yearly"
     }
-  ]
+  ]; 
+
+  const HandleAddBudgets = async (data) => {
+     const TypeBudget = watch("TypeCategory");
+     const Priode = data.priode;
+     const amount = data.Amount; 
+     const date = data.Date; 
+     setloader(true)
+   
+     try {
+      const { response } = await Addbudgets(token, TypeBudget, amount, Priode, date); 
+      settitle(response.message);
+      setAlert(true);
+      setisOpenBudget(false);
+      setTimeout(() => {
+             window.location.reload();
+        }, 1800);
+     } catch (error) {
+       settitle(error.response.message);
+     }
+  }
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit(HandleAddBudgets)}>
         <div className="mt-8 space-y-4">
           <div className="w-full mt-2">
             <Label
@@ -85,7 +106,7 @@ const AddFromAddBudget = ({ category, loader}) => {
               <Controller
                 name="priode"
                 control={control}
-                rules={{ required: "Kategori wajib dipilih" }}
+                rules={{ required: "Priode wajib dipilih" }}
                 render={({ field }) => (
                   <select
                     className={`border focus:outline-none focus:ring-2 ${
@@ -99,8 +120,8 @@ const AddFromAddBudget = ({ category, loader}) => {
                       return (
                         <>
                           <option
-                            key={data?.id}
-                            value={data?.id}
+                            key={data?.priode}
+                            value={data?.priode}
                           >
                             {data?.priode}
                           </option>
@@ -186,7 +207,7 @@ const AddFromAddBudget = ({ category, loader}) => {
               Classchild={"w-full"}
               disabled={loader}
               Classbutton={`
-                                                     w-full ${loader === true ? "bg-indigo-400 disabled:cursor-not-allowed" : "bg-[#3F47F4] cursor-pointer "} transition text-white py-3 rounded-xl text-lg font-semibold`}
+              w-full ${loader === true ? "bg-indigo-400 disabled:cursor-not-allowed" : "bg-[#3F47F4] cursor-pointer "} transition text-white py-3 rounded-xl text-lg font-semibold`}
               Title={
                 loader === true ? (
                   <div className="flex justify-center items-center gap-x-2">
@@ -213,16 +234,17 @@ const AddFromAddBudget = ({ category, loader}) => {
                     <span className="text-white text-md">Loading</span>
                   </div>
                 ) : (
-                  "Add budget transactions"
+                  "Add budgeting"
                 )
               }
             />
 
             <button
+              onClick={() => setisOpenBudget(false)}
               type="button"
               className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
             >
-              Cancel budget transactions
+              Cancel budgeting
             </button>
           </div>
         </div>

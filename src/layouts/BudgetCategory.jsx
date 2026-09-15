@@ -22,8 +22,14 @@ import AddFromAddBudget from "./AddFromAddBudget";
 
 
 export default function BudgetCategory() {
+
+  // Modal budgets
   const [isOpenBudget, setisOpenBudget] = useState(false);
   const [isRenameBudget, setisRenameBudget] = useState(false);
+
+  // text 
+  const [title, settitle] = useState("");
+
   const [dropdown, setdropdown] = useState(false);
   const [dropdownperiod, setdropdownperiod] = useState(false);
   const [categories, setcategories] = useState([]);
@@ -203,10 +209,10 @@ export default function BudgetCategory() {
         className={`${notifications === true ? "active" : "hidden"} flex justify-center`}
       >
         <Toaster
-          className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
-          stateNotif={() => setnotifications(false)}
-          Title={"Data Budget telah ditambahkan!!"}
-        ></Toaster>
+           className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
+            stateNotif={() => setnotifications(false)}
+          Title={title}
+          ></Toaster>
       </div>
       {isRenameBudget === true ? (
         <Modal
@@ -487,11 +493,16 @@ export default function BudgetCategory() {
            isOpen={isOpenBudget}
            setisOpen={setisOpenBudget}
            Title={"Add your budgeting"}
-           describeTitle={"Make decesion for your budgeting"}
+           describeTitle={"Make informed decisions for your budgeting and reach your financial goals faster"}
            Icons={<CiMoneyCheck1 size={70} className="text-blue-700"/>}
            FormsAddTransactions={<AddFromAddBudget 
             category={categories}
-            loader={loader}/>}
+            loader={loader}
+            setloader={setloader}
+            settitle={settitle}
+            setAlert={setnotifications}
+            setisOpenBudget={setisOpenBudget} />
+          }
             />
       ) : confirmupdate === true ? (
         <div

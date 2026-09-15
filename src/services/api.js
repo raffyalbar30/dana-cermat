@@ -114,15 +114,15 @@ export const Addbudgets = async (
     token, 
     category,
     amount, 
-    periode, 
-    StartDate) => {
+    periode,
+    startdate) => {
 
     try {
-        const response = await EndpointApi.post(`/Budgets/v1/addbudgets`, {
+        const response = await EndpointApi.post(`/Budgets/v1/addBudgets`, {
             category: category, 
             amount: amount, 
             periode: periode, 
-            startdate: StartDate, 
+            startdate: startdate, 
         }, {
          headers: {
             authorization: `Bearer ${token}`, 
@@ -132,7 +132,7 @@ export const Addbudgets = async (
 
         return { response: response.data }
     } catch (error) {
-       console.log(error); 
+       throw error
     }
 }
 
