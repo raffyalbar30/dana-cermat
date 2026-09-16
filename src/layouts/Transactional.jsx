@@ -209,7 +209,7 @@ export default function Transactional() {
             loader={loader}
             setloader={setloader}
             setTitle={settitle}
-            setAlert={setalert}
+            setAlert={setalert} 
             Icons={<FiAlertTriangle size={40} className="text-red-600" />}
             getDellateTransactions={getDellateTransactions}
           />}/>

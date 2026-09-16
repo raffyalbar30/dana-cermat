@@ -7,15 +7,15 @@ import { Addbudgets } from "../services/api";
 const UpdateFromAddBudget = ({ 
   category, 
   loader, 
-  setloader, 
-  settitle, 
-  setAlert, 
-  setisOpenBudget, 
+  setloader,
+  setisOpen, 
   getIdBudgets,
   getIdCategory,
   getperiod, 
   getamount, 
-  getstartdate}) => {
+  getstartdate, 
+  setgetconfirmupdate, 
+  setpopupconfirmupdate}) => {
 
   const {
     control,
@@ -30,7 +30,6 @@ const UpdateFromAddBudget = ({
     },
   });
   
-  const token = sessionStorage.getItem("Token");
   const dataPriode = [
     {
         id: 1, 
@@ -53,21 +52,23 @@ const UpdateFromAddBudget = ({
   const HandleAddBudgets = async (data) => {
      const TypeBudget = watch("TypeCategory");
      const Priode = data.priode;
-     const amount = data.Amount; 
-     const date = data.Date; 
-     setloader(true)
-   
-     try {
-      const { response } = await Addbudgets(token, TypeBudget, amount, Priode, date); 
-      settitle(response.message);
-      setAlert(true);
-      setisOpenBudget(false);
-      setTimeout(() => {
-         window.location.reload();
-      }, 1800);
-     } catch (error) {
-       settitle(error.response.message);
+     const Amount = data.Amount; 
+     const Date = data.Date; 
+
+     const dataBudget = {
+        idbudget: getIdBudgets, 
+        Typebudget: TypeBudget, 
+        priode: Priode, 
+        amount: Amount,
+        date: Date
      }
+
+     setloader(true)
+     setgetconfirmupdate(dataBudget);
+     setTimeout(() => {
+      setisOpen(false);
+    }, 1800); 
+    setpopupconfirmupdate(true);
   }
 
   useEffect(() => {
@@ -79,6 +80,10 @@ const UpdateFromAddBudget = ({
           }) : "" || ""
       });
     }, [getamount, getstartdate, reset]);
+
+  setTimeout(() => {
+    setloader(false)
+  }, 1300);
 
   return (
     <div>

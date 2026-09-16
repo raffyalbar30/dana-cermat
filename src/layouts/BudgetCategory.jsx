@@ -33,6 +33,14 @@ export default function BudgetCategory() {
   const [title, settitle] = useState("");
   const Token = sessionStorage.getItem("Token");
 
+  // loader budgets
+  const [loader, setloader] = useState(false);
+  const [confirmloader, setconfirmloader] = useState(false);
+
+  // confirmupdate 
+  const [getconfirmupdate, setgetconfirmupdate ] = useState([])
+  const [confirmupdate, setconfirmupdate] = useState(false);
+
 
   const [dropdown, setdropdown] = useState(false);
   const [dropdownperiod, setdropdownperiod] = useState(false);
@@ -51,9 +59,6 @@ export default function BudgetCategory() {
   // dellated popup
   const [dellateBudgets, setdellateBudgets] = useState(false);
 
-  // confirm update budget
-  const [confirmupdate, setconfirmupdate] = useState(false);
-
   // get value Budgets
   const [getIdBudgets, setgetIdBudgets] = useState();
   const [getIdCategory, setgetIdCategory] = useState();
@@ -62,9 +67,7 @@ export default function BudgetCategory() {
   const [getamount, setgetamount] = useState();
   const [getstartdate, setgetstartdate] = useState();
   const [getEnddate, setgetEnddate] = useState();
-   
-  // loader budgets
-  const [loader, setloader] = useState(false);
+  
 
   // notifications
   const [notifications, setnotifications] = useState(false);
@@ -202,7 +205,7 @@ export default function BudgetCategory() {
     setTimeout(() => {
       setloader(false);
     }, 2000);
-  }, [loader]);
+  }, []);
  
   return (
     <>
@@ -223,17 +226,17 @@ export default function BudgetCategory() {
            describeTitle={"Set clear boundaries for your money and watch your progress in real time"}
            Icons={<GiReceiveMoney size={70} className="text-blue-700"/>}
            FormsAddTransactions={<UpdateFromAddBudget 
+            setisOpen={setisRenameBudget}
             category={categories}
-            loader={loader}
-            setloader={setloader}
-            settitle={settitle}
-            setAlert={setnotifications}
-            setisOpenBudget={setisOpenBudget} 
+            loader={confirmloader}
+            setloader={setconfirmloader}
             getIdBudgets={getIdBudgets}
             getIdCategory={getIdCategory}
             getperiod={getperiod}
             getamount={getamount}
-            getstartdate={getstartdate}/>
+            getstartdate={getstartdate}
+            setgetconfirmupdate={setgetconfirmupdate}
+            setpopupconfirmupdate={setconfirmupdate}/>
           }/>
       ) : dellateBudgets === true ? (
         <div
