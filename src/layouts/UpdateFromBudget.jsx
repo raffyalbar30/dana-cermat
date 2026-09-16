@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Label from "../component/Label";
 import Buttons from "../component/Buttons";
@@ -10,14 +10,25 @@ const UpdateFromAddBudget = ({
   setloader, 
   settitle, 
   setAlert, 
-  setisOpenBudget}) => {
+  setisOpenBudget, 
+  getIdBudgets,
+  getIdCategory,
+  getperiod, 
+  getamount, 
+  getstartdate}) => {
 
   const {
     control,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+     defaultValues: {
+      Amount: "",
+      Date: ""
+    },
+  });
   
   const token = sessionStorage.getItem("Token");
   const dataPriode = [
@@ -59,6 +70,16 @@ const UpdateFromAddBudget = ({
      }
   }
 
+  useEffect(() => {
+      reset({
+        Amount: getamount || "",
+        Date: getstartdate ? new Date(getstartdate).toLocaleDateString("en-CA", 
+          {
+            timeZone: "Asia/Jakarta",
+          }) : "" || ""
+      });
+    }, [getamount, getstartdate, reset]);
+
   return (
     <div>
       <form onSubmit={handleSubmit(HandleAddBudgets)}>
@@ -82,7 +103,10 @@ const UpdateFromAddBudget = ({
                     } w-full flex justify-between items-center text-left p-2 border rounded-md bg-gray-50`}
                     {...field}
                   >
-                    {category?.map((data) => {
+                    {category?.slice()
+                      .sort((a, b) =>
+                      a?.categories_id === getIdCategory ? -1 : b?.categories_id === getIdCategory ? 1 : 0)
+                      .map((data) => {
                       return (
                         <>
                           <option
@@ -124,18 +148,16 @@ const UpdateFromAddBudget = ({
                     } w-full flex justify-between items-center text-left p-2 border rounded-md bg-gray-50`}
                     {...field}
                   >
-                    {dataPriode?.map((data) => {
-                      return (
-                        <>
-                          <option
-                            key={data?.priode}
-                            value={data?.priode}
-                          >
+                      {dataPriode
+                        ?.slice()
+                        .sort((a, b) =>
+                          a?.priode === getperiod ? -1 : b?.priode === getperiod ? 1 : 0
+                        )
+                        .map((data) => (
+                          <option key={data?.priode} value={data?.priode}>
                             {data?.priode}
                           </option>
-                        </>
-                      );
-                    })}
+                        ))}
                   </select>
                 )}
               />

@@ -33,6 +33,7 @@ export default function BudgetCategory() {
   const [title, settitle] = useState("");
   const Token = sessionStorage.getItem("Token");
 
+
   const [dropdown, setdropdown] = useState(false);
   const [dropdownperiod, setdropdownperiod] = useState(false);
   const [categories, setcategories] = useState([]);
@@ -61,7 +62,7 @@ export default function BudgetCategory() {
   const [getamount, setgetamount] = useState();
   const [getstartdate, setgetstartdate] = useState();
   const [getEnddate, setgetEnddate] = useState();
-
+   
   // loader budgets
   const [loader, setloader] = useState(false);
 
@@ -227,7 +228,12 @@ export default function BudgetCategory() {
             setloader={setloader}
             settitle={settitle}
             setAlert={setnotifications}
-            setisOpenBudget={setisOpenBudget} />
+            setisOpenBudget={setisOpenBudget} 
+            getIdBudgets={getIdBudgets}
+            getIdCategory={getIdCategory}
+            getperiod={getperiod}
+            getamount={getamount}
+            getstartdate={getstartdate}/>
           }/>
       ) : dellateBudgets === true ? (
         <div
@@ -528,6 +534,7 @@ function BudgetCard({
   setisRenameBudget,
   setgetRenamecategories,
   setgetRenameAmount,
+
 }) {
   const DellatedPopup = () => {
     setdellateBudgets(true);
