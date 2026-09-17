@@ -23,6 +23,8 @@ import AddFromAddBudget from "./AddFromAddBudget";
 import UpdateFromAddBudget from "./UpdateFromBudget";
 import ToasterModalConfirm from "../../utils/ToasterModalConfirm";
 import ModalUpdateBudget from "./ModalUpdateBudget";
+import ToasterModalDellate from "../../utils/ToasterModalDellate";
+import Modaldellatebudget from "./Modaldellatebudget";
 
 
 export default function BudgetCategory() {
@@ -44,17 +46,8 @@ export default function BudgetCategory() {
   const [confirmupdate, setconfirmupdate] = useState(false);
 
 
-  const [dropdown, setdropdown] = useState(false);
-  const [dropdownperiod, setdropdownperiod] = useState(false);
   const [categories, setcategories] = useState([]);
-  const [namecategories, setnamecategories] = useState("Food");
-
-  // form data category
-  const [idcategory, setidcategory] = useState();
-  const [amount, setamount] = useState();
-  const [periode, setperiode] = useState("");
-  const [date, setdate] = useState();
-
+  
   // allBudgets data
   const [dataAllbudgets, setdataAllbudgets] = useState([]);
 
@@ -69,58 +62,13 @@ export default function BudgetCategory() {
   const [getamount, setgetamount] = useState();
   const [getstartdate, setgetstartdate] = useState();
   const [getEnddate, setgetEnddate] = useState();
-  
+
 
   // notifications
   const [notifications, setnotifications] = useState(false);
 
   const HandleOpenBudget = () => {
     return setisOpenBudget(true);
-  };
-
-  const HandleRenameBudget = () => {
-    return setisRenameBudget(true);
-  };
-
-  const HandleRenamePopup = () => {
-    setisRenameBudget(false);
-
-    if (!getstartdate) {
-      console.error("Start date kosong");
-      return;
-    }
-
-    const startDate = new Date(getstartdate);
-    let endDate = new Date(startDate);
-
-    switch (getperiod) {
-      case "threeday":
-        endDate.setDate(endDate.getDate() + 3);
-        break;
-
-      case "weekly":
-        endDate.setDate(endDate.getDate() + 7);
-        break;
-
-      case "monthly":
-        endDate = new Date(
-          startDate.getFullYear(),
-          startDate.getMonth() + 1,
-          0,
-        );
-        break;
-
-      case "yearly":
-        endDate = new Date(startDate.getFullYear(), 11, 31);
-        break;
-
-      default:
-        console.error("Periode tidak valid");
-        return;
-    }
-
-    setgetEnddate(endDate);
-    setconfirmupdate(true);
   };
 
   const HandleCategories = async () => {
@@ -130,31 +78,6 @@ export default function BudgetCategory() {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const HandleAddBudget = async () => {
-    setnotifications(true);
-
-    try {
-      const { response } = await Addbudgets(
-        token,
-        idcategory,
-        amount,
-        periode,
-        date,
-      );
-      setisOpenBudget(false);
-      setloader(true);
-      setTimeout(() => {
-        setnotifications(false);
-      }, 2800);
-    } catch (error) {
-      console.log(error);
-    }
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 2900);
   };
 
   const GetAllBudgets = async () => {
@@ -167,35 +90,6 @@ export default function BudgetCategory() {
     }
   };
 
-  const HandleDellatebudgets = async (id) => {
-    try {
-      const { response } = await Dellatebudgets(id);
-      setdellateBudgets(false);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // belum bikin loading
-  const updateRenameBudgets = async () => {
-    try {
-      const { response } = await UpdateBudgets(
-        getIdCategory,
-        getamount ?? 0,
-        getperiod ?? "",
-        getstartdate ?? null,
-        getEnddate ?? null,
-        getIdBudgets,
-      );
-
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     GetAllBudgets();
@@ -241,94 +135,22 @@ export default function BudgetCategory() {
             setpopupconfirmupdate={setconfirmupdate}/>
           }/>
       ) : dellateBudgets === true ? (
-        <div
-          className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
-            dellateBudgets ? "dropdown" : "opacity-0 invisible"
-          }`}
-        >
-          <div
-            className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
-              dellateBudgets ? "scale-100 opacity-100" : "scale-95 opacity-0"
-            }`}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => {
-                setdellateBudgets(false);
-              }}
-              className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
-            >
-              ✕
-            </button>
-
-            <div className="p-8">
-              {/* Icon */}
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-red-100">
-                <FiAlertTriangle size={40} className="text-red-600" />
-              </div>
-
-              {/* Heading */}
-              <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-                Delete Budgets
-              </h2>
-
-              <p className="mt-3 text-center text-gray-500">
-                Are you sure you want to delete this budgets?
-              </p>
-
-              {/* Transaction Info */}
-              <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4">
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">Category</span>
-                  <span className="font-medium">{getnamecategories}</span>
-                </div>
-
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">Amount</span>
-                  <span className="font-semibold">
-                    {getamount.toLocaleString("id-ID")}
-                  </span>
-                </div>
-
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">Start Date</span>
-                  <span>
-                    {new Date(getstartdate).toLocaleDateString("id-ID")}
-                  </span>
-                </div>
-
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">End Date</span>
-                  <span>
-                    {new Date(getEnddate).toLocaleDateString("id-ID")}
-                  </span>
-                </div>
-              </div>
-
-              {/* Warning */}
-              <p className="mt-4 text-center text-sm text-red-500">
-                This action dellated budget cannot be undone.
-              </p>
-
-              {/* Actions */}
-              <div className="mt-8 flex flex-col gap-3">
-                <button
-                  onClick={() => HandleDellatebudgets(getIdBudgets)}
-                  className="rounded-xl bg-red-600 py-3 cursor-pointer  font-medium text-white transition hover:bg-red-700"
-                >
-                  Delete Transaction
-                </button>
-
-                <button
-                  onClick={() => setdellateBudgets(false)}
-                  className="rounded-xl border cursor-pointer  border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ToasterModalDellate
+          dellatedconfim={dellateBudgets}
+          Chilldren={<Modaldellatebudget
+            setdellateBudgets={setdellateBudgets}
+            getIdBudgets={getIdBudgets}
+            setallert={setdellateBudgets} 
+            settitle={settitle}
+            loader={confirmloader}
+            setloader={setconfirmloader}
+            getnamecategories={getnamecategories}
+            getperiod={getperiod}
+            getamount={getamount}
+            getstartdate={getstartdate}
+            getEnddate={getEnddate}
+            />}
+        />
       ) : isOpenBudget === true ? (
           <ToasterModal 
            isOpen={isOpenBudget}

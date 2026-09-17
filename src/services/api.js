@@ -150,15 +150,20 @@ export const GetAllbudgets = async (Token) => {
     }
 }
 
-export const Dellatebudgets = async ( id ) => {
+export const Dellatebudgets = async ( token, id ) => {
     try {
         const response = await EndpointApi.post(`/Budgets/v1/dellateBudgets`, {
             idBudgets: id,
-        })
+        }, {
+              headers: {
+              authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+         })
 
        return { response: response }
     } catch (error) {
-        console.log(error);
+        throw error
     }
 }
 
