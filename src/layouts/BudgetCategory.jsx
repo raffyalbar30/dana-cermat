@@ -21,6 +21,8 @@ import ToasterModal from "../../utils/ToasterModal";
 import { CiMoneyCheck1 } from "react-icons/ci";
 import AddFromAddBudget from "./AddFromAddBudget";
 import UpdateFromAddBudget from "./UpdateFromBudget";
+import ToasterModalConfirm from "../../utils/ToasterModalConfirm";
+import ModalUpdateBudget from "./ModalUpdateBudget";
 
 
 export default function BudgetCategory() {
@@ -343,106 +345,17 @@ export default function BudgetCategory() {
             setisOpenBudget={setisOpenBudget} />
           }/>
       ) : confirmupdate === true ? (
-        <div
-          className={`fixed inset-0 pl-64 z-10 flex items-center justify-center bg-black/50 transition-all ${
-            confirmupdate ? "dropdown" : "opacity-0 invisible"
-          }`}
-        >
-          <div
-            className={`w-full max-w-xl rounded-2xl bg-white shadow-xl transition-all duration-300 ${
-              confirmupdate ? "scale-100 opacity-100" : "scale-95 opacity-0"
-            }`}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => {
-                window.location.reload;
-                setconfirmupdate(false);
-              }}
-              className="absolute  cursor-pointer right-5 top-5 flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-100"
-            >
-              ✕
-            </button>
-
-            <div className="p-8">
-              {/* Icon */}
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-100">
-                <LuNotebookPen size={36} className="text-blue-700" />
-              </div>
-
-              {/* Heading */}
-              <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-                Confirm Transaction
-              </h2>
-
-              <p className="mt-2 text-center text-gray-500">
-                Please review the transaction details before updating.
-              </p>
-
-              {/* Detail Card */}
-              <div className="mt-8 rounded-xl border border-gray-200 p-5">
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">Category</span>
-                  <span className="font-medium text-gray-800">
-                    {!getnamecategories ? getnamecategories : getnamecategories}
-                  </span>
-                </div>
-
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">Amount</span>
-                  <span className="font-semibold text-gray-900">
-                    {Number(getamount).toLocaleString("id-ID")}
-                  </span>
-                </div>
-
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">Start Date</span>
-                  <span className="font-medium text-gray-800">
-                    {getstartdate
-                      ? `${new Date(getstartdate).getFullYear()}-${String(
-                          new Date(getstartdate).getMonth() + 1,
-                        ).padStart(
-                          2,
-                          "0",
-                        )}-${String(new Date(getstartdate).getDate()).padStart(2, "0")}`
-                      : ""}
-                  </span>
-                </div>
-
-                <div className="flex justify-between py-2">
-                  <span className="text-gray-500">End Date</span>
-                  <span className="font-medium text-gray-800">
-                    {getEnddate
-                      ? `${new Date(getEnddate).getFullYear()}-${String(
-                          new Date(getEnddate).getMonth() + 1,
-                        ).padStart(
-                          2,
-                          "0",
-                        )}-${String(new Date(getEnddate).getDate()).padStart(2, "0")}`
-                      : ""}
-                  </span>
-                </div>
-              </div>
-
-              {/* Action */}
-              <div className="mt-8 flex flex-col gap-3">
-                <button
-                  onClick={() => updateRenameBudgets()}
-                  className="rounded-xl cursor-pointer bg-blue-700 py-3 font-medium text-white transition hover:bg-blue-600"
-                >
-                  Confirms Update Budgets
-                </button>
-
-                <button
-                  onClick={() => setconfirmupdate(false)}
-                  className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel Budgets
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ToasterModalConfirm 
+         confirmupdate={confirmupdate}
+         Chilldren={<ModalUpdateBudget
+          setconfirmupdate={setconfirmupdate}
+          Icons={<GiReceiveMoney size={45} className="text-blue-700"/>}
+          dataBudget={getconfirmupdate}
+          loader={confirmloader}
+          setloader={setconfirmloader}
+          settitle={settitle}
+          setnotifications={setnotifications}/>}
+         />
       ) : null}
 
       <div className="w-full rounded-lg border border-slate-200 bg-slate-50 mt-8 mx-auto p-6">

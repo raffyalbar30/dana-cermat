@@ -163,6 +163,7 @@ export const Dellatebudgets = async ( id ) => {
 }
 
 export const UpdateBudgets = async (
+    token,
     idcategory,
     amount, 
     period, 
@@ -179,11 +180,16 @@ export const UpdateBudgets = async (
             startdate : startdate, 
             endDate: endDate,
             idbudgets: idbudgets
-        }
+        }, {
+              headers: {
+              authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+         }
       )
       return { response : response}
    } catch (error) {
-      console.log(error);
+      throw error
    }
 }
 

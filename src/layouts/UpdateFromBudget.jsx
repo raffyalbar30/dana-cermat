@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Label from "../component/Label";
 import Buttons from "../component/Buttons";
-import { Addbudgets } from "../services/api";
 
 const UpdateFromAddBudget = ({ 
   category, 
@@ -49,18 +48,54 @@ const UpdateFromAddBudget = ({
     }
   ]; 
 
+
   const HandleAddBudgets = async (data) => {
-     const TypeBudget = watch("TypeCategory");
+     const Typecategory = watch("TypeCategory");
      const Priode = data.priode;
      const Amount = data.Amount; 
-     const Date = data.Date; 
+     const date = data.Date; 
+
+     const typecategorname = category.find(
+      (item) => String(item?.categories_id) === String(Typecategory)
+     )?.name_categories ?? "-"; 
+
+    const startDate = new Date(date);
+    let endDate = new Date(startDate);
+
+    switch (getperiod) {
+      case "threeday":
+        endDate.setDate(endDate.getDate() + 3);
+        break;
+
+      case "weekly":
+        endDate.setDate(endDate.getDate() + 7);
+        break;
+
+      case "monthly":
+        endDate = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth() + 1,
+          0,
+        );
+        break;
+
+      case "yearly":
+        endDate = new Date(startDate.getFullYear(), 11, 31);
+        break;
+
+      default:
+        console.error("Periode tidak valid");
+        return;
+    }
 
      const dataBudget = {
         idbudget: getIdBudgets, 
-        Typebudget: TypeBudget, 
+        idcategory: Typecategory,
+        Typecategory: typecategorname, 
         priode: Priode, 
         amount: Amount,
-        date: Date
+        startdate: date,
+        enddate: endDate
      }
 
      setloader(true)
@@ -275,7 +310,7 @@ const UpdateFromAddBudget = ({
             />
 
             <button
-              onClick={() => setisOpenBudget(false)}
+              onClick={() => setisOpen(false)}
               type="button"
               className="rounded-xl border cursor-pointer border-gray-200 py-3 font-medium text-gray-700 hover:bg-gray-50"
             >
