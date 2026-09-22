@@ -14,7 +14,7 @@ export default function DashboardFinance() {
   const [ total, settotal ] = useState([]); 
    const [ loader, setloader ] = useState(true);
     
-      const token = localStorage.getItem("Token");
+      const token = sessionStorage.getItem("Token");
     
       async function getTotal(token) {
         try {
@@ -35,22 +35,7 @@ export default function DashboardFinance() {
         }, 2000)
       }, [loader])
     
-    const barData = [
-    { month: "Jan", income: 4000, expense: 2400 },
-    { month: "Feb", income: 3000, expense: 1400 },
-    { month: "Mar", income: 5000, expense: 3600 },
-    { month: "Apr", income: 4500, expense: 3800 },
-    { month: "May", income: 3800, expense: 2800 },
-    { month: "Jun", income: 4200, expense: 3200 },
-  ];
-
-  const categories = [
-    { label: "Food & Dining", value: "27%", color: "bg-indigo-400" },
-    { label: "Bills & Utilities", value: "29%", color: "bg-cyan-400" },
-    { label: "Shopping", value: "21%", color: "bg-yellow-400" },
-    { label: "Transportation", value: "13%", color: "bg-green-400" },
-    { label: "Entertainment", value: "10%", color: "bg-orange-400" },
-  ];
+ 
 
   
   return (

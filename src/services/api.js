@@ -200,7 +200,7 @@ export const UpdateBudgets = async (
 
 export const TotalTransaction = async (token) => {
     try {
-        const response = await EndpointApi.get(`/TotalTransaksi`, 
+        const response = await EndpointApi.get(`/Transaksi/v1/TotalTransaksi`, 
              {
               headers: {
               authorization: `Bearer ${token}`,
@@ -216,7 +216,7 @@ export const TotalTransaction = async (token) => {
 
 export const TotalBudget = async (token) => {
     try {
-        const response = await EndpointApi.get(`/TotalBudgets`, 
+        const response = await EndpointApi.get(`/Budgets/v1/TotalBudgets`, 
              {
               headers: {
               authorization: `Bearer ${token}`,

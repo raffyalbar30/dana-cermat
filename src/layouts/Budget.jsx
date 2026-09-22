@@ -6,7 +6,7 @@ import LoaderPage from '../component/LoaderPage';
 export default function Budget() {
    const [ total, settotal ] = useState([]); 
    const [ loader, setloader ] = useState(true); 
-   const token = localStorage.getItem("Token");
+   const token = sessionStorage.getItem("Token");
     
     async function getTotal(token) {
         try {
