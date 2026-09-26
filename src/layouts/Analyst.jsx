@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IoIosTrendingDown, IoIosTrendingUp } from 'react-icons/io';
 import { GiReceiveMoney } from "react-icons/gi";
 import { GoCalendar } from "react-icons/go";
+import { Chart } from '../services/chart';
+import Chart7d from '../component/Chart7d';
 
 
  const analyst = [
@@ -43,9 +45,30 @@ import { GoCalendar } from "react-icons/go";
     }
   ]
 
+
 export default function Analyst() {
 
   const [chart, setchart] = useState("Mothly");
+  const [savendays, setsavendays ] = useState([]); 
+
+  
+  const token = sessionStorage.getItem("Token");
+
+  const getAnalitics7day = async () => {
+      try {
+          const response = await Chart("7d", token);
+          setsavendays(response.data);
+      } catch (error) {
+          console.error("Gagal mengambil analytics:", error);
+      }
+  };
+
+  useEffect(() => {
+      getAnalitics7day();
+  }, []);
+
+  console.log(token);
+  console.log(savendays);
 
   return (
       <div className="min-h-screen bg-slate-50 p-6">
@@ -223,76 +246,7 @@ export default function Analyst() {
               {/* days monthly */}
                <div className='w-full'>
                  <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
-                    <h3 className="font-semibold text-gray-800">
-                      Income vs Expenses
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-4">
-                      7 days comparison over the last month
-                    </p>
-
-                      {/* CHART PLACEHOLDER */}
-                      <div className="flex gap-x-2">
-
-                        {/* LABEL ANGKA */}
-                        <div className="flex items-end">
-                          <div className="grid grid-rows-5 h-[360px] text-[14px] mt-9">
-                            {["Rp.1.500.000", "Rp.1.000.000", "Rp.500.000"].map(
-                              (item, i) => (
-                                <div key={i} className="flex items-center justify-end text-gray-500">
-                                  {item}
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      <div className="flex flex-col w-full">
-                        <div
-                          className="relative grid grid-rows-5 h-[360px] w-full"
-                          style={{
-                            borderTop: "1px dashed #d1d5db",
-                            borderLeft: "1px solid #d1d5db",
-                            borderRight: "1px dashed #9ca3af",
-                            borderBottom: "1px solid #9ca3af",
-                          }}
-                        >
-                          <div className="absolute inset-0 grid grid-rows-5">
-                            {[1,2,3,4].map((_,i)=>(
-                              <div key={i} className="border-t border-dashed border-gray-300"></div>
-                            ))}
-                          </div>
-
-                          <div className='flex gap-x-4 absolute h-full w-full z-10'>
-                            <div className="flex items-end gap-2 ml-10 ">
-                              <div className="w-16 bg-green-500 h-[120px]"></div>
-                              <div className="w-16 bg-red-500 h-[200px]"></div>
-                            </div>
-                            <div className="flex items-end gap-2 ml-10 ">
-                              <div className="w-16 bg-green-500 h-[120px]"></div>
-                              <div className="w-16 bg-red-500 h-[200px]"></div>
-                            </div>
-                            <div className="flex items-end gap-2 ml-10 ">
-                              <div className="w-16 bg-green-500 h-[120px]"></div>
-                              <div className="w-16 bg-red-500 h-[200px]"></div>
-                            </div>
-                            <div className="flex items-end gap-2 ml-10 ">
-                              <div className="w-16 bg-green-500 h-[120px]"></div>
-                              <div className="w-16 bg-red-500 h-[200px]"></div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* LABEL BULAN */}
-                        <div className="flex gap-x-36 mt-2 ml-24">
-                          {["day 1", "day 2", "day 3", "day 4", "day 5", "day 6", "day 7"].map((m, i) => (
-                            <span key={i} className="text-xs text-gray-400">
-                              {m}
-                            </span>
-                          ))}
-                        </div>
-
-                      </div>
-
-                      </div>
+                  <Chart7d data={savendays}/>
                   </div>
              </div>
         </div>

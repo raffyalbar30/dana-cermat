@@ -13,7 +13,7 @@ export default function AllCards() {
   
     async function getTotal(token) {
       try {
-        const {response} = await TotalTransaction(token);
+        const {response} = await TotalTransaction(token); 
         settotal(response.data)
       } catch (error) {
         console.log(error);

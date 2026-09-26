@@ -8,6 +8,7 @@ export const LoginAuth = async (email, password) => {
                     password_user: `${password}`
              }
             );
+
         return { response : response}
     } catch (error) {
         throw error
