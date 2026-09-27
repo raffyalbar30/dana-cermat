@@ -5,16 +5,27 @@ import { RxTarget } from "react-icons/rx";
 import BudgetProgress from '../component/Budget';
 import { TotalTransaction } from '../services/api';
 import LoaderPage from '../component/LoaderPage';
+import ChartMonth from '../component/ChartMonth';
+import { Chart } from '../services/chart';
 
 
 
 
 export default function DashboardFinance() {
 
-  const [ total, settotal ] = useState([]); 
+   const [ total, settotal ] = useState([]); 
    const [ loader, setloader ] = useState(true);
-    
-      const token = sessionStorage.getItem("Token");
+   const [monthly, setmonthly ] = useState([]); 
+   const token = sessionStorage.getItem("Token");
+
+     const getAnaliticsMonth = async () => {
+         try {
+             const response = await Chart("1m", token);
+             setmonthly(response.data);
+         } catch (error) {
+             console.error("Gagal mengambil analytics:", error);
+         }
+     };
     
       async function getTotal(token) {
         try {
@@ -27,6 +38,7 @@ export default function DashboardFinance() {
     
       useEffect(() => {
          getTotal(token);
+         getAnaliticsMonth();
       }, []);
 
       useEffect(() => {
@@ -83,85 +95,13 @@ export default function DashboardFinance() {
         {/* BAR CHART */}
         <div className="lg:col-span-2 bg-white w-[800px] rounded-xl shadow-sm p-4">
           <h3 className="font-semibold text-gray-800">
-            Income vs Expenses
-          </h3>
-          <p className="text-sm text-gray-400 mb-4">
-            Monthly comparison over the last 6 months
-          </p>
-
-          {/* CHART PLACEHOLDER */}
-          <div className="flex gap-x-2">
-
-            {/* LABEL ANGKA */}
-            <div className="flex items-end">
-              <div className="grid grid-rows-5 h-[360px] text-[14px] mt-9">
-                {["Rp.2.000.000", "Rp.1.500.000", "Rp.1.000.000", "Rp.500.000", "0"].map(
-                  (item, i) => (
-                    <div key={i} className="flex items-center justify-end text-gray-500">
-                      {item}
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-          <div className="flex flex-col w-full">
-
-            <div
-              className="relative grid grid-rows-5 h-[360px] w-full"
-              style={{
-                borderTop: "1px dashed #d1d5db",
-                borderLeft: "1px solid #d1d5db",
-                borderRight: "1px dashed #9ca3af",
-                borderBottom: "1px solid #9ca3af",
-              }}
-            >
-              <div className="absolute inset-0 grid grid-rows-5">
-                {[1,2,3,4,5].map((_,i)=>(
-                  <div key={i} className="border-t border-dashed border-gray-300"></div>
-                ))}
-              </div>
-
-              <div className='flex gap-x-4 absolute h-full w-full z-10'>
-                <div className="flex items-end gap-2 ml-10 ">
-                  <div className="w-8 bg-green-500 h-[120px]"></div>
-                  <div className="w-8 bg-red-500 h-[200px]"></div>
-                </div>
-                <div className="flex items-end gap-2 ml-4 ">
-                  <div className="w-8 bg-green-500 h-[300px]"></div>
-                  <div className="w-8 bg-red-500 h-[200px]"></div>
-                </div>
-                <div className="flex items-end gap-2 ml-4 ">
-                  <div className="w-8 bg-green-500 h-[100px]"></div>
-                  <div className="w-8 bg-red-500 h-[250px]"></div>
-                </div>
-                <div className="flex items-end gap-2 ml-4 ">
-                  <div className="w-8 bg-green-500 h-[110px]"></div>
-                  <div className="w-8 bg-red-500 h-[100px]"></div>
-                </div>
-                <div className="flex items-end gap-2 ml-4 ">
-                  <div className="w-8 bg-green-500 h-[130px]"></div>
-                  <div className="w-8 bg-red-500 h-[100px]"></div>
-                </div>
-                <div className="flex items-end gap-2 ml-4 ">
-                  <div className="w-8 bg-green-500 h-[130px]"></div>
-                  <div className="w-8 bg-red-500 h-[170px]"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* LABEL BULAN */}
-            <div className="flex gap-x-20 mt-2 ml-20">
-              {["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((m, i) => (
-                <span key={i} className="text-xs text-gray-400">
-                  {m}
-                </span>
-              ))}
-            </div>
-
-          </div>
-
-          </div>
-          </div>
+               Income vs Expenses
+           </h3>
+            <p className="text-sm text-gray-400 mb-4">
+                Monthly comparison over the last 1 months
+            </p>
+             <ChartMonth data={monthly}/>
+        </div>
 
         {/* PIE CHART */}
         <div className="bg-white rounded-xl shadow-sm p-5 w-[500px] ">

@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 
-const Chart7d = ({ data }) => {
+const ChartMonth = ({ data }) => {
 
     const chartData = data.map((item) => {
     const date = new Date(item.period);
@@ -76,4 +76,4 @@ const Chart7d = ({ data }) => {
     );
 }
 
-export default Chart7d;
+export default ChartMonth;

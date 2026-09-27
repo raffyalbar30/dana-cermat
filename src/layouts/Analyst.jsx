@@ -4,6 +4,7 @@ import { GiReceiveMoney } from "react-icons/gi";
 import { GoCalendar } from "react-icons/go";
 import { Chart } from '../services/chart';
 import Chart7d from '../component/Chart7d';
+import ChartMonth from '../component/ChartMonth';
 
 
  const analyst = [
@@ -50,6 +51,8 @@ export default function Analyst() {
 
   const [chart, setchart] = useState("Mothly");
   const [savendays, setsavendays ] = useState([]); 
+  const [monthly, setmonthly ] = useState([]); 
+  const [threemonth, setthreemonth ] = useState([]);
 
   
   const token = sessionStorage.getItem("Token");
@@ -63,12 +66,31 @@ export default function Analyst() {
       }
   };
 
+   const getAnaliticsMonth = async () => {
+      try {
+          const response = await Chart("1m", token);
+          setmonthly(response.data);
+      } catch (error) {
+          console.error("Gagal mengambil analytics:", error);
+      }
+  };
+
+   const getAnaliticsThreemonth = async () => {
+      try {
+          const response = await Chart("3m", token);
+          setthreemonth(response.data);
+      } catch (error) {
+          console.error("Gagal mengambil analytics:", error);
+      }
+  };
+
   useEffect(() => {
       getAnalitics7day();
+      getAnaliticsMonth();
+      getAnaliticsThreemonth();
   }, []);
 
-  console.log(token);
-  console.log(savendays);
+
 
   return (
       <div className="min-h-screen bg-slate-50 p-6">
@@ -113,66 +135,7 @@ export default function Analyst() {
                       Monthly comparison over the last 3 months
                     </p>
 
-                      {/* CHART PLACEHOLDER */}
-                      <div className="flex gap-x-2">
-
-                        {/* LABEL ANGKA */}
-                        <div className="flex items-end">
-                          <div className="grid grid-rows-5 h-[360px] text-[14px] mt-9">
-                            {["Rp.1.500.000", "Rp.1.000.000", "Rp.500.000"].map(
-                              (item, i) => (
-                                <div key={i} className="flex items-center justify-end text-gray-500">
-                                  {item}
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      <div className="flex flex-col w-full">
-
-                        <div
-                          className="relative grid grid-rows-5 h-[360px] w-full"
-                          style={{
-                            borderTop: "1px dashed #d1d5db",
-                            borderLeft: "1px solid #d1d5db",
-                            borderRight: "1px dashed #9ca3af",
-                            borderBottom: "1px solid #9ca3af",
-                          }}
-                        >
-                          <div className="absolute inset-0 grid grid-rows-5">
-                            {[1,2,3,4].map((_,i)=>(
-                              <div key={i} className="border-t border-dashed border-gray-300"></div>
-                            ))}
-                          </div>
-
-                          <div className='flex gap-x-4 absolute h-full w-full z-10'>
-                            <div className="flex items-end gap-2 ml-10 ">
-                              <div className="w-12 bg-green-500 h-[120px]"></div>
-                              <div className="w-12 bg-red-500 h-[200px]"></div>
-                            </div>
-                            <div className="flex items-end gap-2 ml-4 ">
-                              <div className="w-12 bg-green-500 h-[300px]"></div>
-                              <div className="w-12 bg-red-500 h-[200px]"></div>
-                            </div>
-                            <div className="flex items-end gap-2 ml-4 ">
-                              <div className="w-12 bg-green-500 h-[100px]"></div>
-                              <div className="w-12 bg-red-500 h-[250px]"></div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* LABEL BULAN */}
-                        <div className="flex gap-x-28 mt-2 ml-20">
-                          {["Jan", "Feb", "Mar"].map((m, i) => (
-                            <span key={i} className="text-xs text-gray-400">
-                              {m}
-                            </span>
-                          ))}
-                        </div>
-
-                      </div>
-
-                      </div>
+                      <ChartMonth data={threemonth} />
                   </div>
              </div>
              
@@ -185,58 +148,7 @@ export default function Analyst() {
                     <p className="text-sm text-gray-400 mb-4">
                       Monthly comparison over the last 1 months
                     </p>
-
-                      {/* CHART PLACEHOLDER */}
-                      <div className="flex gap-x-2">
-
-                        {/* LABEL ANGKA */}
-                        <div className="flex items-end">
-                          <div className="grid grid-rows-5 h-[360px] text-[14px] mt-9">
-                            {["Rp.1.500.000", "Rp.1.000.000", "Rp.500.000"].map(
-                              (item, i) => (
-                                <div key={i} className="flex items-center justify-end text-gray-500">
-                                  {item}
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      <div className="flex flex-col w-full">
-                        <div
-                          className="relative grid grid-rows-5 h-[360px] w-full"
-                          style={{
-                            borderTop: "1px dashed #d1d5db",
-                            borderLeft: "1px solid #d1d5db",
-                            borderRight: "1px dashed #9ca3af",
-                            borderBottom: "1px solid #9ca3af",
-                          }}
-                        >
-                          <div className="absolute inset-0 grid grid-rows-5">
-                            {[1,2,3,4].map((_,i)=>(
-                              <div key={i} className="border-t border-dashed border-gray-300"></div>
-                            ))}
-                          </div>
-
-                          <div className='flex gap-x-4 absolute h-full w-full z-10'>
-                            <div className="flex items-end gap-2 ml-10 ">
-                              <div className="w-12 bg-green-500 h-[120px]"></div>
-                              <div className="w-12 bg-red-500 h-[200px]"></div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* LABEL BULAN */}
-                        <div className="flex gap-x-20 mt-2 ml-16">
-                          {["weak 1", "weak 2", "weak 3", "weak 4"].map((m, i) => (
-                            <span key={i} className="text-xs text-gray-400">
-                              {m}
-                            </span>
-                          ))}
-                        </div>
-
-                      </div>
-
-                      </div>
+                     <ChartMonth data={monthly}/>
                   </div>
              </div>
         </div>
@@ -246,6 +158,13 @@ export default function Analyst() {
               {/* days monthly */}
                <div className='w-full'>
                  <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
+                   <h3 className="font-semibold text-gray-800">
+                      Income vs Expenses
+                    </h3>
+                    <p className="text-sm text-gray-400 mb-4">
+                      Weakly comparison over the last 7 days
+                    </p>
+
                   <Chart7d data={savendays}/>
                   </div>
              </div>
