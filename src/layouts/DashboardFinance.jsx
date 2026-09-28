@@ -7,6 +7,7 @@ import { TotalTransaction } from '../services/api';
 import LoaderPage from '../component/LoaderPage';
 import ChartMonth from '../component/ChartMonth';
 import { Chart } from '../services/chart';
+import ExpensePieChart from '../component/Chartpie';
 
 
 
@@ -112,28 +113,7 @@ export default function DashboardFinance() {
             Current month breakdown
           </p>
 
-          {/* PIE PLACEHOLDER */}
-          <div className="flex justify-center items-center h-[220px]">
-            <div className="relative w-60 h-60 rounded-full" 
-              style={{
-              background: `conic-gradient(
-                #22c55e 0% 27%,
-                #3b82f6 27% 48%,
-                #f59e0b 48% 61%,
-                #ef4444 61% 71%,
-                #e5e7eb 71% 100%
-              )`,
-            }}>
-            </div>
-          </div>
-
-          {/* LEGEND */}
-          <div className="space-y-2 mt-4 text-sm pt-4">
-            <Legend color="bg-purple-400" label="Food & Dining" value="27%" />
-            <Legend color="bg-yellow-400" label="Shopping" value="21%" />
-            <Legend color="bg-green-400" label="Transportation" value="13%" />
-            <Legend color="bg-orange-400" label="Entertainment" value="10%" />
-          </div>
+          <ExpensePieChart/>
         </div>
         </div>
 
