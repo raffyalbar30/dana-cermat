@@ -16,7 +16,7 @@ export default function DashboardFinance() {
 
    const [ total, settotal ] = useState([]); 
    const [ loader, setloader ] = useState(true);
-   const [monthly, setmonthly ] = useState([]); 
+   const [ monthly, setmonthly ] = useState([]); 
    const token = sessionStorage.getItem("Token");
 
      const getAnaliticsMonth = async () => {
@@ -126,20 +126,6 @@ export default function DashboardFinance() {
         </div> 
       </div>
   )}
-
-
-
-function Legend({ color, label, value }) {
-  return (
-    <div className="flex justify-between items-center">
-       <div className="flex items-center gap-2">
-              <span className={`w-3 h-3 rounded-full ${color}`} />
-              <span className="text-gray-600">{label}</span>
-        </div>
-        <span className="text-gray-500">{value}</span>
-    </div>
-  );
-}
 
 
 function Cards({ title, value, desc, color, icons, loader }) {

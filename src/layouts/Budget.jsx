@@ -16,7 +16,7 @@ export default function Budget() {
           console.log(error);
         }
       }
-    
+      
       useEffect(() => {
          getTotal(token);
       }, []); 

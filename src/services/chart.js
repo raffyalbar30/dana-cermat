@@ -40,3 +40,24 @@ export const ChartPie = async (period, token) => {
         throw error;
     }
 };
+
+
+export const Progressbar = async (period, token) => {
+    try {
+        const response = await EndpointApi.get(
+            "/analytics/budget-expanses",
+            {
+                params: {
+                    period,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

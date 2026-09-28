@@ -1,29 +1,25 @@
-import React from "react";
-
-const budgets = [
-  {
-    name: "Food & Dining",
-    used: 850,
-    total: 1000,
-  },
-  {
-    name: "Transportation",
-    used: 420,
-    total: 500,
-  },
-  {
-    name: "Shopping",
-    used: 680,
-    total: 800,
-  },
-  {
-    name: "Entertainment",
-    used: 320,
-    total: 400,
-  },
-];
+import React, { useEffect, useState } from "react";
+import { GetAllbudgets } from "../services/api";
 
 export default function BudgetProgress() {
+  const [ monthly, setmonthly ] = useState([]); 
+  const Token = sessionStorage.getItem("Token");
+
+  const getBudgetProgress = async () => {
+        try {
+          const { response } = await GetAllbudgets(Token);
+          setmonthly(response.data);
+        } catch (error) {
+          console.log(error);
+        }
+  }
+
+  console.log(monthly); 
+
+  useEffect(() => {
+     getBudgetProgress()
+  }, []); 
+
   return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">
       {/* Header */}
@@ -33,41 +29,50 @@ export default function BudgetProgress() {
       <p className="text-xs text-gray-400 mb-6">
         Track your spending against your budget
       </p> 
+       <div className="space-y-6">
+  {monthly.slice(-5).map((item) => {
+    const used = Number(item.used_amount);
+    const total = Number(item.budget_amount);
 
-      <div className="space-y-6">
-        {budgets.map((item, index) => {
-          const percent = (item.used / item.total) * 100;
+    const percent =
+      total === 0
+        ? 0
+        : Math.min((used / total) * 100, 100);
 
-          return (
-            <div key={index}>
-              {/* Top Row */}
-              <div className="flex justify-between items-center text-sm mb-2">
-                <span className="text-gray-700 font-medium">
-                  {item.name}
-                </span>
-                <span className="text-gray-400 text-xs">
-                  ${item.used} / ${item.total}
-                </span>
-              </div>
+    return (
+      <div key={item.id_budgets}>
+        {/* Top Row */}
+        <div className="mb-2 flex items-center justify-between text-sm">
+          <span className="font-medium text-gray-700">
+            {item.name_categories}
+          </span>
 
-              {/* Progress Bar */}
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-700  rounded-full"
-                  style={{ width: `${percent}%` }}
-                />
-              </div>
+          <span className="text-xs text-gray-400">
+            Rp{used.toLocaleString("id-ID")} / Rp
+            {total.toLocaleString("id-ID")}
+          </span>
+        </div>
 
-              {/* Percentage */}
-              <div className="flex justify-end mt-1">
-                <span className="text-xs text-gray-400">
-                  {percent.toFixed(1)}% used
-                </span>
-              </div>
-            </div>
-          );
-        })}
+        {/* Progress Bar */}
+        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+          <div
+            className="h-full rounded-full bg-blue-700 transition-all duration-500"
+            style={{
+              width: `${percent}%`,
+            }}
+          />
+        </div>
+
+        {/* Percentage */}
+        <div className="mt-1 flex justify-end">
+          <span className="text-xs text-gray-400">
+            {percent.toFixed(1)}% used
+          </span>
+        </div>
       </div>
+    );
+  })}
+       </div>
     </div>
   );
 }
