@@ -5,6 +5,7 @@ import { GoCalendar } from "react-icons/go";
 import { Chart } from '../services/chart';
 import Chart7d from '../component/Chart7d';
 import ChartMonth from '../component/ChartMonth';
+import Chartpiecategories from '../component/Chartpiecategories';
 
 
  const analyst = [
@@ -111,22 +112,32 @@ export default function Analyst() {
           </div>
         {/* main content */}
         <div className='flex flex-wrap'>
-           <div className="flex gap-x-2 bg-gray-200 p-1 w-[50px] rounded-full w-fit">
-             {
-               getChart.map((items) => {
-                return (
-                    <button className={`${items.name === chart ? `px-4 py-1.5  bg-white rounded-full shadow` : `text-gray-800`} text-sm font-medium mr-2`}>
-                       {items.name}
-                   </button>
-                )
-               })
-             }
-            </div>
+           <div className="flex gap-x-1 bg-gray-200 p-1 rounded-full w-fit">
+            {getChart.map((items) => (
+              <button
+                key={items.name}
+                onClick={() => setchart(items.name)}
+                className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all ${
+                  chart === items.name
+                    ? "bg-white text-gray-900 shadow"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                {items.name}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className=' mt-4 flex gap-x-6'>
-            {/* 3 monthly */}
-             <div className='w-1/2'>
+            {
+               chart === "Categories" ? 
+                <div className='w-full'>
+                   <Chartpiecategories/>
+                </div>
+                 : 
+               <>
+               <div className='w-1/2'>
                  <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
                     <h3 className="font-semibold text-gray-800">
                       Income vs Expenses
@@ -137,20 +148,23 @@ export default function Analyst() {
 
                       <ChartMonth data={threemonth} />
                   </div>
-             </div>
-             
-             {/* 1 monthly */}
-               <div className='w-1/2'>
-                 <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
-                    <h3 className="font-semibold text-gray-800">
-                      Income vs Expenses
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-4">
-                      Monthly comparison over the last 1 months
-                    </p>
-                     <ChartMonth data={monthly}/>
-                  </div>
-             </div>
+                </div>
+                <div className='w-1/2'>
+                  <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
+                      <h3 className="font-semibold text-gray-800">
+                        Income vs Expenses
+                      </h3>
+                      <p className="text-sm text-gray-400 mb-4">
+                        Monthly comparison over the last 1 months
+                      </p>
+                      <ChartMonth data={monthly}/>
+                    </div>
+                </div>
+               
+               </>
+                 
+            }
+    
         </div>
 
         {/* perday */}

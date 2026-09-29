@@ -14,8 +14,6 @@ export default function BudgetProgress() {
         }
   }
 
-  console.log(monthly); 
-
   useEffect(() => {
      getBudgetProgress()
   }, []); 
