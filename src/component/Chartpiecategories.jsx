@@ -41,7 +41,7 @@ const Chartpiecategories = () => {
                         Expense Categories
                     </h3>
                     <p className="text-sm text-gray-400 mb-4">
-                        Current 3 month breakdown
+                        Current 7 days breakdown
                     </p>
         
                     <ExpensePieChart/>
@@ -77,9 +77,7 @@ const ExpensePieChart = () => {
   useEffect(() => {
     const getCategoriesExpanses = async () => {
       try {
-        const response = await ChartPie("3m", Token);
-
-        console.log("Response:", response);
+        const response = await ChartPie("7d", Token);
 
         setMonthly(response.data);
       } catch (error) {
@@ -91,11 +89,11 @@ const ExpensePieChart = () => {
   }, [Token]);
 
   // Convert data API
-  const chartData = monthly.map((item) => ({
-    category: item.category,
-    expenses: Number(item.expenses),
-    percentage: Number(item.percentage),
-  }));
+ const chartData = monthly.map((item) => ({
+  category: item.category,
+  expenses: Number(item.expenses),
+  percentage: Number(item.percentage) || 0,
+}));
 
   // Custom Tooltip
   const CustomTooltip = ({ active, payload }) => {
@@ -116,7 +114,7 @@ const ExpensePieChart = () => {
         </p>
 
         <p className="text-sm font-medium text-slate-700">
-          {data.percentage}%
+           {data.percentage ?? 0}%
         </p>
       </div>
     );
