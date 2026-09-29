@@ -6,6 +6,7 @@ import { Chart } from '../services/chart';
 import Chart7d from '../component/Chart7d';
 import ChartMonth from '../component/ChartMonth';
 import Chartpiecategories from '../component/Chartpiecategories';
+import BudgetProgress from '../component/Budget';
 
 
  const analyst = [
@@ -135,7 +136,11 @@ export default function Analyst() {
                 <div className='w-full'>
                    <Chartpiecategories/>
                 </div>
-                 : 
+                 : chart === "Goals" ? 
+                 <div className='w-full'>
+                    <BudgetProgress/>
+                 </div>
+                 :
                <>
                <div className='w-1/2'>
                  <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">

@@ -5,6 +5,7 @@ import LoaderPage from '../component/LoaderPage';
 
 export default function Budget() {
    const [ total, settotal ] = useState([]); 
+   const [animate, setAnimate] = useState(false);
    const [ loader, setloader ] = useState(true); 
    const token = sessionStorage.getItem("Token");
     
@@ -27,6 +28,15 @@ export default function Budget() {
            setloader(false);
          }, 2000)
        }, [loader])
+
+       useEffect(() => {
+         const timer = setTimeout(() => {
+           setAnimate(true);
+         }, 100);
+       
+         return () => clearTimeout(timer);
+       }, []);
+       
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6">
@@ -86,7 +96,7 @@ export default function Budget() {
       <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
         <div
           className="h-full bg-blue-700  rounded-full"
-          style={{ width: `${total[0]?.progress}%` }}
+          style={{ width: animate ? `${total[0]?.progress}%` : "0%", }}
         />
       </div>
       </>

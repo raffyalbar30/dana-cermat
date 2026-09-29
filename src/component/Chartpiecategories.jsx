@@ -88,6 +88,8 @@ const ExpensePieChart = () => {
     getCategoriesExpanses();
   }, [Token]);
 
+  console.log(monthly);
+
   // Convert data API
  const chartData = monthly.map((item) => ({
   category: item.category,
@@ -114,50 +116,42 @@ const ExpensePieChart = () => {
         </p>
 
         <p className="text-sm font-medium text-slate-700">
-           {data.percentage ?? 0}%
+           {!data.percentage ? "hidden" : data.percentage}%
         </p>
       </div>
     );
   };
 
-  // Custom Legend
-  const CustomLegend = ({ payload }) => {
-    if (!payload) return null;
+ const CustomLegend = () => {
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      {chartData.map((item) => (
+        <div
+          key={item.category}
+          className="flex items-center justify-between text-sm"
+        >
+          <div className="flex items-center gap-2">
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{
+                backgroundColor:
+                  COLORS[item.category] || COLORS.Others,
+              }}
+            />
 
-    return (
-      <div className="mt-2 flex flex-col gap-2">
-        {payload.map((entry) => {
-          const item = chartData.find(
-            (data) => data.category === entry.value
-          );
+            <span className="text-slate-500">
+              {item.category}
+            </span>
+          </div>
 
-          return (
-            <div
-              key={entry.value}
-              className="flex items-center justify-between text-sm"
-            >
-              <div className="flex items-center gap-2">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{
-                    backgroundColor: entry.color,
-                  }}
-                />
-
-                <span className="text-slate-500">
-                  {entry.value}
-                </span>
-              </div>
-
-              <span className="text-slate-500">
-                {item?.percentage}%
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+          <span className="text-slate-500">
+            {item.percentage}%
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <div className="w-full rounded-xl border border-slate-200 bg-white p-5">
@@ -254,44 +248,36 @@ const ExpensePieChart1M = () => {
   };
 
   // Custom Legend
-  const CustomLegend = ({ payload }) => {
-    if (!payload) return null;
+ const CustomLegend = () => {
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      {chartData.map((item) => (
+        <div
+          key={item.category}
+          className="flex items-center justify-between text-sm"
+        >
+          <div className="flex items-center gap-2">
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{
+                backgroundColor:
+                  COLORS[item.category] || COLORS.Others,
+              }}
+            />
 
-    return (
-      <div className="mt-2 flex flex-col gap-2">
-        {payload.map((entry) => {
-          const item = chartData.find(
-            (data) => data.category === entry.value
-          );
+            <span className="text-slate-500">
+              {item.category}
+            </span>
+          </div>
 
-          return (
-            <div
-              key={entry.value}
-              className="flex items-center justify-between text-sm"
-            >
-              <div className="flex items-center gap-2">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{
-                    backgroundColor: entry.color,
-                  }}
-                />
-
-                <span className="text-slate-500">
-                  {entry.value}
-                </span>
-              </div>
-
-              <span className="text-slate-500">
-                {item?.percentage}%
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
+          <span className="text-slate-500">
+            {item.percentage}%
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
   return (
     <div className="w-full rounded-xl border border-slate-200 bg-white p-5">
       {/* Chart */}
