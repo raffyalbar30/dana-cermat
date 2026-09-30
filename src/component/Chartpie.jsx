@@ -40,9 +40,6 @@ const ExpensePieChart = () => {
     const getCategoriesExpanses = async () => {
       try {
         const response = await ChartPie("1m", Token);
-
-        console.log("Response:", response);
-
         setMonthly(response.data);
       } catch (error) {
         console.log("Error:", error);

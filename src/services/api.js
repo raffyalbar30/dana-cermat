@@ -229,3 +229,19 @@ export const TotalBudget = async (token) => {
         console.log(error);
     }
 }
+
+export const TotalAVGTransaction = async (token) => {
+    try {
+        const response = await EndpointApi.get(`/Transaksi/v1/Rata-rata-Transaksi`, 
+             {
+              headers: {
+              authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+         })
+        
+         return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}

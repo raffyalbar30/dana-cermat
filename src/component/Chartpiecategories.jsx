@@ -88,8 +88,6 @@ const ExpensePieChart = () => {
     getCategoriesExpanses();
   }, [Token]);
 
-  console.log(monthly);
-
   // Convert data API
  const chartData = monthly.map((item) => ({
   category: item.category,

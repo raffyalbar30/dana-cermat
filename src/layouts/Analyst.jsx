@@ -7,35 +7,56 @@ import Chart7d from '../component/Chart7d';
 import ChartMonth from '../component/ChartMonth';
 import Chartpiecategories from '../component/Chartpiecategories';
 import BudgetProgress from '../component/Budget';
+import { TotalAVGTransaction } from '../services/api';
 
 
- const analyst = [
-    {
-      type: "Avg Monthly Income",
-      amount: "$4,047",
-      description: "+8.2% from last quarter",
-      icons: <IoIosTrendingUp/>
-    },
-    {
-      type: "Avg Monthly Expenses",
-      amount: "$2,958",
-      description: "3.1% from last quarter",
-      icons: <IoIosTrendingDown/>
-    },
-     {
-      type: "Avg Monthy Savings Rate",
-      amount: "26.9%",
-      description: "Above recommended 20%",
-      icons: <GiReceiveMoney/>
-    },
-     {
-      type: "Days to Goal",
-      amount: "90",
-      description: "At current savings rate",
-      icons : <GoCalendar/>
-    },
-  ];
 
+
+export default function Analyst() {
+
+  const [chart, setchart] = useState("Mothly");
+  const [savendays, setsavendays ] = useState([]); 
+  const [monthly, setmonthly ] = useState([]); 
+  const [threemonth, setthreemonth ] = useState([]);
+  const [ total, settotal ] = useState([]); 
+
+  
+  const token = sessionStorage.getItem("Token");
+
+  const formatRupiah = (amount) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(Number(amount || 0));
+};
+
+  const analyst = [
+  {
+    type: "Avg Monthly Income",
+    amount: formatRupiah(total[0]?.avg_monthly_income),
+    description: `${total[0]?.avg_income_rate}% from last quarter`,
+    icons: <IoIosTrendingUp />,
+  },
+  {
+    type: "Avg Monthly Expenses",
+    amount: formatRupiah(total[0]?.avg_monthly_expense),
+    description: `${total[0]?.avg_expense_rate}% from last quarter`,
+    icons: <IoIosTrendingDown />,
+  },
+  {
+    type: "Avg Monthly Savings",
+    amount: formatRupiah(total[0]?.avg_monthly_saving),
+    description: `Saving rate ${total[0]?.avg_monthly_saving_rate}%`,
+    icons: <GiReceiveMoney />,
+  },
+  {
+    type: "Days to Goal",
+    amount: "90",
+    description: "At current savings rate",
+    icons: <GoCalendar />,
+  },
+];
   const getChart = [ 
     {
       name:"Mothly"
@@ -48,16 +69,6 @@ import BudgetProgress from '../component/Budget';
     }
   ]
 
-
-export default function Analyst() {
-
-  const [chart, setchart] = useState("Mothly");
-  const [savendays, setsavendays ] = useState([]); 
-  const [monthly, setmonthly ] = useState([]); 
-  const [threemonth, setthreemonth ] = useState([]);
-
-  
-  const token = sessionStorage.getItem("Token");
 
   const getAnalitics7day = async () => {
       try {
@@ -86,13 +97,21 @@ export default function Analyst() {
       }
   };
 
+   async function getTotal(token) {
+          try {
+            const response = await TotalAVGTransaction(token);
+            settotal(response.data);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+
   useEffect(() => {
       getAnalitics7day();
       getAnaliticsMonth();
       getAnaliticsThreemonth();
+      getTotal(token);
   }, []);
-
-
 
   return (
       <div className="min-h-screen bg-slate-50 p-6">
