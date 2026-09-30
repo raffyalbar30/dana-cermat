@@ -32,29 +32,31 @@ export default function AllCards() {
      }, [loader])
   
 
+     console.log(total); 
+
   return (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                      <Cards
                      loader={loader}
                      title="Total Income"
-                     value={`Rp. ${ !total[0]?.total_income ? "0" : parseInt(total[0]?.total_income).toLocaleString("id-ID")}`}
-                     desc="+12% from last month"
+                     value={`Rp. ${!total?.total_income ? "0" : parseInt(total?.total_income).toLocaleString("id-ID")}`}
+                     desc={`${total?.income_rate}% from last month`}
                      color="text-green-600"
                      icons={<IoIosTrendingUp/>}
                      />
                      <Cards
                      loader={loader}
                      title="Total Expenses"
-                     value={`Rp. ${!total[0]?.total_expense ? "0" : parseInt(total[0]?.total_expense).toLocaleString("id-ID")}`}
-                     desc="-8% from last month"
+                     value={`Rp. ${!total?.total_expense ? "0" : parseInt(total?.total_expense).toLocaleString("id-ID")}`}
+                     desc={`${total?.expense_rate}% from last month`}
                      color="text-red-500"
                      icons={<IoIosTrendingDown/>}
                      />
                      <Cards
                      loader={loader}
                      title="Net Belance"
-                     value={`Rp. ${!total[0]?.net_balance ? "0" : parseInt(total[0]?.net_balance).toLocaleString("id-ID")}`}
-                     desc="24.0% form last month"
+                     value={`Rp. ${!total?.net_balance ? "0" : parseInt(total?.net_balance).toLocaleString("id-ID")}`}
+                     desc={`${total.net_balance_rate}% savings rate`}
                      color="text-blue-600"
                      icons={<GiReceiveMoney/>}
                      />

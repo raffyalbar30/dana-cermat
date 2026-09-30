@@ -84,43 +84,36 @@ const ExpensePieChart = () => {
     );
   };
 
-  // Custom Legend
-  const CustomLegend = ({ payload }) => {
-    if (!payload) return null;
+    // Custom Legend
+ const CustomLegend = () => {
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      {chartData.map((item) => (
+        <div
+          key={item.category}
+          className="flex items-center justify-between text-sm"
+        >
+          <div className="flex items-center gap-2">
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{
+                backgroundColor:
+                  COLORS[item.category] || COLORS.Others,
+              }}
+            />
 
-    return (
-      <div className="mt-2 flex flex-col gap-2">
-        {payload.map((entry) => {
-          const item = chartData.find(
-            (data) => data.category === entry.value
-          );
+            <span className="text-slate-500">
+              {item.category}
+            </span>
+          </div>
 
-          return (
-            <div
-              key={entry.value}
-              className="flex items-center justify-between text-sm"
-            >
-              <div className="flex items-center gap-2">
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{
-                    backgroundColor: entry.color,
-                  }}
-                />
-
-                <span className="text-slate-500">
-                  {entry.value}
-                </span>
-              </div>
-
-              <span className="text-slate-500">
-                {item?.percentage}%
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    );
+          <span className="text-slate-500">
+            {item.percentage}%
+          </span>
+        </div>
+      ))}
+    </div>
+  );
   };
 
   return (

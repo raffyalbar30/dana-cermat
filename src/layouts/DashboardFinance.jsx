@@ -3,7 +3,7 @@ import { IoIosTrendingUp, IoIosTrendingDown } from "react-icons/io";
 import { GiReceiveMoney } from "react-icons/gi";
 import { RxTarget } from "react-icons/rx";
 import BudgetProgress from '../component/Budget';
-import { TotalTransaction } from '../services/api';
+import { TotalBudget, TotalTransaction } from '../services/api';
 import LoaderPage from '../component/LoaderPage';
 import ChartMonth from '../component/ChartMonth';
 import { Chart } from '../services/chart';
@@ -15,6 +15,7 @@ import ExpensePieChart from '../component/Chartpie';
 export default function DashboardFinance() {
 
    const [ total, settotal ] = useState([]); 
+   const [ budget, setbudget ] = useState([]);
    const [ loader, setloader ] = useState(true);
    const [ monthly, setmonthly ] = useState([]); 
    const token = sessionStorage.getItem("Token");
@@ -36,6 +37,20 @@ export default function DashboardFinance() {
           console.log(error);
         }
       }
+
+       async function getTotalBudget(token) {
+              try {
+                const {response} = await TotalBudget(token);
+                setbudget(response.data)
+              } catch (error) {
+                console.log(error);
+              }
+            }
+
+            
+        useEffect(() => {
+           getTotalBudget(token);
+        }, []); 
     
       useEffect(() => {
          getTotal(token);
@@ -48,8 +63,6 @@ export default function DashboardFinance() {
         }, 2000)
       }, [loader])
     
- 
-
   
   return (
     // Card dashboard
@@ -60,31 +73,31 @@ export default function DashboardFinance() {
         <Cards
           loader={loader}
           title="Total Income"
-          value={`Rp. ${ !total[0]?.total_income ? "0" : parseInt(total[0]?.total_income).toLocaleString("id-ID")}`}
-          desc="+12% from last month"
+          value={`Rp. ${!total?.total_income ? "0" : parseInt(total?.total_income).toLocaleString("id-ID")}`}
+          desc={`${total?.income_rate}% from last month`}
           color="text-green-600"
           icons={<IoIosTrendingUp/>}
         />
         <Cards
           loader={loader}
           title="Total Expenses"
-          value={`Rp. ${ !total[0]?.total_expense ? "0" : parseInt(total[0]?.total_expense).toLocaleString("id-ID")}`}
-          desc="-8% from last month"
+          value={`Rp. ${ !total?.total_expense ? "0" : parseInt(total?.total_expense).toLocaleString("id-ID")}`}
+          desc={`${total?.expense_rate}% from last month`}
           color="text-red-500"
           icons={<IoIosTrendingDown/>}
         />
         <Cards
           loader={loader}
           title="Net Savings"
-          value="Rp. 0"
-          desc="0% savings rate"
+          value={`Rp. ${ !total?.net_balance ? "0" : parseInt(total?.net_balance).toLocaleString("id-ID")}`}
+          desc={`${total.net_balance_rate}% savings rate`}
           color="text-blue-600"
           icons={<GiReceiveMoney/>}
         />
         <Cards
           loader={loader}
           title="Budget Status"
-          value="0%"
+          value={`${budget[0]?.progress}%`}
           desc="of monthly budget used"
           color="text-orange-500"
           icons={<RxTarget/>}
