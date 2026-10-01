@@ -50,7 +50,7 @@ export default function Budget() {
 
           <>
              {/* HEADER */}
-      <div className="mb-6">
+      <div className="mb-6 mt-12">
         <h2 className="text-gray-800 font-semibold flex items-center gap-2">
           <span className="text-lg">◎</span>
           Budget Overview
@@ -64,21 +64,21 @@ export default function Budget() {
       <div className="grid grid-cols-3 text-center mb-6">
         
         <div>
-          <h3 className="text-2xl font-semibold text-green-600">
+          <h3 className="md:text-2xl text-base font-semibold text-green-600">
             {`Rp. ${!total[0]?.total_budget ? "0" : parseInt(total[0]?.total_budget).toLocaleString("id-ID")}`}
           </h3>
           <p className="text-sm text-gray-400">Total Budget</p>
         </div>
 
         <div>
-          <h3 className="text-2xl font-semibold text-yellow-700">
+          <h3 className="md:text-2xl text-base font-semibold text-yellow-700">
             {`Rp. ${!total[0]?.total_spending ? "0" : parseInt(total[0]?.total_spending).toLocaleString("id-ID")}`}
           </h3>
           <p className="text-sm text-gray-400">Total Spent</p>
         </div>
 
         <div>
-          <h3 className="text-2xl font-semibold text-blue-600">
+          <h3 className="md:text-2xl text-base font-semibold text-blue-600">
             {`Rp. ${!total[0]?.total_remaining ? "0" : parseInt(total[0]?.total_remaining).toLocaleString("id-ID")}`}
           </h3>
           <p className="text-sm text-gray-400">Remaining</p>

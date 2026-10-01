@@ -60,7 +60,7 @@ export default function DashboardFinance() {
 
   return (
     // Card dashboard
-    <div className="min-h-screen bg-slate-50 px-4 py-5 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 px-4 py-5 mt-12 sm:mt-0 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Cards
           loader={loader}
@@ -164,21 +164,32 @@ export default function DashboardFinance() {
 
 function Cards({ title, value, desc, color, icons, loader }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
-      {loader === true ? (
-        <div className={`h-20 w-full`}>
-          <LoaderPage className={`h-20`} />
-        </div>
-      ) : (
-        <>
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-400">{title}</p>
-            <span className="text-[23px] text-slate-400">{icons}</span>
-          </div>
-          <h2 className={`text-2xl font-bold ${color}`}>{value}</h2>
-          <p className="text-xs text-gray-400 mt-1">{desc}</p>
-        </>
-      )}
+  <div className="bg-white rounded-xl shadow-sm p-3 sm:p-5">
+  {loader === true ? (
+    <div className="h-16 sm:h-20 w-full">
+      <LoaderPage className="h-16 sm:h-20" />
     </div>
+  ) : (
+    <>
+      <div className="flex items-center justify-between">
+        <p className="text-xs sm:text-sm text-gray-400">
+          {title}
+        </p>
+
+        <span className="text-[18px] sm:text-[23px] text-slate-400">
+          {icons}
+        </span>
+      </div>
+
+      <h2 className={`text-xl sm:text-2xl font-bold ${color}`}>
+        {value}
+      </h2>
+
+      <p className="text-[10px] sm:text-xs text-gray-400 mt-1">
+        {desc}
+      </p>
+    </>
+  )}
+  </div>
   );
 }

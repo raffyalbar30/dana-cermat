@@ -145,9 +145,6 @@ export default function Transactional() {
 
   return (
     <>
-      {/* =========================
-    NOTIFICATION
-========================= */}
       <div
         className={`
     ${alert === true ? "flex" : "hidden"}
@@ -174,12 +171,8 @@ export default function Transactional() {
         />
       </div>
 
-      {/* =========================
-    MODAL TRANSACTIONS
-========================= */}
       <div className="mt-16 md:mt-18">
         {updatetransactions === true ? (
-          /* Modal rename transactions */
           <ToasterModal
             isOpen={updatetransactions}
             setisOpen={setupdatetransactions}
@@ -256,14 +249,8 @@ export default function Transactional() {
         ) : null}
       </div>
 
-      {/* =========================
-    TRANSACTIONS TABLE
-========================= */}
       <div className="relative z-0">
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5 md:p-6 w-full border border-slate-200">
-          {/* =========================
-        HEADER
-    ========================= */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             {/* TITLE */}
             {loader === true ? (
@@ -288,51 +275,44 @@ export default function Transactional() {
                 <LoaderPage className="h-8" />
               </div>
             ) : (
-             <button
-  disabled={loader === true}
-  onClick={() => {
-    setisOpen(true);
-  }}
-  className="
-  flex items-center justify-center gap-1
-  bg-blue-700
-  text-white
-  text-[11px] sm:text-sm
-  px-2.5 py-1.5
-  sm:px-4 sm:py-2
-  rounded-lg
-  hover:bg-blue-800
-  transition-all
-  shrink-0"
->
-  <GoPlus size={14} />
-
-  <span>
-    Add Transaction
-  </span>
-</button>
+                <div className="relative">
+                  <button
+                    disabled={loader === true}
+                    onClick={() => {
+                      setisOpen(true);
+                    }}
+                    className="
+                      right-1 absolute sm:relative sm:right-0
+                      flex items-center justify-center gap-1
+                      bg-blue-700
+                      text-white
+                      text-[11px] sm:text-sm
+                      px-2.5 py-1.5
+                      sm:px-4 sm:py-2
+                      rounded-lg
+                      hover:bg-blue-800
+                      transition-all
+                      shrink-0
+                    "
+                  >
+                    <GoPlus size={14} />
+                    <span>Add Transaction</span>
+                  </button>
+                </div>
             )}
           </div>
-
-          {/* =========================
-        TABLE
-    ========================= */}
           {loader === true ? (
             <div className="mt-8 h-[250px] sm:h-[300px] w-full">
               <LoaderPage className="h-[250px] sm:h-[300px] rounded-lg" />
             </div>
           ) : (
-            /*
-        overflow-x-auto membuat table bisa
-        di-scroll horizontal di mobile.
-      */
             <div className="w-full overflow-x-auto">
               {AllTransactions.length === 0 ? (
                 <div className="w-full">
                   <Notfound />
                 </div>
               ) : (
-                <table className="w-full min-w-[750px] text-sm text-left">
+                <table className="w-full mt-4 min-w-[750px] text-sm text-left">
                   {/* TABLE HEAD */}
                   <thead className="font-semibold border-b border-slate-400">
                     <tr>

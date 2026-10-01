@@ -259,33 +259,31 @@ export default function BudgetCategory() {
               <LoaderPage className="h-8 w-full" />
             </div>
           ) : (
+            <div className="relative">
             <button
               onClick={() => HandleOpenBudget()}
               className="
-          w-full
-          sm:w-auto
-          shrink-0
-          bg-blue-700
-          cursor-pointer
-          text-white
-          text-xs
-          sm:text-sm
-          px-3
-          sm:px-4
-          py-2
-          rounded-lg
-          hover:bg-blue-800
-          transition-all
-          duration-200
+                     right-1 absolute sm:relative sm:right-0
+                      flex items-center justify-center gap-1
+                      bg-blue-700
+                      text-white
+                      text-[11px] sm:text-sm
+                      px-2.5 py-1.5
+                      sm:px-4 sm:py-2
+                      rounded-lg
+                      hover:bg-blue-800
+                      transition-all
+                      shrink-0
         "
             >
               + Add Budget
             </button>
+            </div>
           )}
         </div>
 
         {/* Cards */}
-        <div className="space-y-4">
+        <div className="space-y-4 mt-12 md:mt-0 ">
           {loader === true
             ? Array.from({
                 length: dataAllbudgets?.data?.length || 1,
@@ -359,9 +357,9 @@ function BudgetCard({
       {/* Top */}
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="font-medium">{name_categories}</h3>
-          <p className="text-xs text-gray-500">{period} Budget</p>
-          <p className="text-sm mt-1">
+          <h3 className="font-medium text-[12px] md:text-base">{name_categories}</h3>
+          <p className="md:text-xs text-[10px] text-gray-500">{period} Budget</p>
+          <p className="md:text-sm text-[6px]  mt-1">
             {` Total spend Rp. ${used_amount.toLocaleString("id-ID")}`} /{" "}
             <span>{`Budget Rp. ${budget_amount.toLocaleString("id-ID")}`}</span>
           </p>
@@ -369,75 +367,79 @@ function BudgetCard({
 
         <div className="flex items-center gap-2">
           <span
-            className={`flex items-center gap-1 text-sm px-2 py-1 rounded-md ${
-              percent > 100
-                ? "bg-red-600 text-white"
-                : percent === 100
-                  ? "bg-green-500 text-white"
-                  : percent >= 80
-                    ? "bg-yellow-400 text-gray-600"
-                    : percent > 0
-                      ? "bg-blue-500 text-white"
-                      : "hidden"
-            }`}
-          >
-            {percent > 100 ? (
-              <>
-                <IoWarningOutline size={18} />
-                <span>Danger</span>
-              </>
-            ) : percent === 100 ? (
-              <>
-                <IoIosCheckmarkCircleOutline size={18} />
-                <span>Success</span>
-              </>
-            ) : percent >= 80 ? (
-              <>
-                <IoWarningOutline size={18} />
-                <span>Warning</span>
-              </>
-            ) : percent > 0 ? (
-              <>
-                <IoIosCheckmarkCircleOutline size={18} />
-                <span>On Progress</span>
-              </>
-            ) : null}
+          className={`flex items-center gap-1 text-[8px] sm:text-sm px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md ${
+            percent > 100
+              ? "bg-red-600 text-white"
+              : percent === 100
+                ? "bg-green-500 text-white"
+                : percent >= 80
+                  ? "bg-yellow-400 text-gray-600"
+                  : percent > 0
+                    ? "bg-blue-500 text-white"
+                    : "hidden"
+          }`}
+        >
+  {percent > 100 ? (
+    <>
+      <IoWarningOutline className="w-2 h-2 sm:w-[18px] sm:h-[18px]" />
+      <span>Danger</span>
+    </>
+  ) : percent === 100 ? (
+    <>
+      <IoIosCheckmarkCircleOutline className="w-2 h-2 sm:w-[18px] sm:h-[18px]" />
+      <span>Success</span>
+    </>
+  ) : percent >= 80 ? (
+    <>
+      <IoWarningOutline className="w-2 h-2 sm:w-[18px] sm:h-[18px]" />
+      <span>Warning</span>
+    </>
+  ) : percent > 0 ? (
+    <>
+      <IoIosCheckmarkCircleOutline className="w-2 h-2 sm:w-[18px] sm:h-[18px]" />
+      <span>Progress</span>
+    </>
+  ) : null}
           </span>
 
-          <span className="flex items-center gap-1 text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-            {new Date(start_date).toLocaleDateString("id-ID")} -{" "}
-            {new Date(end_date).toLocaleDateString("id-ID")}
-          </span>
+          <div className="flex items-center gap-1 text-[8px] md:text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 whitespace-nowrap">
+            <span>{new Date(start_date).toLocaleDateString("id-ID")} -{" "}</span>
+            <span>{new Date(end_date).toLocaleDateString("id-ID")}</span>
+         </div>
 
           <button
+          onClick={() => {
+            (
+              setisRenameBudget(true),
+              setgetIdBudgets(id_budgets),
+              setgetIdCategory(categories_id),
+              setgetnamecategories(name_categories),
+              setgetperiod(period),
+              setgetamount(budget_amount),
+              setgetstartdate(start_date),
+              setgetEnddate(end_date)
+            );
+          }}
+          className="p-1.5 sm:p-2 border cursor-pointer rounded-md hover:bg-gray-50"
+        >
+          <PiNotePencil className="w-2 h-2 sm:w-[14px] sm:h-[14px]" />
+        </button>
+
+        <button
             onClick={() => {
-              (setisRenameBudget(true),
+              (
                 setgetIdBudgets(id_budgets),
-                setgetIdCategory(categories_id),
                 setgetnamecategories(name_categories),
                 setgetperiod(period),
                 setgetamount(budget_amount),
                 setgetstartdate(start_date),
-                setgetEnddate(end_date));
-            }}
-            className="p-2 border cursor-pointer rounded-md hover:bg-gray-50"
-          >
-            <PiNotePencil size={14} />
-          </button>
-
-          <button
-            onClick={() => {
-              (setgetIdBudgets(id_budgets),
-                setgetnamecategories(name_categories),
-                setgetperiod(period),
-                setgetamount(budget_amount),
-                setgetstartdate(start_date),
-                setgetEnddate(end_date));
+                setgetEnddate(end_date)
+              );
               DellatedPopup();
             }}
-            className="p-2 border cursor-pointer rounded-md hover:bg-gray-50"
+            className="p-1.5 sm:p-2 border cursor-pointer rounded-md hover:bg-gray-50"
           >
-            <IoTrashOutline size={14} />
+            <IoTrashOutline className="w-2 h-2 sm:w-[14px] sm:h-[14px]" />
           </button>
         </div>
       </div>

@@ -8,7 +8,7 @@ export default function Transactions() {
 
   return (
     <div className="w-full flex-wrap">
-            <div className="bg-slate-50 p-6 min-h-screen">
+            <div className="bg-slate-50 p-4 min-h-screen">
             <AllCards/>
             <div className="w-full">
                 <Transactional/>

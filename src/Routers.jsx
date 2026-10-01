@@ -6,9 +6,9 @@ const Routers = ({Children}) => {
         
     <div className='w-screen flex'>
       {/* Navbar */}
-      <div className='h-screen w-[380px]'>
+       <div className='p-0 md:p-40'>
          <Navbar />
-      </div>
+       </div>
          { Children}
     </div>
 

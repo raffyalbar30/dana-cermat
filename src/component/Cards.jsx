@@ -35,7 +35,7 @@ export default function AllCards() {
      console.log(total); 
 
   return (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div className="grid grid-cols-1 mt-12 md:mt-0 md:grid-cols-3 gap-4 mb-6">
                      <Cards
                      loader={loader}
                      title="Total Income"
