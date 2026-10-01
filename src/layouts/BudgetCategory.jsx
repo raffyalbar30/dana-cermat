@@ -26,14 +26,12 @@ import ModalUpdateBudget from "./ModalUpdateBudget";
 import ToasterModalDellate from "../../utils/ToasterModalDellate";
 import Modaldellatebudget from "./Modaldellatebudget";
 
-
 export default function BudgetCategory() {
-
   // Modal budgets
   const [isOpenBudget, setisOpenBudget] = useState(false);
   const [isRenameBudget, setisRenameBudget] = useState(false);
 
-  // text 
+  // text
   const [title, settitle] = useState("");
   const Token = sessionStorage.getItem("Token");
 
@@ -41,13 +39,12 @@ export default function BudgetCategory() {
   const [loader, setloader] = useState(false);
   const [confirmloader, setconfirmloader] = useState(false);
 
-  // confirmupdate 
-  const [getconfirmupdate, setgetconfirmupdate ] = useState([])
+  // confirmupdate
+  const [getconfirmupdate, setgetconfirmupdate] = useState([]);
   const [confirmupdate, setconfirmupdate] = useState(false);
 
-
   const [categories, setcategories] = useState([]);
-  
+
   // allBudgets data
   const [dataAllbudgets, setdataAllbudgets] = useState([]);
 
@@ -62,7 +59,6 @@ export default function BudgetCategory() {
   const [getamount, setgetamount] = useState();
   const [getstartdate, setgetstartdate] = useState();
   const [getEnddate, setgetEnddate] = useState();
-
 
   // notifications
   const [notifications, setnotifications] = useState(false);
@@ -90,7 +86,6 @@ export default function BudgetCategory() {
     }
   };
 
-
   useEffect(() => {
     GetAllBudgets();
     HandleCategories();
@@ -102,108 +97,187 @@ export default function BudgetCategory() {
       setloader(false);
     }, 2000);
   }, []);
- 
+
   return (
     <>
+      {/* Notification */}
       <div
-        className={`${notifications === true ? "active" : "hidden"} flex justify-center`}
+        className={`${
+          notifications === true ? "flex" : "hidden"
+        } justify-center px-4`}
       >
         <Toaster
-           className={`${notifications === true ? "dropdown" : ""} transition-all absolute z-10 top-0 mt-4 w-1/3 h-14`}
-            stateNotif={() => setnotifications(false)}
+          className={`
+      ${notifications === true ? "dropdown" : ""}
+      transition-all
+      absolute
+      z-50
+      top-0
+      mt-4
+      w-[90%]
+      sm:w-[70%]
+      md:w-1/2
+      lg:w-1/3
+      h-14
+    `}
+          stateNotif={() => setnotifications(false)}
           Title={title}
-          ></Toaster>
+        />
       </div>
+
+      {/* Rename Budget */}
       {isRenameBudget === true ? (
-        <ToasterModal 
-           isOpen={isRenameBudget}
-           setisOpen={setisRenameBudget}
-           Title={"Rename Budget"}
-           describeTitle={"Set clear boundaries for your money and watch your progress in real time"}
-           Icons={<GiReceiveMoney size={70} className="text-blue-700"/>}
-           FormsAddTransactions={<UpdateFromAddBudget 
-            setisOpen={setisRenameBudget}
-            category={categories}
-            loader={confirmloader}
-            setloader={setconfirmloader}
-            getIdBudgets={getIdBudgets}
-            getIdCategory={getIdCategory}
-            getperiod={getperiod}
-            getamount={getamount}
-            getstartdate={getstartdate}
-            setgetconfirmupdate={setgetconfirmupdate}
-            setpopupconfirmupdate={setconfirmupdate}/>
-          }/>
+        <ToasterModal
+          isOpen={isRenameBudget}
+          setisOpen={setisRenameBudget}
+          Title={"Rename Budget"}
+          describeTitle={
+            "Set clear boundaries for your money and watch your progress in real time"
+          }
+          Icons={<GiReceiveMoney size={70} className="text-blue-700" />}
+          FormsAddTransactions={
+            <UpdateFromAddBudget
+              setisOpen={setisRenameBudget}
+              category={categories}
+              loader={confirmloader}
+              setloader={setconfirmloader}
+              getIdBudgets={getIdBudgets}
+              getIdCategory={getIdCategory}
+              getperiod={getperiod}
+              getamount={getamount}
+              getstartdate={getstartdate}
+              setgetconfirmupdate={setgetconfirmupdate}
+              setpopupconfirmupdate={setconfirmupdate}
+            />
+          }
+        />
       ) : dellateBudgets === true ? (
         <ToasterModalDellate
           dellatedconfim={dellateBudgets}
-          Chilldren={<Modaldellatebudget
-            setdellateBudgets={setdellateBudgets}
-            getIdBudgets={getIdBudgets}
-            setallert={setdellateBudgets} 
-            settitle={settitle}
-            loader={confirmloader}
-            setloader={setconfirmloader}
-            getnamecategories={getnamecategories}
-            getperiod={getperiod}
-            getamount={getamount}
-            getstartdate={getstartdate}
-            getEnddate={getEnddate}
-            />}
+          Chilldren={
+            <Modaldellatebudget
+              setdellateBudgets={setdellateBudgets}
+              getIdBudgets={getIdBudgets}
+              setallert={setdellateBudgets}
+              settitle={settitle}
+              loader={confirmloader}
+              setloader={setconfirmloader}
+              getnamecategories={getnamecategories}
+              getperiod={getperiod}
+              getamount={getamount}
+              getstartdate={getstartdate}
+              getEnddate={getEnddate}
+            />
+          }
         />
       ) : isOpenBudget === true ? (
-          <ToasterModal 
-           isOpen={isOpenBudget}
-           setisOpen={setisOpenBudget}
-           Title={"Add your budgeting"}
-           describeTitle={"Make informed decisions for your budgeting and reach your financial goals faster"}
-           Icons={<CiMoneyCheck1 size={70} className="text-blue-700"/>}
-           FormsAddTransactions={<AddFromAddBudget 
-            category={categories}
-            loader={loader}
-            setloader={setloader}
-            settitle={settitle}
-            setAlert={setnotifications}
-            setisOpenBudget={setisOpenBudget} />
-          }/>
+        <ToasterModal
+          isOpen={isOpenBudget}
+          setisOpen={setisOpenBudget}
+          Title={"Add your budgeting"}
+          describeTitle={
+            "Make informed decisions for your budgeting and reach your financial goals faster"
+          }
+          Icons={<CiMoneyCheck1 size={70} className="text-blue-700" />}
+          FormsAddTransactions={
+            <AddFromAddBudget
+              category={categories}
+              loader={loader}
+              setloader={setloader}
+              settitle={settitle}
+              setAlert={setnotifications}
+              setisOpenBudget={setisOpenBudget}
+            />
+          }
+        />
       ) : confirmupdate === true ? (
-        <ToasterModalConfirm 
-         confirmupdate={confirmupdate}
-         Chilldren={<ModalUpdateBudget
-          setconfirmupdate={setconfirmupdate}
-          Icons={<GiReceiveMoney size={45} className="text-blue-700"/>}
-          dataBudget={getconfirmupdate}
-          loader={confirmloader}
-          setloader={setconfirmloader}
-          settitle={settitle}
-          setnotifications={setnotifications}/>}
-         />
+        <ToasterModalConfirm
+          confirmupdate={confirmupdate}
+          Chilldren={
+            <ModalUpdateBudget
+              setconfirmupdate={setconfirmupdate}
+              Icons={<GiReceiveMoney size={45} className="text-blue-700" />}
+              dataBudget={getconfirmupdate}
+              loader={confirmloader}
+              setloader={setconfirmloader}
+              settitle={settitle}
+              setnotifications={setnotifications}
+            />
+          }
+        />
       ) : null}
 
-      <div className="w-full rounded-lg border border-slate-200 bg-slate-50 mt-8 mx-auto p-6">
+      {/* Main Budget Container */}
+      <div
+        className="
+    w-full
+    max-w-full
+    rounded-lg
+    border
+    border-slate-200
+    bg-slate-50
+    mt-6
+    sm:mt-8
+    mx-auto
+    p-4
+    sm:p-5
+    md:p-6
+  "
+      >
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div
+          className="
+      flex
+      flex-col
+      sm:flex-row
+      sm:justify-between
+      sm:items-center
+      gap-4
+      mb-6
+    "
+        >
+          {/* Title */}
           {loader === true ? (
-            <div className={`h-4 w-xs`}>
-              <LoaderPage className={`h-8`} />
+            <div className="h-8 w-full sm:w-[250px]">
+              <LoaderPage className="h-8 w-full" />
             </div>
           ) : (
-            <div>
-              <h2 className="text-lg font-semibold">Budget Categories</h2>
-              <p className="text-sm text-gray-500">
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-semibold">
+                Budget Categories
+              </h2>
+
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">
                 Manage your spending limits by category
               </p>
             </div>
           )}
 
+          {/* Add Budget Button */}
           {loader === true ? (
-            <div className={`h-4 w-[200px]`}>
-              <LoaderPage className={`h-8`} />
+            <div className="h-8 w-full sm:w-[160px]">
+              <LoaderPage className="h-8 w-full" />
             </div>
           ) : (
             <button
               onClick={() => HandleOpenBudget()}
-              className="bg-blue-700 cursor-pointer text-white text-sm px-4 py-2 rounded-lg hover:opacity-90"
+              className="
+          w-full
+          sm:w-auto
+          shrink-0
+          bg-blue-700
+          cursor-pointer
+          text-white
+          text-xs
+          sm:text-sm
+          px-3
+          sm:px-4
+          py-2
+          rounded-lg
+          hover:bg-blue-800
+          transition-all
+          duration-200
+        "
             >
               + Add Budget
             </button>
@@ -216,8 +290,8 @@ export default function BudgetCategory() {
             ? Array.from({
                 length: dataAllbudgets?.data?.length || 1,
               }).map((_, i) => (
-                <div key={i} className={`w-full`}>
-                  <LoaderPage className="h-32" />
+                <div key={i} className="w-full">
+                  <LoaderPage className="h-32 w-full rounded-lg" />
                 </div>
               ))
             : dataAllbudgets?.data?.map((items, i) => (
@@ -272,7 +346,6 @@ function BudgetCard({
   setisRenameBudget,
   setgetRenamecategories,
   setgetRenameAmount,
-
 }) {
   const DellatedPopup = () => {
     setdellateBudgets(true);

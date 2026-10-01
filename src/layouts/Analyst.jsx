@@ -114,100 +114,157 @@ export default function Analyst() {
   }, []);
 
   return (
-      <div className="min-h-screen bg-slate-50 p-6">
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-             {
-               analyst.map((items) => {
-                 return (
-                     <Cards
-                    title={items.type}
-                    value={items.amount}
-                    desc={items.description}
-                    color="text-blue-700"
-                    icons={items.icons}
-                    />
-                 )
-               })
-             }
-          </div>
-        {/* main content */}
-        <div className='flex flex-wrap'>
-           <div className="flex gap-x-1 bg-gray-200 p-1 rounded-full w-fit">
-            {getChart.map((items) => (
-              <button
-                key={items.name}
-                onClick={() => setchart(items.name)}
-                className={`px-4 py-1.5 text-sm font-medium rounded-full transition-all ${
-                  chart === items.name
-                    ? "bg-white text-gray-900 shadow"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
-              >
-                {items.name}
-              </button>
-            ))}
-          </div>
-        </div>
+      <div className="min-h-screen bg-slate-50 px-4 py-5 sm:px-6 lg:px-8">
 
-        <div className=' mt-4 flex gap-x-6'>
-            {
-               chart === "Categories" ? 
-                <div className='w-full'>
-                   <Chartpiecategories/>
-                </div>
-                 : chart === "Goals" ? 
-                 <div className='w-full'>
-                    <BudgetProgress/>
-                 </div>
-                 :
-               <>
-               <div className='w-1/2'>
-                 <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
-                    <h3 className="font-semibold text-gray-800">
-                      Income vs Expenses
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-4">
-                      Monthly comparison over the last 3 months
-                    </p>
+  {/* Summary Cards */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    {analyst.map((items) => {
+      return (
+        <Cards
+          key={items.type}
+          title={items.type}
+          value={items.amount}
+          desc={items.description}
+          color="text-blue-700"
+          icons={items.icons}
+        />
+      );
+    })}
+  </div>
 
-                      <ChartMonth data={threemonth} />
-                  </div>
-                </div>
-                <div className='w-1/2'>
-                  <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
-                      <h3 className="font-semibold text-gray-800">
-                        Income vs Expenses
-                      </h3>
-                      <p className="text-sm text-gray-400 mb-4">
-                        Monthly comparison over the last 1 months
-                      </p>
-                      <ChartMonth data={monthly}/>
-                    </div>
-                </div>
-               
-               </>
-                 
+
+  {/* Chart Tabs */}
+  <div className="w-full overflow-x-auto mb-4">
+    <div className="flex gap-x-1 bg-gray-200 p-1 rounded-full w-fit min-w-max">
+
+      {getChart.map((items) => (
+        <button
+          key={items.name}
+          onClick={() => setchart(items.name)}
+          className={`
+            px-3
+            sm:px-4
+            py-1.5
+            text-xs
+            sm:text-sm
+            font-medium
+            rounded-full
+            transition-all
+            whitespace-nowrap
+            ${
+              chart === items.name
+                ? "bg-white text-gray-900 shadow"
+                : "text-gray-500 hover:text-gray-900"
             }
-    
-        </div>
+          `}
+        >
+          {items.name}
+        </button>
+      ))}
 
-        {/* perday */}
-        <div className='mt-4'>
-              {/* days monthly */}
-               <div className='w-full'>
-                 <div className="lg:col-span-2 bg-white w-full rounded-xl shadow-sm p-4">
-                   <h3 className="font-semibold text-gray-800">
-                      Income vs Expenses
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-4">
-                      Weakly comparison over the last 7 days
-                    </p>
+    </div>
+  </div>
 
-                  <Chart7d data={savendays}/>
-                  </div>
-             </div>
+
+  {/* Main Charts */}
+  <div className="mt-4 w-full">
+
+    {chart === "Categories" ? (
+
+      /* Categories */
+      <div className="w-full min-w-0">
+        <div className="bg-white w-full rounded-xl shadow-sm p-4 sm:p-5 overflow-hidden">
+          <Chartpiecategories />
         </div>
       </div>
+
+    ) : chart === "Goals" ? (
+
+      /* Goals */
+      <div className="w-full min-w-0">
+        <div className="bg-white w-full rounded-xl shadow-sm p-4 sm:p-5 overflow-hidden">
+          <BudgetProgress />
+        </div>
+      </div>
+
+    ) : (
+
+      /* Monthly / Default */
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+
+        {/* 3 Months */}
+        <div className="w-full min-w-0">
+          <div className="bg-white w-full rounded-xl shadow-sm p-4 sm:p-5 overflow-hidden">
+
+            <h3 className="font-semibold text-sm sm:text-base text-gray-800">
+              Income vs Expenses
+            </h3>
+
+            <p className="text-xs sm:text-sm text-gray-400 mb-4">
+              Monthly comparison over the last 3 months
+            </p>
+
+            <div className="w-full overflow-x-auto">
+              <div className="min-w-[300px]">
+                <ChartMonth data={threemonth} />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        {/* 1 Month */}
+        <div className="w-full min-w-0">
+          <div className="bg-white w-full rounded-xl shadow-sm p-4 sm:p-5 overflow-hidden">
+
+            <h3 className="font-semibold text-sm sm:text-base text-gray-800">
+              Income vs Expenses
+            </h3>
+
+            <p className="text-xs sm:text-sm text-gray-400 mb-4">
+              Monthly comparison over the last 1 month
+            </p>
+
+            <div className="w-full overflow-x-auto">
+              <div className="min-w-[300px]">
+                <ChartMonth data={monthly} />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    )}
+
+  </div>
+
+
+  {/* 7 Days */}
+  <div className="mt-4 w-full">
+
+    <div className="bg-white w-full rounded-xl shadow-sm p-4 sm:p-5 overflow-hidden">
+
+      <h3 className="font-semibold text-sm sm:text-base text-gray-800">
+        Income vs Expenses
+      </h3>
+
+      <p className="text-xs sm:text-sm text-gray-400 mb-4">
+        Weekly comparison over the last 7 days
+      </p>
+
+      <div className="w-full overflow-x-auto">
+        <div className="min-w-[300px]">
+          <Chart7d data={savendays} />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
   )
 }
 
