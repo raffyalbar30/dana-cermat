@@ -11,7 +11,7 @@ export default function ToasterModal({
     FormsAddTransactions }) {
 
   return (
-      <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}>
+            <Modal isOpen={isOpen} handleClick={handleClick} setisOpen={setisOpen}>
         <div className="flex items-center justify-center px-3 sm:px-4">
   <div
     className="
